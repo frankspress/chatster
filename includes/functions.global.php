@@ -1,8 +1,7 @@
 <?php
 
-namespace Frankspress\Chatster\GlobalFunction;
-
 if ( ! defined( 'ABSPATH' ) ) exit;
+
 
 if ( ! function_exists( 'chatter_get_timezone' ) ) {
 	/**
@@ -28,3 +27,14 @@ if ( ! function_exists( 'chatter_get_timezone' ) ) {
 		return new DateTimeZone( $tz_offset );
 	}
 }
+
+/**
+ * Testing
+ */
+ function dump($var) {
+   var_dump($var);
+ }
+ function dd($var) {
+   var_dump($var);
+   die;
+ }
