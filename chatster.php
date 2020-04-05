@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 /**
- * If WooCommerce is active set a constant.
+ * If WooCommerce is active it sets a constant.
  */
 if ( in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
   define( 'CHATSTER_WOO_STATUS', TRUE );
