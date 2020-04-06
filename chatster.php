@@ -22,7 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
   define( 'CHATSTER_WOO_STATUS', TRUE );
 }
-
 define( 'CHATSTER_VERSION', '1.0.0' );
 define( 'CHATSTER_DOMAIN', 'chatster' );
 define( 'CHATSTER_FILE_PATH', __FILE__ );
@@ -30,16 +29,6 @@ define( 'CHATSTER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );
 
 /**
- * Helper functions.
+ * Load Chatster
  */
-require_once( CHATSTER_PATH . '/includes/functions.global.php' );
-
 require_once( CHATSTER_PATH . '/includes/core/chatster-loader.php' );
-
-
-if ( is_admin() ) {
-
-  require_once( CHATSTER_PATH . '/includes/admin/class.add-options.php' );
-  require_once( CHATSTER_PATH . '/includes/admin/class.admin-menu.php' );
-  require_once( CHATSTER_PATH . '/includes/admin/class.validate-options.php' );
-}

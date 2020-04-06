@@ -2,8 +2,23 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function ism_add_link_to_woo_menu() {
 
-    add_submenu_page( 'woocommerce', __( 'Chatster', CHATSTER_DOMAIN ), __( 'Chatster', CHATSTER_DOMAIN ), 'view_woocommerce_reports', 'chatster-general', function() {echo '';});
+
+/**
+ * Adds the Admin Menu
+ */
+class AdminMenu
+{
+
+  function __construct() {
+      add_action('admin_menu', array( $this, 'add_menu_link' ), 20);
+
+  }
+
+  public function add_menu_link() {
+      add_submenu_page( 'woocommerce', __( 'Chatster', CHATSTER_DOMAIN ), __( 'Chatster', CHATSTER_DOMAIN ), 'view_woocommerce_reports', 'chatster-general', array( 'DisplayManager', 'find_view'));
+  }
+
 }
-add_action('admin_menu', 'ism_add_link_to_woo_menu', 20);
+
+new AdminMenu();

@@ -28,7 +28,7 @@ if ( ! function_exists( 'chatter_get_timezone' ) ) {
 	}
 }
 
-/**
+/***************************************************************
  * Testing
  */
  function dump($var) {
