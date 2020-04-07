@@ -1,6 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
 
 register_activation_hook( CHATSTER_FILE_PATH, array( 'ActivationLoader', 'init_activation' ) );
 
@@ -10,7 +11,9 @@ class ActivationLoader  {
 
   public static function init_activation() {
       if ( ! current_user_can( 'manage_options' ) ) return;
-      return  self::create_db_chat_system() && self::create_db_request();
+      return  self::create_db_chat_system() &&
+                self::create_db_request() &&
+                  self::create_db_automation();
   }
 
   private static function create_db_chat_system() {
@@ -46,7 +49,7 @@ class ActivationLoader  {
         $sql .= " admin_email VARCHAR(100) NOT NULL , ";
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
-        $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
+        $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
         $sql .= " CONSTRAINT ctsr_admin_customer UNIQUE ( admin_email , customer_id ) , ";
         $sql .= " CONSTRAINT ctsr_admin_email FOREIGN KEY (admin_email) REFERENCES $Table_Users( user_email )  ON DELETE CASCADE ";
@@ -119,4 +122,59 @@ class ActivationLoader  {
 
   }
 
+  public static function create_db_automation() {
+      global $wpdb;
+      $wp_table_conversation = self::get_table_name('conversation');
+      $wp_table_message = self::get_table_name('message');
+
+      /**
+       * Create Insert Presidure For Chat
+       */
+       $wpdb->query( " DROP PROCEDURE IF EXISTS chatster_insert ");
+
+       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800))
+                BEGIN
+
+                	DECLARE c_id INT DEFAULT NULL;
+                	DECLARE last_id INT DEFAULT 0;
+
+                    SELECT id INTO c_id FROM $wp_table_conversation WHERE
+                                (admin_email = admin AND customer_id = customer) LIMIT 1;
+
+                    IF (c_id IS NOT NULL)
+                        THEN
+
+                                INSERT INTO $wp_table_message (conv_id, author_id, message)
+                                VALUES (c_id, sender, msg);
+                                SELECT LAST_INSERT_ID(), c_id;
+                        ELSE
+
+                                INSERT INTO $wp_table_conversation ( admin_email, customer_id )
+                                VALUES ( admin, customer );
+                                SET last_id = LAST_INSERT_ID();
+                                INSERT INTO $wp_table_message (conv_id, author_id, message)
+                                VALUES (last_id, sender, msg);
+                                SELECT LAST_INSERT_ID(), c_id;
+                        END IF;
+                END  ";
+
+        $wpdb->query( $sql );
+
+        /**
+         * Add Message Insert Trigger
+         */
+        $wpdb->query( " DROP TRIGGER IF EXISTS chatster_conv_time_upd ");
+
+        $sql = " CREATE TRIGGER chatster_conv_time_upd AFTER INSERT ON $wp_table_message
+                  	FOR EACH ROW
+                      BEGIN
+	                       UPDATE $wp_table_conversation
+                         SET updated_at = CURRENT_TIMESTAMP
+                         WHERE id = NEW.conv_id;
+                      END ";
+
+        $wpdb->query( $sql );
+
+        return empty($wpdb->last_error);
+  }
 }

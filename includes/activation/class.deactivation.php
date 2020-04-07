@@ -1,6 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
 
 register_deactivation_hook( CHATSTER_FILE_PATH, array( 'DeactivationLoader', 'init_deactivation' ) );
 
@@ -26,6 +27,7 @@ class DeactivationLoader {
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('presence');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
+      $wpdb->query("DROP PROCEDURE IF EXISTS chatster_insert ");
 
       return true;
     }
