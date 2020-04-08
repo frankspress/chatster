@@ -17,6 +17,9 @@ class DeactivationLoader {
     private static function drop_db_table() {
       global $wpdb;
 
+      $wpdb->query(" DROP PROCEDURE IF EXISTS chatster_insert ");
+      $wpdb->query(" DROP TRIGGER IF EXISTS chatster_conv_time_upd ");
+
       $wp_table = self::get_table_name('reply');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('request');
@@ -27,7 +30,6 @@ class DeactivationLoader {
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('presence');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
-      $wpdb->query("DROP PROCEDURE IF EXISTS chatster_insert ");
 
       return true;
     }

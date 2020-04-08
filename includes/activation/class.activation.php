@@ -10,7 +10,7 @@ class ActivationLoader  {
   use ChatsterTableBuilder;
 
   public static function init_activation() {
-      if ( ! current_user_can( 'manage_options' ) ) return;
+     if ( ! current_user_can( 'manage_options' ) ) return;
       return  self::create_db_chat_system() &&
                 self::create_db_request() &&
                   self::create_db_automation();
@@ -48,6 +48,8 @@ class ActivationLoader  {
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
         $sql .= " admin_email VARCHAR(100) NOT NULL , ";
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
+        $sql .= " is_deleted BOOLEAN NOT NULL DEFAULT false, ";
+        $sql .= " is_blocked BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
@@ -85,6 +87,7 @@ class ActivationLoader  {
   private static function create_db_request() {
 
     global $wpdb;
+    $success = true;
     $wp_table_request = self::get_table_name('request');
     $wp_table_reply = self::get_table_name('reply');
     $charset_collate = $wpdb->get_charset_collate();
@@ -100,7 +103,7 @@ class ActivationLoader  {
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-        $success1 = empty($wpdb->last_error);
+        $success = $success && empty($wpdb->last_error);
     }
 
     if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_reply' " ) != $wp_table_reply)  {
@@ -117,13 +120,16 @@ class ActivationLoader  {
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-        $success1 = empty($wpdb->last_error);
+        $success = $success && empty($wpdb->last_error);
     }
+
+    return $success;
 
   }
 
-  public static function create_db_automation() {
+  private static function create_db_automation() {
       global $wpdb;
+      $success = true;
       $wp_table_conversation = self::get_table_name('conversation');
       $wp_table_message = self::get_table_name('message');
 
@@ -146,7 +152,7 @@ class ActivationLoader  {
 
                                 INSERT INTO $wp_table_message (conv_id, author_id, message)
                                 VALUES (c_id, sender, msg);
-                                SELECT LAST_INSERT_ID(), c_id;
+                                SELECT LAST_INSERT_ID() as message_id , c_id as conv_id;
                         ELSE
 
                                 INSERT INTO $wp_table_conversation ( admin_email, customer_id )
@@ -154,11 +160,12 @@ class ActivationLoader  {
                                 SET last_id = LAST_INSERT_ID();
                                 INSERT INTO $wp_table_message (conv_id, author_id, message)
                                 VALUES (last_id, sender, msg);
-                                SELECT LAST_INSERT_ID(), c_id;
+                                SELECT LAST_INSERT_ID() as message_id, last_id as conv_id;
                         END IF;
                 END  ";
 
         $wpdb->query( $sql );
+        $success = $success && empty($wpdb->last_error);
 
         /**
          * Add Message Insert Trigger
@@ -174,7 +181,8 @@ class ActivationLoader  {
                       END ";
 
         $wpdb->query( $sql );
+        $success = $success && empty($wpdb->last_error);
 
-        return empty($wpdb->last_error);
+        return $success;
   }
 }
