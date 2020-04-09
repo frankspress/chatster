@@ -14,9 +14,12 @@ class DisplayManager
 {
 
 
-  public static function find_view() {
+  public static function find_admin_view() {
     echo 'FUCK';
   }
 
+  public static function public_chat_view() {
+    echo 'SHIIIIIITTTTTTTTT';
+  }
 
 }
