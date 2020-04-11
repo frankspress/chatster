@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
 
 use Chatster\Api\ChatCollection;
+use Chatster\Core\Crypto;
 
 class ChatApi  {
   use ChatCollection;
@@ -43,10 +44,10 @@ class ChatApi  {
    */
    private function set_customer_id( $customer_id = '' ) {
      if ( empty($customer_id)) {
-       $customer_id = substr(md5(uniqid(rand(), true)), 0, 100);
+       $customer_id = Crypto::encrypt( substr(md5(uniqid(rand(), true)), 0, 100) );
      }
      setcookie('unreg_chatster_id', base64_encode(serialize($customer_id)), (time() + 8419200), "/");
-     return $customer_id;
+     return Crypto::decrypt( unserialize( base64_decode( $_COOKIE['unreg_chatster_id'] ), ["allowed_classes" => false]));
    }
 
   private function get_customer_id() {
@@ -57,8 +58,7 @@ class ChatApi  {
     }
 
     if ( isset($_COOKIE['unreg_chatster_id'])) {
-      $customer_id = unserialize(base64_decode($_COOKIE['unreg_chatster_id']), ["allowed_classes" => false]);
-        return $this->set_customer_id($customer_id);
+      return $this->set_customer_id($_COOKIE['unreg_chatster_id']);
     }
 
     return $this->set_customer_id();
@@ -103,7 +103,7 @@ class ChatApi  {
   public function long_poll_db( \WP_REST_Request $data ) {
 
       // return array('action'=> $data['chatster_id'] );
-      return array('action'=> $this->get_latest_messages() );
+      return array('action'=> $this->get_latest_messages(1, $data['chatster_id']) );
   }
 
 }

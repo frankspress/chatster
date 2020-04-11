@@ -9,25 +9,28 @@ use Chatster\Core\ChatsterTableBuilder;
 trait ChatCollection {
   use ChatsterTableBuilder;
 
-  protected function get_latest_messages() {
+  protected function get_latest_messages( $conv_id = 0, $user_id = '' ) {
 
-    // global $table_prefix, $wpdb;
-    // $success = true;
-    // $wp_table_presence = self::get_table_name('presence');
+    global $wpdb;
     $wp_table_message = self::get_table_name('message');
-    // $wp_table_conversation = self::get_table_name('conversation');
-    // $Table_Users = $table_prefix . 'users';
-    // $charset_collate = $wpdb->get_charset_collate();
- return $wp_table_message;
+    $wp_table_conversation = self::get_table_name('conversation');
+
     $sql = " SELECT  m.message, m.author_id, c.id as conv_id
-             FROM wp_chatster_message as m
-             INNER JOIN wp_chatster_conversation as c ON c.id = m.conv_id
-               WHERE conv_id = ? and customer_id = ?
+             FROM $wp_table_message as m
+             INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
+             WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s )
+             ORDER BY m.created_at DESC
              LIMIT 15 ";
+
+    $sql = $wpdb->prepare( $sql, $conv_id, $user_id, $user_id );
+    $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
   }
 
   protected function remove_old_convs() {
-    
+
   }
 
 }

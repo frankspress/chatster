@@ -5,7 +5,7 @@ use Chatster\Api\ChatCollection;
 
 class CronManager  {
   use ChatCollection;
-  
+
   public function __construct() {
     add_filter( 'cron_schedules', array($this, 'add_intervals'));
     add_action( 'chatster_remove_old_convs', array($this, 'remove_old_convs'));
@@ -23,10 +23,3 @@ class CronManager  {
 }
 
 new CronManager;
-
-// REGISTERS WP_CRON INTERVAL
-
-
-
-
-// ADDS WP_CRON EVENT that FIRES after wp_loaded
