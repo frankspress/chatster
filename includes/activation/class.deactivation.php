@@ -2,6 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
+use Chatster\Core\ChatsterTableBuilder;
 
 register_deactivation_hook( CHATSTER_FILE_PATH, array( 'DeactivationLoader', 'init_deactivation' ) );
 
@@ -11,7 +12,7 @@ class DeactivationLoader {
 
     public static function init_deactivation() {
         if ( ! current_user_can( 'manage_options' ) ) return;
-        return self::drop_db_table();
+        return self::drop_db_table() && self::remove_cron_event();
     }
 
     private static function drop_db_table() {
@@ -33,4 +34,10 @@ class DeactivationLoader {
 
       return true;
     }
+
+    private static function remove_cron_event() {
+        $timestamp = wp_next_scheduled( 'chatster_remove_old_convs' );
+        return wp_unschedule_event( $timestamp, 'chatster_remove_old_convs' );
+    }
+
   }

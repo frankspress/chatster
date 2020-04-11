@@ -15,7 +15,7 @@ function long_poll() {
       },
       data: payload,
       success: function(data) {
-
+          console.log(data);
       },
       error: function(error) {
 
@@ -24,6 +24,10 @@ function long_poll() {
     } ).done( function ( response ) {
 
     });
+
+}
+
+function chat_insert() {
 
 }
 

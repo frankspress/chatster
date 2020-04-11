@@ -3,11 +3,11 @@
 namespace Chatster\Api;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-require_once( CHATSTER_PATH . '/includes/api/trait.chat.php' );
+require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
+
 use Chatster\Api\ChatCollection;
 
 class ChatApi  {
-
   use ChatCollection;
 
   public function __construct() {
@@ -21,7 +21,7 @@ class ChatApi  {
   public function insert_msg_route() {
     add_action('rest_api_init', function () {
       register_rest_route( 'chatster/v1', '/chat/insert', array(
-                    'methods'  => 'GET',
+                    'methods'  => 'POST',
                     'callback' => array( $this, 'insert_msg_db' ),
                     'permission_callback' => array( $this, 'validate_message' )
           ));
@@ -31,7 +31,7 @@ class ChatApi  {
   public function poll_msg_route() {
     add_action('rest_api_init', function () {
       register_rest_route( 'chatster/v1', '/chat/poll', array(
-                    'methods'  => 'GET',
+                    'methods'  => 'POST',
                     'callback' => array( $this, 'long_poll_db' ),
                     'permission_callback' => array( $this, 'validate_user' )
           ));
@@ -41,21 +41,39 @@ class ChatApi  {
   /**
    * Methods
    */
+   private function set_customer_id( $customer_id = '' ) {
+     if ( empty($customer_id)) {
+       $customer_id = substr(md5(uniqid(rand(), true)), 0, 100);
+     }
+     setcookie('unreg_chatster_id', base64_encode(serialize($customer_id)), (time() + 8419200), "/");
+     return $customer_id;
+   }
+
+  private function get_customer_id() {
+
+    $current_user = wp_get_current_user();
+    if ( $current_user && get_current_user_id() ) {
+      return $current_user->user_email;
+    }
+
+    if ( isset($_COOKIE['unreg_chatster_id'])) {
+      $customer_id = unserialize(base64_decode($_COOKIE['unreg_chatster_id']), ["allowed_classes" => false]);
+        return $this->set_customer_id($customer_id);
+    }
+
+    return $this->set_customer_id();
+  }
 
   public function validate_user( $request ) {
-     return true;
-     $email = !empty($request['email']) ? $request['email'] : '';
-     $email = $this->validate_email($email);
-     // Checks if email is valid and honeypot field was sent and it is empty
-     if ( $email && ( isset( $request['hname'] ) && empty( $request['hname'] ) ) ) {
-         $request['email'] = $email;
-         return true;
-     }
-     return false;
+    $request['chatster_id'] = $this->get_customer_id();
+    return true;
   }
 
   public function validate_message( $request ) {
-    return true;
+    if ( $this->validate_user() ) {
+
+    }
+
     $email = !empty($request['email']) ? $request['email'] : '';
     $email = $this->validate_email($email);
     // Checks if email is valid and honeypot field was sent and it is empty
@@ -83,22 +101,10 @@ class ChatApi  {
   }
 
   public function long_poll_db( \WP_REST_Request $data ) {
-      return array('action'=> 'add');
-      // Create a self mock user from email list to feed to send_email
-      // User must be admin and able to manage_options therefore must exist to send the mock email.
-      $mock_requester = new stdClass();
-      $mock_requester->user_name = wp_get_current_user()->user_login;
-      $mock_requester->email = $data['test_email'];
 
-      // Generate a random list of products
-      global $wpdb;
-      $products_merge = $wpdb->get_results( "  SELECT wp_posts.id as product_id , wp_posts.post_title as product_name
-                                               FROM wp_posts
-                                               INNER JOIN wp_postmeta ON ( wp_posts.id = wp_postmeta.post_id)
-                                               WHERE wp_posts.post_type = 'product' AND wp_postmeta.meta_value = 'instock'
-                                               ORDER BY RAND() LIMIT 3 ");
-    }
-
+      // return array('action'=> $data['chatster_id'] );
+      return array('action'=> $this->get_latest_messages() );
+  }
 
 }
 

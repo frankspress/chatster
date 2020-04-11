@@ -2,6 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
+use Chatster\Core\ChatsterTableBuilder;
 
 register_activation_hook( CHATSTER_FILE_PATH, array( 'ActivationLoader', 'init_activation' ) );
 
@@ -13,7 +14,8 @@ class ActivationLoader  {
      if ( ! current_user_can( 'manage_options' ) ) return;
       return  self::create_db_chat_system() &&
                 self::create_db_request() &&
-                  self::create_db_automation();
+                  self::create_db_automation() &&
+                    self::create_cron_event();
   }
 
   private static function create_db_chat_system() {
@@ -30,7 +32,7 @@ class ActivationLoader  {
 
         $sql  = " CREATE TABLE $wp_table_presence ( " ;
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
-        $sql .= " admin_email varchar(100) NOT NULL , ";
+        $sql .= " admin_email VARCHAR(100) NOT NULL , ";
         $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " PRIMARY KEY (id) , ";
@@ -185,4 +187,9 @@ class ActivationLoader  {
 
         return $success;
   }
+
+  private static function create_cron_event() {
+      return wp_schedule_event( time(), '5mins', 'chatster_remove_old_convs' );
+  }
+
 }

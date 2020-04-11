@@ -1,4 +1,5 @@
 <?php
+namespace Chatster\Core;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

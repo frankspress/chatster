@@ -16,7 +16,7 @@ class AdminMenu
 
   public function add_submenu_page() {
 
-      add_submenu_page( 'woocommerce', __( 'Chatster', CHATSTER_DOMAIN ), __( 'Chatster', CHATSTER_DOMAIN ), 'view_woocommerce_reports', 'chatster-menu', array( 'DisplayManager', 'find_admin_view'));
+      add_submenu_page( 'woocommerce', __( 'Chatster', CHATSTER_DOMAIN ), $this->get_menu_title_link() , 'view_woocommerce_reports', 'chatster-menu', array( 'DisplayManager', 'find_admin_view'));
 
       add_action('admin_print_scripts-woocommerce_page_chatster-menu', function() {
           wp_enqueue_style( 'wp-color-picker' );
@@ -30,6 +30,13 @@ class AdminMenu
           ) );
       });
 
+  }
+
+  private function get_menu_title_link() {
+    $title  = '<span id="chatster-menu-link">'. __( 'Chatster', CHATSTER_DOMAIN ).'</span>&nbsp;';
+    // TODO
+    // $title .= '<span class="active-convs-link">'.'</span>';
+    return $title;
   }
 
 
