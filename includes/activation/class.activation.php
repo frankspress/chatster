@@ -20,13 +20,30 @@ class ActivationLoader  {
 
   private static function create_db_chat_system() {
 
-    global $table_prefix, $wpdb;
+    global $wpdb;
     $success = true;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
     $wp_table_presence = self::get_table_name('presence');
     $wp_table_message = self::get_table_name('message');
     $wp_table_conversation = self::get_table_name('conversation');
-    $Table_Users = $table_prefix . 'users';
+    $Table_Users = self::get_table_name('users');
     $charset_collate = $wpdb->get_charset_collate();
+
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_presence_admin' " ) != $wp_table_presence_admin)  {
+
+        $sql  = " CREATE TABLE $wp_table_presence_admin ( " ;
+        $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
+        $sql .= " admin_email VARCHAR(100) NOT NULL , ";
+        $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
+        $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
+        $sql .= " PRIMARY KEY (id) , ";
+        $sql .= " CONSTRAINT admin_email FOREIGN KEY (admin_email) REFERENCES $Table_Users( user_email )  ON DELETE CASCADE ";
+        $sql .= " ) ENGINE=InnoDB " . $charset_collate;
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+        $success = $success && empty($wpdb->last_error);
+    }
 
     if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_presence' " ) != $wp_table_presence)  {
 
@@ -43,6 +60,7 @@ class ActivationLoader  {
         dbDelta( $sql );
         $success = $success && empty($wpdb->last_error);
     }
+
 
     if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_conversation' " ) != $wp_table_conversation)  {
 

@@ -21,6 +21,16 @@ class ChatApi  {
     /**
      * Routes
      */
+    public function presence_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/chat/presence', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'insert_msg_db' ),
+                     'permission_callback' => array( $this, 'validate_message' )
+           ));
+      });
+    }
+
     public function insert_msg_route() {
       add_action('rest_api_init', function () {
         register_rest_route( 'chatster/v1', '/chat/insert', array(
@@ -86,6 +96,9 @@ class ChatApi  {
     }
 
     public function insert_msg_db( \WP_REST_Request $data) {
+
+
+
 
         return array('action'=> $this->insert_new_message('frankieeeit@gmail.com', $data['chatster_customer_id'],$data['chatster_customer_id'], 'Holy shit!!!' ));
     }

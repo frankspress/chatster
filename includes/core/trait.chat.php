@@ -45,6 +45,38 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
+  protected function find_active_admin( $customer ) {
+    global $wpdb;
+    $wp_table_presence = self::get_table_name('presence');
+
+    $sql = " SELECT * FROM $wp_table_presence WHERE is_active = true AND last_presence >= NOW() - INTERVAL 10 MINUTE ";
+    $result = $wpdb->get_results($sql);
+
+    return ! empty( $result ) ? $result : false;
+  }
+
+  protected function find_current_admin( $customer_id ) {
+    global $wpdb;
+    $wp_table_presence = self::get_table_name('presence');
+    $wp_table_conversation= self::get_table_name('conversation');
+    $Table_Users = self::get_table_name('users');
+
+    $sql = " SELECT * FROM $wp_table_presence as p
+             INNER JOIN $wp_table_conversation as c
+             INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
+             ON customer_id = %s
+             WHERE p.is_active = true AND p.last_presence >= NOW() - INTERVAL 10 MINUTE
+             ORDER by c.updated_at DESC
+             LIMIT 1 ";
+
+    $sql = $wpdb->prepare( $sql, $customer_id );
+
+    $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+  }
+
 
   protected function remove_old_convs() {
 
