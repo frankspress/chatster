@@ -150,6 +150,7 @@ class ActivationLoader  {
                                 (admin_email = admin AND customer_id = customer) LIMIT 1;
 
                     IF (c_id IS NOT NULL)
+
                         THEN
 
                                 INSERT INTO $wp_table_message (conv_id, author_id, message)
@@ -163,7 +164,7 @@ class ActivationLoader  {
                                 INSERT INTO $wp_table_message (conv_id, author_id, message)
                                 VALUES (last_id, sender, msg);
                                 SELECT LAST_INSERT_ID() as message_id, last_id as conv_id;
-                        END IF;
+                    END IF;
                 END  ";
 
         $wpdb->query( $sql );

@@ -11,100 +11,89 @@ use Chatster\Core\Crypto;
 class ChatApi  {
   use ChatCollection;
 
-  public function __construct() {
-    $this->insert_msg_route();
-    $this->poll_msg_route();
-  }
+    private $customer_id;
 
-  /**
-   * Routes
-   */
-  public function insert_msg_route() {
-    add_action('rest_api_init', function () {
-      register_rest_route( 'chatster/v1', '/chat/insert', array(
-                    'methods'  => 'POST',
-                    'callback' => array( $this, 'insert_msg_db' ),
-                    'permission_callback' => array( $this, 'validate_message' )
-          ));
-    });
-  }
+    public function __construct() {
+      $this->insert_msg_route();
+      $this->poll_msg_route();
+    }
 
-  public function poll_msg_route() {
-    add_action('rest_api_init', function () {
-      register_rest_route( 'chatster/v1', '/chat/poll', array(
-                    'methods'  => 'POST',
-                    'callback' => array( $this, 'long_poll_db' ),
-                    'permission_callback' => array( $this, 'validate_user' )
-          ));
-    });
-  }
+    /**
+     * Routes
+     */
+    public function insert_msg_route() {
+      add_action('rest_api_init', function () {
+        register_rest_route( 'chatster/v1', '/chat/insert', array(
+                      'methods'  => 'POST',
+                      'callback' => array( $this, 'insert_msg_db' ),
+                      'permission_callback' => array( $this, 'validate_message' )
+            ));
+      });
+    }
 
-  /**
-   * Methods
-   */
-   private function set_customer_id( $customer_id = '' ) {
-     if ( empty($customer_id)) {
-       $customer_id = Crypto::encrypt( substr(md5(uniqid(rand(), true)), 0, 100) );
+    public function poll_msg_route() {
+      add_action('rest_api_init', function () {
+        register_rest_route( 'chatster/v1', '/chat/poll', array(
+                      'methods'  => 'POST',
+                      'callback' => array( $this, 'long_poll_db' ),
+                      'permission_callback' => array( $this, 'validate_user' )
+            ));
+      });
+    }
+
+    /**
+     * Methods
+     */
+    private function set_customer_id_cookie() {
+       if ( empty($this->customer_id) ) {
+         $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 100);
+       }
+       return setrawcookie('unreg_chatster_id', base64url_encode( Crypto::encrypt( $this->customer_id ) ), (time() + 8419200), "/");
      }
-     setcookie('unreg_chatster_id', base64_encode(serialize($customer_id)), (time() + 8419200), "/");
-     return Crypto::decrypt( unserialize( base64_decode( $_COOKIE['unreg_chatster_id'] ), ["allowed_classes" => false]));
-   }
 
-  private function get_customer_id() {
+    private function get_customer_id() {
 
-    $current_user = wp_get_current_user();
-    if ( $current_user && get_current_user_id() ) {
-      return $current_user->user_email;
+      $current_user = wp_get_current_user();
+      if ( $current_user && get_current_user_id() ) {
+        return $this->customer_id = $current_user->user_email;
+      }
+
+      if ( isset($_COOKIE['unreg_chatster_id'])) {
+        $this->customer_id = Crypto::decrypt(  base64url_decode(  $_COOKIE['unreg_chatster_id'] ) );
+        return $this->set_customer_id_cookie();
+      }
+
+      return $this->set_customer_id_cookie();
     }
 
-    if ( isset($_COOKIE['unreg_chatster_id'])) {
-      return $this->set_customer_id($_COOKIE['unreg_chatster_id']);
-    }
+    public function validate_user( $request ) {
 
-    return $this->set_customer_id();
-  }
-
-  public function validate_user( $request ) {
-    $request['chatster_id'] = $this->get_customer_id();
-    return true;
-  }
-
-  public function validate_message( $request ) {
-    if ( $this->validate_user() ) {
-
-    }
-
-    $email = !empty($request['email']) ? $request['email'] : '';
-    $email = $this->validate_email($email);
-    // Checks if email is valid and honeypot field was sent and it is empty
-    if ( $email && ( isset( $request['hname'] ) && empty( $request['hname'] ) ) ) {
-        $request['email'] = $email;
+      if ( $this->get_customer_id() ) {
+        $request['chatster_customer_id'] = $this->customer_id;
         return true;
+      }
+
+      return false;
     }
-    return false;
-  }
 
-  public function insert_msg_db( \WP_REST_Request $data) {
+    public function validate_message( $request ) {
+      if ( $this->validate_user( $request ) ) {
 
-      return array('action'=> 'add');
-      global $wpdb, $table_prefix;
-      $product_id = $data['product_id'];
-      $email = $data['email'];
+          return true;
+      }
 
-      $tblname = self::table_name;
-      $wp_table = $table_prefix . $tblname;
+      return false;
+    }
 
-      $sql = " INSERT INTO $wp_table ( product_id, email, sent_id ) VALUES ( %d, %s, null ) ON DUPLICATE KEY UPDATE product_id = %d ";
-      $sql = $wpdb->prepare( $sql, $product_id, $email, $product_id );
-      $wpdb->query($sql);
-      return array('action'=> 'add');
-  }
+    public function insert_msg_db( \WP_REST_Request $data) {
 
-  public function long_poll_db( \WP_REST_Request $data ) {
+        return array('action'=> $this->insert_new_message('frankieeeit@gmail.com', $data['chatster_customer_id'],$data['chatster_customer_id'], 'Holy shit!!!' ));
+    }
 
-      // return array('action'=> $data['chatster_id'] );
-      return array('action'=> $this->get_latest_messages(1, $data['chatster_id']) );
-  }
+    public function long_poll_db( \WP_REST_Request $data ) {
+
+        return array('action'=> $this->get_latest_messages(1, $data['chatster_customer_id']) );
+    }
 
 }
 

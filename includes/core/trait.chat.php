@@ -9,6 +9,10 @@ use Chatster\Core\ChatsterTableBuilder;
 trait ChatCollection {
   use ChatsterTableBuilder;
 
+  protected function get_conv_admin() {
+
+  }
+
   protected function get_latest_messages( $conv_id = 0, $user_id = '' ) {
 
     global $wpdb;
@@ -26,8 +30,21 @@ trait ChatCollection {
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
+    return ! empty( $result ) ? $result : $user_id;
+  }
+
+  protected function insert_new_message( $admin, $customer, $sender, $msg ) {
+    global $wpdb;
+
+    $sql = " CALL chatster_insert( %s, %s, %s, %s ) ";
+    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg );
+
+    $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
+
     return ! empty( $result ) ? $result : false;
   }
+
 
   protected function remove_old_convs() {
 
