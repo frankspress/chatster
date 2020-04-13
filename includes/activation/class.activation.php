@@ -37,6 +37,7 @@ class ActivationLoader  {
         $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " PRIMARY KEY (id) , ";
+        $sql .= " CONSTRAINT unq_admin_email UNIQUE (admin_email), ";
         $sql .= " CONSTRAINT admin_email FOREIGN KEY (admin_email) REFERENCES $Table_Users( user_email )  ON DELETE CASCADE ";
         $sql .= " ) ENGINE=InnoDB " . $charset_collate;
 
@@ -52,7 +53,8 @@ class ActivationLoader  {
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
         $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
-        $sql .= " PRIMARY KEY (id) ";
+        $sql .= " PRIMARY KEY (id), ";
+        $sql .= " CONSTRAINT unq_customer_id UNIQUE (customer_id) ";
         $sql .= " ) ENGINE=InnoDB " . $charset_collate;
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

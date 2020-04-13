@@ -9,6 +9,20 @@ use Chatster\Core\ChatsterTableBuilder;
 trait ChatCollection {
   use ChatsterTableBuilder;
 
+  protected function insert_presence_customer( $customer_id ) {
+    global $wpdb;
+    $wp_table_presence = self::get_table_name('presence');
+    $sql = " INSERT INTO $wp_table_presence ( customer_id ) VALUES( %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT ";
+    $sql = $wpdb->prepare( $sql, $customer_id );
+
+    $result = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+
+  }
+
   protected function get_conv_admin() {
 
   }

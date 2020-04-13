@@ -14,6 +14,7 @@ class ChatApi  {
     private $customer_id;
 
     public function __construct() {
+      $this->presence_route();
       $this->insert_msg_route();
       $this->poll_msg_route();
     }
@@ -23,10 +24,10 @@ class ChatApi  {
      */
     public function presence_route() {
       add_action('rest_api_init', function () {
-       register_rest_route( 'chatster/v1', '/chat/presence', array(
+       register_rest_route( 'chatster/v1', '/chat/presence/customer', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'insert_msg_db' ),
-                     'permission_callback' => array( $this, 'validate_message' )
+                     'callback' => array( $this, 'set_presence' ),
+                     'permission_callback' => array( $this, 'validate_user' )
            ));
       });
     }
@@ -95,10 +96,15 @@ class ChatApi  {
       return false;
     }
 
+    /**
+     * Routes Callbacks
+     */
+    public function set_presence( \WP_REST_Request $data ) {
+        $q = $this->insert_presence_customer( $this->customer_id );
+        return array('action'=> $q);
+    }
+
     public function insert_msg_db( \WP_REST_Request $data) {
-
-
-
 
         return array('action'=> $this->insert_new_message('frankieeeit@gmail.com', $data['chatster_customer_id'],$data['chatster_customer_id'], 'Holy shit!!!' ));
     }
