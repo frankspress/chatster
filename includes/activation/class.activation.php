@@ -18,7 +18,7 @@ class ActivationLoader  {
                     self::create_cron_event();
   }
 
-  private static function create_db_chat_system() {
+  public static function create_db_chat_system() {
 
     global $wpdb;
     $success = true;
@@ -49,11 +49,10 @@ class ActivationLoader  {
 
         $sql  = " CREATE TABLE $wp_table_presence ( " ;
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
-        $sql .= " admin_email VARCHAR(100) NOT NULL , ";
+        $sql .= " customer_id VARCHAR(100) NOT NULL , ";
         $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
-        $sql .= " PRIMARY KEY (id) , ";
-        $sql .= " CONSTRAINT admin_email FOREIGN KEY (admin_email) REFERENCES $Table_Users( user_email )  ON DELETE CASCADE ";
+        $sql .= " PRIMARY KEY (id) ";
         $sql .= " ) ENGINE=InnoDB " . $charset_collate;
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -208,7 +207,10 @@ class ActivationLoader  {
   }
 
   private static function create_cron_event() {
-      return wp_schedule_event( time(), '5mins', 'chatster_remove_old_convs' );
+    if ( ! wp_next_scheduled( 'chatster_remove_old_convs' ) ) {
+      return wp_schedule_event( time(), 'every_three_mins', 'chatster_remove_old_convs' );
+    }
+    return true;
   }
 
 }
