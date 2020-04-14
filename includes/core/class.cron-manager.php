@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
-use Chatster\Api\ChatCollection;
+use Chatster\Core\ChatCollection;
 
 class CronManager  {
   use ChatCollection;

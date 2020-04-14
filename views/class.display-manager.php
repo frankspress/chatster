@@ -2,34 +2,43 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+require_once( CHATSTER_PATH . '/views/admin/function.header.php' );
 require_once( CHATSTER_PATH . '/views/admin/function.chat.php' );
 require_once( CHATSTER_PATH . '/views/admin/function.request.php' );
 require_once( CHATSTER_PATH . '/views/admin/function.settings.php' );
 require_once( CHATSTER_PATH . '/views/public/function.front-chat.php' );
+
+use Chatster\Core\ChatCollection;
 
 /**
  *
  */
 class DisplayManager
 {
-
+  use ChatCollection;
 
   public static function find_admin_view() {
-    echo 'MULTI SECTIONS MENU';
+    if ( ! current_user_can( 'manage_options' ) ) return;
 
-    $page = 'TO DO';
-    switch ($page) {
-        case 'cock':
-            echo "i equals 0";
+    $current_admin = wp_get_current_user();
+    $tab = !empty($_GET['chtab']) ? $_GET['chtab'] : '';
+
+    display_admin_header( $tab );
+
+    switch ( $tab ) {
+        case 'chat':
+            $current_convs = self::get_all_conv_admin( $current_admin->user_email );
+            display_admin_chat( $current_convs );
             break;
-        case 1:
-            echo "i equals 1";
+        case 'request':
+            display_admin_request();
             break;
-        case 2:
-            echo "i equals 2";
+        case 'settings':
+            display_admin_settings();
             break;
         default:
-        //    echo "i is not equal to 0, 1 or 2";
+            $current_convs = self::get_all_conv_admin( $current_admin->user_email );
+            display_admin_chat( $current_convs );
             break;
     }
 

@@ -5,7 +5,7 @@ namespace Chatster\Api;
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
 
-use Chatster\Api\ChatCollection;
+use Chatster\Core\ChatCollection;
 use Chatster\Core\Crypto;
 
 class ChatApi  {
@@ -100,8 +100,8 @@ class ChatApi  {
      * Routes Callbacks
      */
     public function set_presence( \WP_REST_Request $data ) {
-        $q = $this->insert_presence_customer( $this->customer_id );
-        return array('action'=> $q);
+        $this->insert_presence_customer( $this->customer_id );
+        return array('action'=> 'presence');
     }
 
     public function insert_msg_db( \WP_REST_Request $data) {

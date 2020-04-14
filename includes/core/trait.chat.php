@@ -1,6 +1,6 @@
 <?php
 
-namespace Chatster\Api;
+namespace Chatster\Core;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
@@ -9,6 +9,30 @@ use Chatster\Core\ChatsterTableBuilder;
 trait ChatCollection {
   use ChatsterTableBuilder;
 
+/**
+ * Static Methods for Display Manager
+ */
+  protected static function get_all_conv_admin( $admin_email ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $Table_Users = self::get_table_name('users');
+    
+    $sql = " SELECT c.*, u.user_nicename as customer_name
+             FROM $wp_table_conversation as c
+             LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
+             WHERE admin_email = %s LIMIT 20 ";
+
+    $sql = $wpdb->prepare( $sql, $admin_email );
+    $result = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+/**
+ * Api Methods
+ */
   protected function insert_presence_customer( $customer_id ) {
     global $wpdb;
     $wp_table_presence = self::get_table_name('presence');
@@ -23,7 +47,17 @@ trait ChatCollection {
 
   }
 
-  protected function get_conv_admin() {
+  protected function insert_presence_admin( $admin_email ) {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+    $sql = " INSERT INTO $wp_table_presence_admin ( admin_email ) VALUES( %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT ";
+    $sql = $wpdb->prepare( $sql, $admin_email );
+
+    $result = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
 
   }
 
@@ -92,6 +126,9 @@ trait ChatCollection {
   }
 
 
+/**
+ * Cron Jobs
+ */
   protected function remove_old_convs() {
 
   }
