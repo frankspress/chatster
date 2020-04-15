@@ -18,6 +18,7 @@ class ChatApiAdmin  {
       // $this->poll_msg_route();
       // $this->poll_conv_route();
       $this->admin_presence_route();
+      $this->admin_status_route();
     }
 
     /**
@@ -33,6 +34,15 @@ class ChatApiAdmin  {
       });
     }
 
+    public function admin_status_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/chat/is_active/admin', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'set_admin_status' ),
+                     'permission_callback' => array( $this, 'validate_status' )
+           ));
+      });
+    }
     /**
      * Methods
      */
@@ -54,6 +64,14 @@ class ChatApiAdmin  {
        return false;
      }
 
+     public function validate_status( $request ) {
+       if ( $this->validate_admin( $request ) && isset($request['is_active']) ) {
+         $request['is_active'] = filter_var($request['is_active'], FILTER_VALIDATE_BOOLEAN);
+         return true;
+       }
+       return false;
+     }
+
     /**
      * Routes Callbacks
      */
@@ -61,6 +79,12 @@ class ChatApiAdmin  {
         $this->insert_presence_admin( $this->admin_email );
         return array('action'=> 'presence');
     }
+
+    public function set_admin_status( \WP_REST_Request $data ) {
+        $this->change_admin_status( $this->admin_email, $data['is_active'] );
+        return array('action'=> $data['is_active']);
+    }
+
 
 }
 

@@ -16,7 +16,7 @@ trait ChatCollection {
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
     $Table_Users = self::get_table_name('users');
-    
+
     $sql = " SELECT c.*, u.user_nicename as customer_name
              FROM $wp_table_conversation as c
              LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
@@ -28,6 +28,19 @@ trait ChatCollection {
 
     return ! empty( $result ) ? $result : false;
 
+  }
+
+  protected static function get_admin_status( $admin_email ) {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+
+    $sql = " SELECT is_active FROM $wp_table_presence_admin WHERE admin_email = %s ";
+    $sql = $wpdb->prepare( $sql, $admin_email );
+
+    $is_active = $wpdb->get_var( $sql );
+    wp_reset_postdata();
+
+    return $is_active;
   }
 
 /**
@@ -61,6 +74,21 @@ trait ChatCollection {
 
   }
 
+  protected function change_admin_status( $admin_email, $status = false ) {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+    $safe_status = $status ? 'true' : 'false';
+
+    $sql = " UPDATE $wp_table_presence_admin SET is_active = $safe_status WHERE admin_email = %s ";
+    $sql = $wpdb->prepare( $sql, $admin_email );
+
+    $result = $wpdb->query( $sql );
+    wp_reset_postdata();
+
+    return $result;
+  }
+
+
   protected function get_latest_messages( $conv_id = 0, $user_id = '' ) {
 
     global $wpdb;
@@ -92,6 +120,7 @@ trait ChatCollection {
 
     return ! empty( $result ) ? $result : false;
   }
+
 
   protected function find_active_admin( $customer ) {
     global $wpdb;

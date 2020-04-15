@@ -55,4 +55,32 @@ function chat_insert() {
 
 
 
+function change_admin_status( admin_status ) {
+  $.ajax( {
+
+      url: chatsterDataAdmin.api_base_url + '/chat/is_active/admin',
+      method: 'POST',
+      beforeSend: function ( xhr ) {
+          xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+      },
+      data: { is_active: admin_status },
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(error) {
+
+      },
+
+    } ).done( function ( response ) {
+
+    });
+}
+$('#chatster-chat-switch').change(function() {
+     if( this.checked ) {
+        change_admin_status(true);
+     } else {
+        change_admin_status(false);
+     }
+ });
+
 })(jQuery);

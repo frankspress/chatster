@@ -26,10 +26,6 @@ class DisplayManager
     display_admin_header( $tab );
 
     switch ( $tab ) {
-        case 'chat':
-            $current_convs = self::get_all_conv_admin( $current_admin->user_email );
-            display_admin_chat( $current_convs );
-            break;
         case 'request':
             display_admin_request();
             break;
@@ -37,9 +33,11 @@ class DisplayManager
             display_admin_settings();
             break;
         default:
-            $current_convs = self::get_all_conv_admin( $current_admin->user_email );
-            display_admin_chat( $current_convs );
-            break;
+          /* Admin Chat */
+          $admin_status = self::get_admin_status( $current_admin->user_email );
+          $current_convs = self::get_all_conv_admin( $current_admin->user_email );
+          display_admin_chat( $current_convs, $admin_status );
+          break;
     }
 
   }
