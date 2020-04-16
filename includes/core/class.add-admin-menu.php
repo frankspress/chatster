@@ -15,6 +15,13 @@ class AdminMenu
       add_action( 'admin_menu', array( $this, 'change_menu_order' ), 99);
 
   }
+  
+  private function get_menu_title_link() {
+    $title  = '<span id="chatster-menu-link">'. __( 'Chatster', CHATSTER_DOMAIN ).'</span>&nbsp;';
+    // TODO
+    // $title .= '<span class="active-convs-link">'.'</span>';
+    return $title;
+  }
 
   public function add_menu_page() {
 
@@ -37,13 +44,6 @@ class AdminMenu
           ) );
       });
 
-  }
-
-  private function get_menu_title_link() {
-    $title  = '<span id="chatster-menu-link">'. __( 'Chatster', CHATSTER_DOMAIN ).'</span>&nbsp;';
-    // TODO
-    // $title .= '<span class="active-convs-link">'.'</span>';
-    return $title;
   }
 
   public function change_menu_order() {

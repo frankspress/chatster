@@ -14,7 +14,17 @@ function display_admin_chat( $current_convs, $admin_status ) {
     </div>
 
 
-<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div id="ch-conversations-container">
+
+      <div id="ch-roller-container" class="hidden">
+        <div class="ch-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      </div>
+
+
+
+    </div>
+
+
 
 
     <?php dump($current_convs);

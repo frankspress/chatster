@@ -65,7 +65,8 @@ function change_admin_status( admin_status ) {
       },
       data: { is_active: admin_status },
       success: function(data) {
-        console.log(data);
+        console.log(data.action);
+              $('#ch-roller-container').addClass('hidden');
       },
       error: function(error) {
 
@@ -77,6 +78,7 @@ function change_admin_status( admin_status ) {
 }
 $('#chatster-chat-switch').change(function() {
      if( this.checked ) {
+        $('#ch-roller-container').removeClass('hidden');
         change_admin_status(true);
      } else {
         change_admin_status(false);
