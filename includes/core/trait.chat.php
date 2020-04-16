@@ -79,7 +79,7 @@ trait ChatCollection {
     $wp_table_presence_admin = self::get_table_name('presence_admin');
     $safe_status = $status ? 'true' : 'false';
 
-    $sql = " UPDATE $wp_table_presence_admin SET is_active = $safe_status WHERE admin_email = %s ";
+    $sql = " INSERT INTO $wp_table_presence_admin ( admin_email, is_active ) VALUES( %s, $safe_status ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, is_active = $safe_status ";
     $sql = $wpdb->prepare( $sql, $admin_email );
 
     $result = $wpdb->query( $sql );
