@@ -23,7 +23,7 @@ trait ChatCollection {
              INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
              LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
              WHERE admin_email = %s AND c.id > %d AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
-             ORDER BY c.created_at DESC 
+             ORDER BY c.created_at DESC
              LIMIT 20 ";
 
     $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
@@ -92,8 +92,7 @@ trait ChatCollection {
     return $result;
   }
 
-
-  protected function get_latest_messages( $conv_id = 0, $user_id = '' ) {
+  protected function get_latest_messages( $conv_id = 0, $last_msg_id = 0, $user_id = '' ) {
 
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
@@ -102,15 +101,15 @@ trait ChatCollection {
     $sql = " SELECT  m.message, m.author_id, c.id as conv_id
              FROM $wp_table_message as m
              INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
-             WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s )
+             WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s ) AND m.id > %d
              ORDER BY m.created_at DESC
              LIMIT 15 ";
 
-    $sql = $wpdb->prepare( $sql, $conv_id, $user_id, $user_id );
+    $sql = $wpdb->prepare( $sql, $conv_id, $user_id, $user_id, $last_msg_id );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : $user_id;
+    return ! empty( $result ) ? $result : false;
   }
 
   protected function insert_new_message( $admin, $customer, $sender, $msg ) {
@@ -158,6 +157,27 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
+  protected function get_all_convs_admin( $admin_email, $last_conv_poll = 0 ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_presence = self::get_table_name('presence');
+    $Table_Users = self::get_table_name('users');
+
+    $sql = " SELECT c.*, u.user_nicename as customer_name, p.last_presence
+             FROM $wp_table_conversation as c
+             INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
+             LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
+             WHERE admin_email = %s AND c.id > %d AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
+             ORDER BY c.created_at DESC
+             LIMIT 20 ";
+
+    $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
+    $result = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
 
 /**
  * Cron Jobs

@@ -69,7 +69,7 @@ class ActivationLoader  {
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
         $sql .= " admin_email VARCHAR(100) NOT NULL , ";
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
-        $sql .= " is_deleted BOOLEAN NOT NULL DEFAULT false, ";
+        $sql .= " is_connected BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " is_blocked BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";

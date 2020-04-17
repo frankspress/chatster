@@ -24,12 +24,14 @@ function presence_admin() {
     });
 }
 // setInterval(long_poll, 3000);
-setInterval(presence_admin, 3000);
+setInterval(presence_admin, 10000);
 
 function long_poll() {
 
+  payload = { last_conv: 0, current_conv: 2 };
+
   $.ajax( {
-      url: chatsterDataAdmin.api_base_url + '/product/',
+      url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',
       method: 'POST',
       beforeSend: function ( xhr ) {
           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
@@ -47,6 +49,8 @@ function long_poll() {
     });
 
 }
+setInterval(long_poll, 4000);
+long_poll();
 
 function chat_insert() {
 
