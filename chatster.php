@@ -23,7 +23,7 @@ if ( in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) )
 }
 define( 'CHATSTER_VERSION', '1.0.0' );
 define( 'CHATSTER_DOMAIN', 'chatster' );
-define( 'CHATSTER_KEY', hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f') );
+define( 'CHATSTER_KEY',  get_option( 'chatster_enc_key' ) );
 define( 'CHATSTER_FILE_PATH', __FILE__ );
 define( 'CHATSTER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );

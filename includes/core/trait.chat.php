@@ -50,6 +50,21 @@ trait ChatCollection {
 /**
  * Api Methods
  */
+
+  protected function insert_form_data( $customer_id, $form_data ) {
+     global $wpdb;
+     $wp_table_presence = self::get_table_name('presence');
+     $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, from_data = %s ";
+     $sql = $wpdb->prepare( $sql, $customer_id, $form_data, $form_data );
+
+     $result = $wpdb->get_results( $sql );
+     wp_reset_postdata();
+
+     return ! empty( $result ) ? $result : false;
+
+
+  }
+
   protected function insert_presence_customer( $customer_id ) {
     global $wpdb;
     $wp_table_presence = self::get_table_name('presence');
@@ -163,7 +178,7 @@ trait ChatCollection {
     $wp_table_presence = self::get_table_name('presence');
     $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT c.*, u.user_nicename as customer_name, p.last_presence
+    $sql = " SELECT c.*, u.user_nicename as reg_customer_name, p.last_presence
              FROM $wp_table_conversation as c
              INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
              LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
@@ -177,6 +192,23 @@ trait ChatCollection {
 
     return ! empty( $result ) ? $result : false;
 
+  }
+
+  protected function disconnect_chat( $conv_id ) {
+    global $wpdb;
+    $wp_table_conversation= self::get_table_name('conversation');
+
+    $sql = " UPDATE $wp_table_conversation
+             SET is_connected = FALSE
+             WHERE id = %d
+             LIMIT 1 ";
+
+    $sql = $wpdb->prepare( $sql, $conv_id );
+
+    $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
   }
 
 /**

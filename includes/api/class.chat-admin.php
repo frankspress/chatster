@@ -15,7 +15,6 @@ class ChatApiAdmin  {
     public function __construct() {
 
       // $this->insert_msg_route();
-      // $this->poll_msg_route();
       $this->poll_conv_route();
       $this->admin_presence_route();
       $this->admin_status_route();

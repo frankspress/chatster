@@ -1,3 +1,9 @@
 <?php
 
-// TODO
+namespace Chatster\Core;
+
+class CookieCatcher  {
+
+
+  
+}

@@ -12,7 +12,9 @@ class DeactivationLoader {
 
     public static function init_deactivation() {
         if ( ! current_user_can( 'manage_options' ) ) return;
-        return self::drop_db_table() && self::remove_cron_event();
+        return self::drop_db_table() &&
+                self::remove_cron_event() &&
+                  self::remove_key_options();
     }
 
     private static function drop_db_table() {
@@ -38,8 +40,13 @@ class DeactivationLoader {
     }
 
     private static function remove_cron_event() {
-        $timestamp = wp_next_scheduled( 'chatster_remove_old_convs' );
-        return wp_unschedule_event( $timestamp, 'chatster_remove_old_convs' );
+      $timestamp = wp_next_scheduled( 'chatster_remove_old_convs' );
+      return wp_unschedule_event( $timestamp, 'chatster_remove_old_convs' );
+    }
+
+    private static function remove_key_options() {
+      delete_option( 'chatster_api_key' );
+      return true;
     }
 
   }

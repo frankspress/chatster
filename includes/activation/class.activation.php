@@ -15,7 +15,8 @@ class ActivationLoader  {
       return  self::create_db_chat_system() &&
                 self::create_db_request() &&
                   self::create_db_automation() &&
-                    self::create_cron_event();
+                    self::create_cron_event() &&
+                      self::generate_key_options();
   }
 
   public static function create_db_chat_system() {
@@ -51,8 +52,10 @@ class ActivationLoader  {
         $sql  = " CREATE TABLE $wp_table_presence ( " ;
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
+        $sql .= " form_data TINYTEXT DEFAULT NULL , ";
         $sql .= " last_presence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " is_active BOOLEAN NOT NULL DEFAULT false, ";
+        $sql .= " is_blocked BOOLEAN NOT NULL DEFAULT false, ";
         $sql .= " PRIMARY KEY (id), ";
         $sql .= " CONSTRAINT unq_customer_id UNIQUE (customer_id) ";
         $sql .= " ) ENGINE=InnoDB " . $charset_collate;
@@ -69,8 +72,8 @@ class ActivationLoader  {
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
         $sql .= " admin_email VARCHAR(100) NOT NULL , ";
         $sql .= " customer_id VARCHAR(100) NOT NULL , ";
-        $sql .= " is_connected BOOLEAN NOT NULL DEFAULT false, ";
-        $sql .= " is_blocked BOOLEAN NOT NULL DEFAULT false, ";
+        $sql .= " customer_name VARCHAR(100) DEFAULT NULL , ";
+        $sql .= " is_connected BOOLEAN NOT NULL DEFAULT true, ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
@@ -213,6 +216,10 @@ class ActivationLoader  {
       return wp_schedule_event( time(), 'every_three_mins', 'chatster_remove_old_convs' );
     }
     return true;
+  }
+
+  private static function generate_key_options() {
+    return add_option( 'chatster_enc_key', bin2hex(random_bytes(16)) );
   }
 
 }

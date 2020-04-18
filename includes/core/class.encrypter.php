@@ -26,6 +26,7 @@ class Crypto
 
     public static function decrypt($string)
     {
+
         $nonceSize = openssl_cipher_iv_length(self::METHOD);
         $nonce = mb_substr($string, 0, $nonceSize, '8bit');
         $ciphertext = mb_substr($string, $nonceSize, null, '8bit');
