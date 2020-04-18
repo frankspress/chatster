@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function display_admin_chat( $current_convs, $admin_status ) {
+function display_admin_chat( $admin_status ) {
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
     <div class="onoffswitch">
@@ -27,6 +27,6 @@ function display_admin_chat( $current_convs, $admin_status ) {
 
 
 
-    <?php dump($current_convs);
+    <?php 
 
 }

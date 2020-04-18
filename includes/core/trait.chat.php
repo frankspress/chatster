@@ -12,27 +12,6 @@ trait ChatCollection {
 /**
  * Static Methods for Display Manager
  */
-  protected static function get_all_conv_admin( $admin_email, $last_conv_poll = 0 ) {
-    global $wpdb;
-    $wp_table_conversation = self::get_table_name('conversation');
-    $wp_table_presence = self::get_table_name('presence');
-    $Table_Users = self::get_table_name('users');
-
-    $sql = " SELECT c.*, u.user_nicename as customer_name, p.last_presence
-             FROM $wp_table_conversation as c
-             INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
-             LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
-             WHERE admin_email = %s AND c.id > %d AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
-             ORDER BY c.created_at DESC
-             LIMIT 20 ";
-
-    $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
-    $result = $wpdb->get_results( $sql );
-    wp_reset_postdata();
-
-    return ! empty( $result ) ? $result : false;
-
-  }
 
   protected static function get_admin_status( $admin_email ) {
     global $wpdb;
@@ -54,7 +33,7 @@ trait ChatCollection {
   protected function insert_form_data( $customer_id, $form_data ) {
      global $wpdb;
      $wp_table_presence = self::get_table_name('presence');
-     $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, from_data = %s ";
+     $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, form_data = %s ";
      $sql = $wpdb->prepare( $sql, $customer_id, $form_data, $form_data );
 
      $result = $wpdb->get_results( $sql );

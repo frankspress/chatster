@@ -15,7 +15,7 @@ class AdminMenu
       add_action( 'admin_menu', array( $this, 'change_menu_order' ), 99);
 
   }
-  
+
   private function get_menu_title_link() {
     $title  = '<span id="chatster-menu-link">'. __( 'Chatster', CHATSTER_DOMAIN ).'</span>&nbsp;';
     // TODO
@@ -65,7 +65,6 @@ class AdminMenu
           $x++;
       }
     }
-
   }
 
 }

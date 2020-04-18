@@ -11,14 +11,19 @@ class CookieCatcher  {
 
   private static $form_fields = ['customer_name', 'customer_email', 'chat_subject'];
 
-  private static function serialized_form_data() {
+  public static function serialized_form_data( $encoding = true ) {
       $field_container = array();
       foreach ( self::$form_fields as $field ) {
         if ( !empty(self::$$field)) {
           $field_container[$field] = self::$$field;
         }
       }
-      return !empty($field_container) ? base64url_encode(serialize($field_container)) : false;
+      if ( $encoding ) {
+        return !empty($field_container) ? base64url_encode(serialize($field_container)) : false;
+      } else {
+        return !empty($field_container) ? serialize($field_container) : false;
+      }
+
   }
 
   public static function deserialized_form_data() {
@@ -38,11 +43,14 @@ class CookieCatcher  {
   }
 
   public static function set_form_data( $form ) {
+    $is_not_empty = false;
     foreach ( self::$form_fields as $field ) {
       if ( !empty($form[$field])) {
          self::$$field = $form[$field];
+         $is_not_empty = true;
       }
     }
+    return $is_not_empty;
   }
 
   public static function set_cookie_form_data() {

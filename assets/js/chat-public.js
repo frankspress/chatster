@@ -74,5 +74,28 @@
  setInterval(presence, 3000);
 
 
+ function chat_form() {
+
+   $.ajax( {
+
+       url: chatsterDataAdmin.api_base_url + '/chat/form-data',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+       },
+       data: {customer_name: 'meeee', chat_subject: 'testing... ee'},
+       success: function(data) {
+         console.log(data);
+       },
+       error: function(error) {
+
+       },
+
+     } ).done( function ( response ) {
+
+     });
+ }
+
+ setInterval(chat_form, 4000);
 
 })(jQuery);

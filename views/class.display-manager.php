@@ -35,8 +35,7 @@ class DisplayManager
         default:
           /* Admin Chat */
           $admin_status = self::get_admin_status( $current_admin->user_email );
-          $current_convs = self::get_all_conv_admin( $current_admin->user_email );
-          display_admin_chat( $current_convs, $admin_status );
+          display_admin_chat( $admin_status );
           break;
     }
 
