@@ -15,6 +15,7 @@ class ChatApi  {
     private $customer_id;
     private $customer_name;
     private $customer_email;
+    private $customer_subject;
 
     public function __construct() {
       $this->presence_route();
@@ -200,7 +201,7 @@ class ChatApi  {
 
         return array('action'=> 'form_data');
     }
-    
+
 }
 
 

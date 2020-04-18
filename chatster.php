@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
   define( 'CHATSTER_WOO_STATUS', TRUE );
 }
+
 define( 'CHATSTER_VERSION', '1.0.0' );
 define( 'CHATSTER_DOMAIN', 'chatster' );
 define( 'CHATSTER_KEY',  get_option( 'chatster_enc_key' ) );
