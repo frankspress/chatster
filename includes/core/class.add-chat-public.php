@@ -17,13 +17,16 @@ class ChatPublic
 
   public function enqueue_front_js() {
 
-    wp_enqueue_script( 'chatster-public', CHATSTER_URL_PATH . '/assets/js/chat-public.js',  array('jquery'), 1.0, true);
-    wp_localize_script( 'chatster-public', 'chatsterDataAdmin', array(
+    wp_enqueue_script( 'chatster-public', CHATSTER_URL_PATH . 'assets/js/chat-public.js',  array('jquery'), 1.0, true);
+    wp_enqueue_script( 'chatster-public-sound', CHATSTER_URL_PATH . 'assets/js/chat-sound.js',  array('jquery'), 1.0, true);
+    wp_localize_script( 'chatster-public', 'chatsterDataPublic', array(
       'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
-      'nonce' => wp_create_nonce( 'wp_rest' )
+      'nonce' => wp_create_nonce( 'wp_rest' ),
+      'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
+      'chat_sound_vol' => 0.2
     ) );
 
-    wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . '/assets/css/style-public.css');
+    wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
 
   }
 

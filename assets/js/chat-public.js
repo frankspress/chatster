@@ -9,10 +9,10 @@
 
     $.ajax( {
 
-        url: chatsterDataAdmin.api_base_url + '/chat/poll/',
+        url: chatsterDataPublic.api_base_url + '/chat/poll/',
         method: 'POST',
         beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
         },
         data: {},
         success: function(data) {
@@ -32,10 +32,10 @@
 
     $.ajax( {
 
-        url: chatsterDataAdmin.api_base_url + '/chat/insert/',
+        url: chatsterDataPublic.api_base_url + '/chat/insert/',
         method: 'POST',
         beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
         },
         data: {},
         success: function(data) {
@@ -53,10 +53,10 @@
   function presence() {
     $.ajax( {
 
-        url: chatsterDataAdmin.api_base_url + '/chat/presence/customer',
+        url: chatsterDataPublic.api_base_url + '/chat/presence/customer',
         method: 'POST',
         beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
         },
         data: {},
         success: function(data) {
@@ -78,10 +78,10 @@
 
    $.ajax( {
 
-       url: chatsterDataAdmin.api_base_url + '/chat/form-data',
+       url: chatsterDataPublic.api_base_url + '/chat/form-data',
        method: 'POST',
        beforeSend: function ( xhr ) {
-           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
        },
        data: {customer_name: 'meeee', chat_subject: 'testing... ee'},
        success: function(data) {
@@ -97,5 +97,8 @@
  }
 
  setInterval(chat_form, 4000);
+
+
+
 
 })(jQuery);

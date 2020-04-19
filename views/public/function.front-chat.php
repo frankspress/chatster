@@ -58,11 +58,15 @@ function display_front_chat()  { ?>
       </div>
       <div class="ch-send-btn"> Send</div>
     </section>
+
+    <button id="sounder">Play</button>
+       <div id="sound"></div>
   </div>
 
   <div id="chatster-opener">
     <section id="ch-open-button">Hey HEY HEY HEY</section>
   </div>
+
 
 <?php
 }
