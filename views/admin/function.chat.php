@@ -31,11 +31,11 @@ function display_admin_chat( $admin_status ) {
 
             <div id="ch-reply-block">
 
-                <div id="ch-message-board" data-conv_id=""  data-last_msg_id="">
+                <div id="ch-message-board" data-conv_id=""  data-last_msg_id="" data-customer_id="">
                 </div>
 
                 <div class="ch-input">
-                  <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="2"></textarea>
+                  <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="2" maxlength="799"></textarea>
                 </div>
 
             </div>

@@ -14,11 +14,12 @@ class ChatApiAdmin  {
 
     public function __construct() {
 
-      // $this->insert_msg_route();
       $this->poll_conv_route();
       $this->get_messages_route();
+      $this->insert_msg_route();
       $this->admin_presence_route();
       $this->admin_status_route();
+
     }
 
     /**
@@ -64,6 +65,16 @@ class ChatApiAdmin  {
       });
     }
 
+    public function insert_msg_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/chat/insert/admin', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'insert_admin_messages' ),
+                     'permission_callback' => array( $this, 'validate_message' )
+           ));
+      });
+    }
+
     /**
      * Methods
      */
@@ -96,14 +107,30 @@ class ChatApiAdmin  {
      public function validate_poll( $request ) {
        if ( $this->validate_admin( $request ) ) {
 
-         $data['last_conv'] = isset( $data['last_conv'] ) ? intval($data['last_conv']) : 0;
-         $data['current_conv'] = isset( $data['current_conv'] ) ? intval($data['current_conv']) : false;
-         $data['last_message'] = isset( $data['last_message'] ) ? intval($data['last_message']) : 0;
+         $request['last_conv'] = isset( $request['last_conv'] ) ? intval($request['last_conv']) : 0;
+         $request['current_conv'] = isset( $request['current_conv'] ) ? intval($request['current_conv']) : false;
+         $request['last_message'] = isset( $request['last_message'] ) ? intval($request['last_message']) : 0;
 
          return true;
        }
        return false;
      }
+
+     public function validate_message( $request ) {
+       if ( $this->validate_admin( $request ) ) {
+
+           if ( isset( $request['new_message'] ) &&
+                    strlen($request['new_message']) <= 799 ) {
+
+             $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
+             return true;
+
+           }
+
+       }
+       return false;
+     }
+
     /**
      * Routes Callbacks
      */
@@ -136,18 +163,15 @@ class ChatApiAdmin  {
 
     public function get_admin_messages( \WP_REST_Request $data ) {
 
-        for ($x = 0; $x <= 10; $x++) {
-            $convs = $this->get_all_convs_admin( $this->admin_email, $data['last_conv'] );
-            $messages = false;
-            if ( $data['current_conv'] ) {
-              $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
-            }
-            if ( $convs || $messages ) break;
-            sleep(1);
-        }
+        $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
+        return array( 'action'=>'polling', 'payload'=> array( 'current_conv' => $messages ) );
 
-        return array( 'action'=>'polling', 'payload'=> array( 'convs' => $convs,
-                                                              'current_conv' => $messages ) );
+    }
+
+    public function insert_admin_messages( \WP_REST_Request $data ) {
+
+        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'] );
+        return array( 'action'=>'chat_insert', 'payload'=> $result );
 
     }
 

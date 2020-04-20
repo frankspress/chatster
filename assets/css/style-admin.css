@@ -51,7 +51,8 @@
  }
 
  #ch-reply, #ch-reply:focus {
-   border-radius: 30px;
+   border-radius: 35px;
+   font-size: 16px;
    resize: none;
    outline: none;
    display: block;
