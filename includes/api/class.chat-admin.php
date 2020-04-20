@@ -16,6 +16,7 @@ class ChatApiAdmin  {
 
       // $this->insert_msg_route();
       $this->poll_conv_route();
+      $this->get_messages_route();
       $this->admin_presence_route();
       $this->admin_status_route();
     }
@@ -48,10 +49,21 @@ class ChatApiAdmin  {
        register_rest_route( 'chatster/v1', '/chat/polling/admin', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'get_admin_polling' ),
-                     'permission_callback' => array( $this, 'validate_admin' )
+                     'permission_callback' => array( $this, 'validate_poll' )
            ));
       });
     }
+
+    public function get_messages_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/chat/messages/admin', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'get_admin_messages' ),
+                     'permission_callback' => array( $this, 'validate_poll' )
+           ));
+      });
+    }
+
     /**
      * Methods
      */
@@ -106,6 +118,23 @@ class ChatApiAdmin  {
     }
 
     public function get_admin_polling( \WP_REST_Request $data ) {
+
+        for ($x = 0; $x <= 10; $x++) {
+            $convs = $this->get_all_convs_admin( $this->admin_email, $data['last_conv'] );
+            $messages = false;
+            if ( $data['current_conv'] ) {
+              $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
+            }
+            if ( $convs || $messages ) break;
+            sleep(1);
+        }
+
+        return array( 'action'=>'polling', 'payload'=> array( 'convs' => $convs,
+                                                              'current_conv' => $messages ) );
+
+    }
+
+    public function get_admin_messages( \WP_REST_Request $data ) {
 
         for ($x = 0; $x <= 10; $x++) {
             $convs = $this->get_all_convs_admin( $this->admin_email, $data['last_conv'] );

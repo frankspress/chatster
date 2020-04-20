@@ -1,92 +1,157 @@
 (function ($) {
 
-console.log(chatsterDataAdmin);
+  /**
+   * It sends a presence ping to the database
+   */
+  function presence_admin() {
+    $.ajax( {
 
+        url: chatsterDataAdmin.api_base_url + '/chat/presence/admin',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+        },
+        data: {},
+        success: function(data) {
+          //console.log(data);
+        },
+        error: function(error) {
 
-function presence_admin() {
-  $.ajax( {
+        },
 
-      url: chatsterDataAdmin.api_base_url + '/chat/presence/admin',
-      method: 'POST',
-      beforeSend: function ( xhr ) {
-          xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
-      },
-      data: {},
-      success: function(data) {
-        console.log(data);
-      },
-      error: function(error) {
+      } ).done( function ( response ) {
 
-      },
+      });
+  }
+  setInterval(presence_admin, 10000);
 
-    } ).done( function ( response ) {
+  /**
+   * Accessory functions to build the conversation list and current convs
+   */
+  function build_convs(convs) {
 
-    });
-}
-// setInterval(long_poll, 3000);
-setInterval(presence_admin, 10000);
+    if ( convs ) {
 
-function long_poll() {
+       let last_conv_id = convs[Object.keys(convs)[0]].id;
+       $("#conversations-block").attr('data-last_conv_id', last_conv_id);
 
-  payload = { last_conv: 0, current_conv: 2 };
+       $.each( convs, function( key, conversation ) {
+         let $conversation = $("<div>", {id: "conv-"+conversation.id, "class": "single-conversation", "data-single_conv_id": conversation.id });
 
-  $.ajax( {
-      url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',
-      method: 'POST',
-      beforeSend: function ( xhr ) {
-          xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
-      },
-      data: payload,
-      success: function(data) {
-          console.log(data);
-      },
-      error: function(error) {
+         $conversation.html('cock');
 
-      },
+         $("#conversations-block").append($conversation);
+       });
 
-    } ).done( function ( response ) {
-
-    });
-
-}
-setInterval(long_poll, 4000);
-long_poll();
-
-function chat_insert() {
-
-}
+    }
 
 
 
+  }
+  function build_current_conv(current_conv, conv_id) {
+    
+    let current_conv_id = $('#ch-message-board').attr('data-conv_id');
+    /* If it's not the selected conversation ignore it */
+    if ( current_conv && ( current_conv_id == conv_id )) {
+      console.log(current_conv);
+      let last_msg_id = current_conv[Object.keys(current_conv)[0]].id;
+      $("#ch-message-board").attr('data-last_msg_id', last_msg_id );
+    }
 
-function change_admin_status( admin_status ) {
-  $.ajax( {
+  }
 
-      url: chatsterDataAdmin.api_base_url + '/chat/is_active/admin',
-      method: 'POST',
-      beforeSend: function ( xhr ) {
-          xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
-      },
-      data: { is_active: admin_status },
-      success: function(data) {
-        console.log(data.action);
+  $('.single-conversation').live('click',function() {
+
+    let current_conv_id = $(this).attr('data-single_conv_id');
+    $('#ch-message-board').attr('data-conv_id', current_conv_id);
+
+
+  });
+
+  /**
+   * Long poll with self relaunching technique
+   */
+  var LongPollRun = false;
+  function long_poll() {
+    if ( LongPollRun === false ) {
+
+      LongPollRun = true;
+      let ch_last_conv = $('#conversations-block').attr('data-last_conv_id');
+      ch_last_conv = ch_last_conv ? ch_last_conv : 0;
+      let ch_current_conv = $('#ch-message-board').attr('data-conv_id');
+      ch_current_conv = ch_current_conv ? ch_current_conv : 0;
+      let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
+      ch_last_msg = ch_last_msg ? ch_last_msg : 0;
+
+      payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg };
+
+      $.ajax( {
+          url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',
+          method: 'POST',
+          beforeSend: function ( xhr ) {
+              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+          },
+          data: payload,
+          success: function(data) {
               $('#ch-roller-container').addClass('hidden');
-      },
-      error: function(error) {
+              if ( $('#chatster-chat-switch').prop("checked") ) {
+                build_convs(data.payload.convs);
+                build_current_conv(data.payload.current_conv, ch_current_conv);
+                setTimeout( long_poll, 500 );
+              }
+              LongPollRun = false;
 
-      },
+          },
+          error: function(error) {
+              $('#ch-roller-container').addClass('hidden');
+              LongPollRun = false;
+              setTimeout( long_poll, 4000 );
+          },
 
-    } ).done( function ( response ) {
+        } ).done( function ( response ) {
 
-    });
-}
-$('#chatster-chat-switch').change(function() {
-     if( this.checked ) {
-        $('#ch-roller-container').removeClass('hidden');
-        change_admin_status(true);
-     } else {
-        change_admin_status(false);
-     }
- });
+        });
+      }
+
+
+  }
+
+  /**
+   * Changes "Live chat" status and calls a long_poll
+   */
+  function change_admin_status( admin_status ) {
+    $.ajax( {
+
+        url: chatsterDataAdmin.api_base_url + '/chat/is_active/admin',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+        },
+        data: { is_active: admin_status },
+        success: function(data) {
+          if ( admin_status) {
+              long_poll();
+          }
+        },
+        error: function(error) {
+              $('#ch-roller-container').addClass('hidden');
+              $('#chatster-chat-switch').prop("checked", ! admin_status);
+        },
+
+      } ).done( function ( response ) {
+
+      });
+  }
+  $('#chatster-chat-switch').change(function() {
+       if( this.checked ) {
+          $('#ch-roller-container').removeClass('hidden');
+          change_admin_status(true);
+       } else {
+          change_admin_status(false);
+       }
+   });
+  if ( $('#chatster-chat-switch').prop("checked") ) {
+    long_poll();
+  }
 
 })(jQuery);

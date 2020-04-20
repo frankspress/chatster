@@ -93,6 +93,7 @@ class ActivationLoader  {
         $sql .= " conv_id INT(11) NOT NULL , ";
         $sql .= " message VARCHAR(800) NOT NULL , ";
         $sql .= " author_id VARCHAR(100) NOT NULL , ";
+        $sql .= " is_read BOOLEAN NOT NULL DEFAULT false , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
