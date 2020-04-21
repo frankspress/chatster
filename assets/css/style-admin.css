@@ -78,6 +78,10 @@
    margin-bottom: 40px;
    font-weight: 600;
  }
+
+ .single-message-local {
+   white-space: pre-wrap;
+ }
 /** Toggle Switch **/
 
   .onoffswitch {

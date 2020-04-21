@@ -92,25 +92,27 @@ trait ChatCollection {
     $wp_table_message = self::get_table_name('message');
     $wp_table_conversation = self::get_table_name('conversation');
 
-    $sql = " SELECT m.id, m.message, m.author_id, c.id as conv_id
-             FROM $wp_table_message as m
-             INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
-             WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s ) AND m.id > %d
-             ORDER BY m.created_at DESC
-             LIMIT 15 ";
+    $sql = " SELECT mm.*
+             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, c.id as conv_id, m.created_at as created_at
+                     FROM $wp_table_message as m
+                     INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
+                     WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s ) AND m.id > %d
+                     ORDER BY m.created_at DESC
+                     LIMIT 25 )
+             AS mm ORDER BY mm.created_at ASC ";
 
-    $sql = $wpdb->prepare( $sql, $conv_id, $user_id, $user_id, $last_msg_id );
+    $sql = $wpdb->prepare( $sql, $user_id, $conv_id, $user_id, $user_id, $last_msg_id );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function insert_new_message( $admin, $customer, $sender, $msg ) {
+  protected function insert_new_message( $admin, $customer, $sender, $msg, $temp_id ) {
     global $wpdb;
 
-    $sql = " CALL chatster_insert( %s, %s, %s, %s ) ";
-    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg );
+    $sql = " CALL chatster_insert( %s, %s, %s, %s, %d ) ";
+    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg, $temp_id );
 
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();

@@ -90,6 +90,7 @@ class ActivationLoader  {
 
         $sql  = " CREATE TABLE $wp_table_message ( " ;
         $sql .= " id BIGINT(11) NOT NULL AUTO_INCREMENT , ";
+        $sql .= " temp_id INT(11) DEFAULT NULL , ";
         $sql .= " conv_id INT(11) NOT NULL , ";
         $sql .= " message VARCHAR(800) NOT NULL , ";
         $sql .= " author_id VARCHAR(100) NOT NULL , ";
@@ -163,7 +164,7 @@ class ActivationLoader  {
        */
        $wpdb->query( " DROP PROCEDURE IF EXISTS chatster_insert ");
 
-       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800))
+       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800), t_msg_id INT(11))
                 BEGIN
 
                 	DECLARE c_id INT DEFAULT NULL;
@@ -176,16 +177,17 @@ class ActivationLoader  {
 
                         THEN
 
-                                INSERT INTO $wp_table_message (conv_id, author_id, message)
-                                VALUES (c_id, sender, msg);
+                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id)
+                                VALUES (c_id, sender, msg, t_msg_id);
                                 SELECT LAST_INSERT_ID() as message_id , c_id as conv_id;
+                                
                         ELSE
 
                                 INSERT INTO $wp_table_conversation ( admin_email, customer_id )
                                 VALUES ( admin, customer );
                                 SET last_id = LAST_INSERT_ID();
-                                INSERT INTO $wp_table_message (conv_id, author_id, message)
-                                VALUES (last_id, sender, msg);
+                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id )
+                                VALUES (last_id, sender, msg, t_msg_id);
                                 SELECT LAST_INSERT_ID() as message_id, last_id as conv_id;
                     END IF;
                 END  ";

@@ -1,8 +1,31 @@
 (function ($) {
 
+  /**
+   * It sends a presence ping to the database
+   */
+  function presence() {
+    $.ajax( {
 
+        url: chatsterDataPublic.api_base_url + '/chat/presence/customer',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+        },
+        data: {},
+        success: function(data) {
+          console.log(data);
+        },
+        error: function(error) {
 
-  console.log('cornetto');
+        },
+
+      } ).done( function ( response ) {
+
+      });
+  }
+  setInterval(presence, 10000);
+  presence();
+
 
 
   function long_poll() {
@@ -50,28 +73,6 @@
       });
   }
 
-  function presence() {
-    $.ajax( {
-
-        url: chatsterDataPublic.api_base_url + '/chat/presence/customer',
-        method: 'POST',
-        beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-        },
-        data: {},
-        success: function(data) {
-          console.log(data);
-        },
-        error: function(error) {
-
-        },
-
-      } ).done( function ( response ) {
-
-      });
-  }
- // setInterval(long_poll, 3000);
- setInterval(presence, 3000);
 
 
  function chat_form() {
@@ -96,7 +97,7 @@
      });
  }
 
- setInterval(chat_form, 4000);
+// setInterval(chat_form, 4000);
 
 
 

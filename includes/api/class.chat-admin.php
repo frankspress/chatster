@@ -110,6 +110,7 @@ class ChatApiAdmin  {
          $request['last_conv'] = isset( $request['last_conv'] ) ? intval($request['last_conv']) : 0;
          $request['current_conv'] = isset( $request['current_conv'] ) ? intval($request['current_conv']) : false;
          $request['last_message'] = isset( $request['last_message'] ) ? intval($request['last_message']) : 0;
+         $request['temp_id'] = isset( $request['temp_id'] ) ? intval($request['temp_id']) : 0;
 
          return true;
        }
@@ -170,8 +171,8 @@ class ChatApiAdmin  {
 
     public function insert_admin_messages( \WP_REST_Request $data ) {
 
-        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'] );
-        return array( 'action'=>'chat_insert', 'payload'=> $result );
+        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'] );
+        return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
 
     }
 
