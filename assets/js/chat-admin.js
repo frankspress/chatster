@@ -25,7 +25,7 @@
   }
   setInterval(presence_admin, 10000);
   presence_admin();
-  
+
   /**
    * Inserts current messages into the conversation
    */
@@ -61,7 +61,7 @@
         let temp_id = (new Date()).getTime().toString();
         temp_id = temp_id.slice(4, temp_id.length);
         $message = $("<div>", {id: "message-"+temp_id, "class": "single-message-local self", "data-author_id": "self" });
-        $message.html(message);
+        $message.text(message);
         $("#ch-message-board").append($message);
         insert_messages(message, temp_id);
       }

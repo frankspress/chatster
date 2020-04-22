@@ -16,6 +16,7 @@ class ChatApi  {
     private $customer_name;
     private $customer_email;
     private $customer_subject;
+    private $assigned_admin;
 
     public function __construct() {
       $this->presence_route();
@@ -82,16 +83,23 @@ class ChatApi  {
      * Methods
      */
 
-    private function validate_name( $customer_name ) {
+    private function validate_name( $customer_name = '' ) {
       if ( !empty($customer_name) && strlen( $customer_name ) <= 100 ) {
-        return $customer_name;
+        return htmlentities( $customer_name, ENT_QUOTES, 'UTF-8');
       }
       return false;
     }
 
-    private function validate_subject( $chat_subject ) {
+    private function validate_subject( $chat_subject = '') {
       if ( !empty($chat_subject) && strlen( $chat_subject ) <= 200 ) {
-        return $chat_subject;
+        return htmlentities( $chat_subject, ENT_QUOTES, 'UTF-8');
+      }
+      return false;
+    }
+
+    private function validate_email( $email = '' ) {
+      if ( !empty($email) && is_email($email) ) {
+        return htmlentities( $email, ENT_QUOTES, 'UTF-8');
       }
       return false;
     }
@@ -121,7 +129,7 @@ class ChatApi  {
     private function get_customer_basics( $request ) {
 
       $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
-      $request['customer_email'] = isset($request['customer_email']) ? is_email($request['customer_email']) : false;
+      $request['customer_email'] = isset($request['customer_email']) ? validate_email($request['customer_email']) : false;
       $request['chat_subject'] = isset($request['chat_subject']) ? $this->validate_subject($request['chat_subject']) : false;
 
       if ( CookieCatcher::set_form_data($request) ) {
@@ -130,6 +138,10 @@ class ChatApi  {
       return CookieCatcher::deserialized_form_data();
     }
 
+    private function get_assigned_admin() {
+      // TODO
+      $this->assigned_admin = 'frankieeeit@gmail.com';
+    }
     /**
      * Validation Callbacks
      */
@@ -144,7 +156,15 @@ class ChatApi  {
 
     public function validate_message( $request ) {
       if ( $this->validate_customer( $request ) ) {
+        if ( isset( $request['new_message'] ) &&
+                 strlen($request['new_message']) <= 799 &&
+                      isset( $request['temp_id'] ) ) {
+
+          $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
+          $this->get_assigned_admin();
           return true;
+
+        }
       }
       return false;
     }
@@ -174,12 +194,13 @@ class ChatApi  {
 
     public function insert_msg_db( \WP_REST_Request $data) {
 
-        return array('action'=> $this->insert_new_message('frankieeeit@gmail.com', $data['chatster_customer_id'],$data['chatster_customer_id'], 'Holy shit!!!' ));
+      $result = $this->insert_new_message( $this->assigned_admin, $this->customer_id, $this->customer_id, $data['new_message'], $data['temp_id'] );
+      return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=> $data['temp_id'] );
     }
 
     public function long_poll_db( \WP_REST_Request $data ) {
 
-        return array('action'=> $this->get_latest_messages(1, $data['chatster_customer_id']) );
+        return array('action'=> $this->get_latest_messages_public(1, $this->customer_id, 'frankieeeit@gmail.com') );
     }
 
     public function disconnect_chat_db( \WP_REST_Request $data ) {

@@ -16,32 +16,10 @@ function display_front_chat()  { ?>
 
       <div id="ch-msg-container" data-conv-id="">
 
-        <div id="ch-msg-" class="ch-align-left ch-msg-wrapper">
-          <div class="ch-message">Your Messagefdddd  ddddddddd dddddd dddddddd :D </div>
-        </div>
-
-        <div id="ch-msg-" class="ch-align-right ch-msg-wrapper">
-          <div class="ch-message">My message :)</div>
-        </div>
-
-        <div id="ch-msg-" class="ch-align-left ch-msg-wrapper" >
-          <div class="ch-message">Your Messagefdddd  ddddddddd dddddd dddddddd :D </div>
-        </div>
-
-        <div id="ch-msg-" class="ch-align-left ch-msg-wrapper" >
-            <div class="ch-message">Your Messagefdddd  ddddddddd dddddd dddddddd :D </div>
-            <div class="ch-link"></div>
-        </div>
-
-        <div id="ch-msg-" class="ch-align-right ch-msg-wrapper" >
-            <div class="ch-message">My message :)</div>
-        </div>
-
       </div>
 
-
       <div class="ch-input">
-        <input type="text" id="ch-reply" value="" placeholder="Your message here..">
+        <input type="text" id="ch-reply-public" value="" placeholder="Your message here.." maxlength="799">
       </div>
       <div class="ch-send-btn"> Send</div>
     </section>
