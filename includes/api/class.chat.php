@@ -64,7 +64,7 @@ class ChatApi  {
         register_rest_route( 'chatster/v1', '/chat/poll', array(
                       'methods'  => 'POST',
                       'callback' => array( $this, 'long_poll_db' ),
-                      'permission_callback' => array( $this, 'validate_customer' )
+                      'permission_callback' => array( $this, 'validate_msg_poll' )
             ));
       });
     }
@@ -169,6 +169,16 @@ class ChatApi  {
       return false;
     }
 
+    public function validate_msg_poll( $request ) {
+      if ( $this->validate_customer( $request ) ) {
+
+          $request['last_msg_id'] = isset( $request['last_msg_id'] ) ? intval($request['last_msg_id']) : 0;
+          return true;
+
+      }
+      return false;
+    }
+
     public function validate_customer_form( $request ) {
       if ( $this->validate_customer( $request ) ) {
           $this->get_customer_basics( $request );
@@ -199,8 +209,15 @@ class ChatApi  {
     }
 
     public function long_poll_db( \WP_REST_Request $data ) {
-
-        return array('action'=> $this->get_latest_messages_public(1, $this->customer_id, 'frankieeeit@gmail.com') );
+        for ($x = 0; $x <= 10; $x++) {
+            $current_conv = $this->get_latest_messages_public( $data['last_msg_id'], $this->customer_id, 'frankieeeit@gmail.com' );
+            if ( $current_conv ) {
+              $this->set_message_read( $this->customer_id, $data['last_msg_id'] );
+              break;
+            };
+            usleep(700000);
+        }
+        return array('action'=>'polling', 'payload'=> $current_conv );
     }
 
     public function disconnect_chat_db( \WP_REST_Request $data ) {

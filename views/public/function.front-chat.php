@@ -14,7 +14,7 @@ function display_front_chat()  { ?>
     <div id="ch-indent-header"></div>
     <section id="ch-chat-section">
 
-      <div id="ch-msg-container" data-conv-id="">
+      <div id="ch-msg-container" data-last_msg_id="">
 
       </div>
 

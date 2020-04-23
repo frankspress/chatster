@@ -17,4 +17,9 @@
     ch_chat_sound();
   } );
 
+  $('#ch-msg-container').on('change', function() {
+    console.log(chatsterDataPublic.sound_file_path);
+    ch_chat_sound();
+  } );
+
 })(jQuery);

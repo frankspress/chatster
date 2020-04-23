@@ -142,14 +142,17 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function set_message_read( $admin, $conv_id, $msg_id ) {
+  protected function set_message_read( $user, $msg_id ) {
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
+    $wp_table_conversation = self::get_table_name('conversation');
 
-    $sql = " UPDATE $wp_table_message SET is_read = TRUE
-             WHERE id > %d AND conv_id = %d AND author_id = %s ";
+    $sql = " UPDATE $wp_table_message as m
+             INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
+             SET m.is_read = TRUE
+             WHERE m.id > %d AND ( c.customer_id = %s OR c.admin_email = %s ) AND m.author_id <> %s";
 
-    $sql = $wpdb->prepare( $sql, $msg_id, $conv_id, $admin );
+    $sql = $wpdb->prepare( $sql, $msg_id, $user, $user, $user );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 

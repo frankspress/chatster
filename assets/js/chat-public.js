@@ -68,46 +68,44 @@
     }
   });
 
-
   /**
    * Accessory functions to build the conversation list and current convs
    */
   function esc_json(str) {
      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function build_current_conv(current_conv, conv_id) {
-      console.log(current_conv);
-    let current_conv_id = $('#ch-message-board').attr('data-conv_id');
-    /* If it's not the selected conversation ignore it */
-    if ( current_conv && ( current_conv_id == conv_id ) ) {
+  function build_current_conv(current_conv) {
 
-      let last_msg_id = current_conv[Object.keys(current_conv)[current_conv.length - 1]].id;
-      $("#ch-message-board").attr('data-last_msg_id', esc_json(last_msg_id) );
-      $.each( current_conv, function( key, message ) {
+    if ( current_conv ) {
+        let current_msg_id = $("#ch-msg-container").attr('data-last_msg_id');
+        let last_msg_id = current_conv[Object.keys(current_conv)[current_conv.length - 1]].id;
+        $("#ch-msg-container").attr('data-last_msg_id', esc_json(last_msg_id) );
+        $.each( current_conv, function( key, message ) {
 
-        if ( $("#message-" + message.temp_id).length ) {
-          $( "#message-" + message.temp_id ).attr("id", "message-" + message.id );
-        } else {
-          let is_self = message.is_author == "1" ? "single-message self" : "single-message";
-          $message = $("<div>", {id: "message-" + message.id, "class": is_self });
-          $message.html(message.message);
-          $("#ch-message-board").append($message);
-        }
-      });
-
-    }
-
+          if ( $("#ch-msg-" + message.temp_id).length ) {
+            $( "#ch-msg-" + message.temp_id ).attr("id", "ch-msg-" + message.id );
+          } else {
+            let is_self = message.is_author == "1" ? "ch-single-message ch-right" : "single-message";
+            $message = $("<div>", {id: "ch-msg-" + message.id, "class": is_self });
+            $message.html(message.message);
+            $("#ch-msg-container").append($message);
+            if ( current_msg_id ) {
+              ch_chat_sound();
+            }
+          }
+        });
+     }
   }
 
   /**
-   * Retrieves messages for the current conversation
+   * Retrieves messages for the open conversation
    */
   function long_poll_msg() {
 
-    let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
+    let ch_last_msg = $("#ch-msg-container").attr('data-last_msg_id');
     ch_last_msg = ch_last_msg ? ch_last_msg : 0;
 
-    payload = { last_message: ch_last_msg };
+    payload = { last_msg_id: ch_last_msg };
 
     $.ajax( {
         url: chatsterDataPublic.api_base_url + '/chat/poll',
@@ -117,11 +115,8 @@
         },
         data: payload,
         success: function(data) {
-          console.log(data);
-          //  $('#ch-roller-container').addClass('hidden');
-            // $('#ch-message-board').empty();
-            // build_current_conv(data.payload.current_conv, ch_current_conv);
-            setTimeout( long_poll_msg, 500 );
+           build_current_conv(data.payload);
+           setTimeout( long_poll_msg, 500 );
 
         },
         error: function(error) {
@@ -132,58 +127,22 @@
 
       });
   }
-
   long_poll_msg();
 
-
-  function long_poll() {
-
-    $.ajax( {
-
-        url: chatsterDataPublic.api_base_url + '/chat/poll/',
-        method: 'POST',
-        beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-        },
-        data: {},
-        success: function(data) {
-          console.log(data);
-        },
-        error: function(error) {
-
-        },
-
-      } ).done( function ( response ) {
-
-      });
-
-  }
-
-  function chat_insert() {
-
-    $.ajax( {
-
-        url: chatsterDataPublic.api_base_url + '/chat/insert/',
-        method: 'POST',
-        beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-        },
-        data: {},
-        success: function(data) {
-          console.log(data);
-        },
-        error: function(error) {
-
-        },
-
-      } ).done( function ( response ) {
-
-      });
+  /**
+   * Chat sound function
+   */
+  function ch_chat_sound(){
+        var mp3Source = '<source src="' + chatsterDataPublic.sound_file_path + '.mp3" type="audio/mpeg">';
+        var oggSource = '<source src="' + chatsterDataPublic.sound_file_path + '.ogg" type="audio/ogg">';
+        var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataPublic.sound_file_path +'.mp3">';
+        document.getElementById("sound").innerHTML='<audio id="ch-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource + '</audio>';
+        var chatSound = document.getElementById("ch-audio");
+        chatSound.volume = chatsterDataPublic.chat_sound_vol;
   }
 
 
-
- function chat_form() {
+  function chat_form() {
 
    $.ajax( {
 
