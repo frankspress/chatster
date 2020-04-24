@@ -151,7 +151,7 @@ class ChatApiAdmin  {
             $convs = $this->get_all_convs_admin( $this->admin_email, $data['last_conv'] );
             $messages = false;
             if ( $data['current_conv'] ) {
-              $this->set_message_read( $this->admin_email, $data['last_message'] );
+              $this->set_message_read( $this->admin_email, $data['current_conv'], $data['last_message'] );
               $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
             }
             if ( $convs || $messages ) break;
@@ -164,7 +164,7 @@ class ChatApiAdmin  {
     }
 
     public function get_admin_messages( \WP_REST_Request $data ) {
-        $this->set_message_read( $this->admin_email, $data['last_message'] );
+        $this->set_message_read( $this->admin_email, $data['current_conv'], $data['last_message'] );
         $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
         return array( 'action'=>'polling', 'payload'=> array( 'current_conv' => $messages ) );
 

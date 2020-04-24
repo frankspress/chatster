@@ -86,6 +86,20 @@ trait ChatCollection {
     return $result;
   }
 
+  protected function get_current_conv_public( $admin_email, $customer_id ) {
+
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+
+    $sql = " SELECT id FROM $wp_table_conversation WHERE customer_id = %s AND admin_email = %s AND is_connected = TRUE ";
+
+    $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
+    $result = $wpdb->get_var($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+  }
+
   protected function get_latest_messages( $conv_id = 0, $last_msg_id = 0, $user_id = '' ) {
 
     global $wpdb;
@@ -142,7 +156,7 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function set_message_read( $user, $msg_id ) {
+  protected function set_message_read( $user, $conv_id, $msg_id ) {
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
     $wp_table_conversation = self::get_table_name('conversation');
@@ -150,9 +164,9 @@ trait ChatCollection {
     $sql = " UPDATE $wp_table_message as m
              INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
              SET m.is_read = TRUE
-             WHERE m.id > %d AND ( c.customer_id = %s OR c.admin_email = %s ) AND m.author_id <> %s";
+             WHERE m.id > %d AND c.id = %d AND ( c.customer_id = %s OR c.admin_email = %s ) AND m.author_id <> %s";
 
-    $sql = $wpdb->prepare( $sql, $msg_id, $user, $user, $user );
+    $sql = $wpdb->prepare( $sql, $msg_id, $conv_id, $user, $user, $user );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 

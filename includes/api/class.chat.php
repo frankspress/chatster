@@ -138,7 +138,7 @@ class ChatApi  {
       return CookieCatcher::deserialized_form_data();
     }
 
-    private function get_assigned_admin() {
+    private function set_assigned_admin() {
       // TODO
       $this->assigned_admin = 'frankieeeit@gmail.com';
     }
@@ -149,6 +149,7 @@ class ChatApi  {
 
       if ( $this->get_customer_id() ) {
         $request['chatster_customer_id'] = $this->customer_id;
+        $this->set_assigned_admin();
         return true;
       }
       return false;
@@ -161,7 +162,7 @@ class ChatApi  {
                       isset( $request['temp_id'] ) ) {
 
           $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
-          $this->get_assigned_admin();
+          $this->set_assigned_admin();
           return true;
 
         }
@@ -210,9 +211,10 @@ class ChatApi  {
 
     public function long_poll_db( \WP_REST_Request $data ) {
         for ($x = 0; $x <= 10; $x++) {
-            $current_conv = $this->get_latest_messages_public( $data['last_msg_id'], $this->customer_id, 'frankieeeit@gmail.com' );
+            $current_conv = $this->get_latest_messages_public( $data['last_msg_id'], $this->assigned_admin, $this->customer_id );
             if ( $current_conv ) {
-              $this->set_message_read( $this->customer_id, $data['last_msg_id'] );
+              $conv_id = $this->get_current_conv_public($this->assigned_admin, $this->customer_id);
+              $this->set_message_read( $this->customer_id, $conv_id, $data['last_msg_id'] );
               break;
             };
             usleep(700000);

@@ -93,24 +93,27 @@
 
   }
   function build_current_conv(current_conv, conv_id) {
-      console.log(current_conv);
+
     let current_conv_id = $('#ch-message-board').attr('data-conv_id');
     /* If it's not the selected conversation ignore it */
     if ( current_conv && ( current_conv_id == conv_id ) ) {
-
+      let prev_last_msg_id = $("#ch-message-board").attr('data-last_msg_id');
       let last_msg_id = current_conv[Object.keys(current_conv)[current_conv.length - 1]].id;
-      $("#ch-message-board").attr('data-last_msg_id', esc_json(last_msg_id) );
-      $.each( current_conv, function( key, message ) {
+      if ( prev_last_msg_id < last_msg_id ) {
 
-        if ( $("#message-" + message.temp_id).length ) {
-          $( "#message-" + message.temp_id ).attr("id", "message-" + message.id );
-        } else {
-          let is_self = message.is_author == "1" ? "single-message self" : "single-message";
-          $message = $("<div>", {id: "message-" + message.id, "class": is_self });
-          $message.html(message.message);
-          $("#ch-message-board").append($message);
-        }
-      });
+        $("#ch-message-board").attr('data-last_msg_id', esc_json(last_msg_id) );
+        $.each( current_conv, function( key, message ) {
+
+          if ( $("#message-" + message.temp_id).length ) {
+            $( "#message-" + message.temp_id ).attr("id", "message-" + message.id );
+          } else {
+            let is_self = message.is_author == "1" ? "single-message self" : "single-message";
+            $message = $("<div>", {id: "message-" + message.id, "class": is_self });
+            $message.html(message.message);
+            $("#ch-message-board").append($message);
+          }
+        });
+      }
 
     }
 
@@ -147,8 +150,9 @@
         data: payload,
         success: function(data) {
           //  $('#ch-roller-container').addClass('hidden');
-            $('#ch-message-board').empty();
+
             if ( $('#chatster-chat-switch').prop("checked") ) {
+              $('#ch-message-board').empty();
               build_current_conv(data.payload.current_conv, ch_current_conv);
             }
 
