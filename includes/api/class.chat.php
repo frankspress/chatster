@@ -34,7 +34,7 @@ class ChatApi  {
        register_rest_route( 'chatster/v1', '/chat/presence/customer', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'set_presence' ),
-                     'permission_callback' => array( $this, 'validate_customer' )
+                     'permission_callback' => array( $this, 'validate_new_customer' )
            ));
       });
     }
@@ -106,10 +106,10 @@ class ChatApi  {
 
     private function set_customer_id_cookie() {
        if ( empty($this->customer_id) ) {
-         $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 100);
+         $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);
        }
-       return setrawcookie('ch_ctmr_id', base64url_encode( Crypto::encrypt( $this->customer_id ) ), (time() + 8419200), "/");
-     }
+       return setrawcookie('ch_ctmr_id', base64_encode($this->customer_id) , (time() + 8419200), "/");
+    }
 
     private function get_customer_id() {
 
@@ -119,11 +119,10 @@ class ChatApi  {
       }
 
       if ( isset($_COOKIE['ch_ctmr_id'])) {
-        $this->customer_id = Crypto::decrypt(  base64url_decode( $_COOKIE['ch_ctmr_id'] ) );
-        return $this->set_customer_id_cookie();
+        return $this->customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
       }
 
-      return $this->set_customer_id_cookie();
+      return false;
     }
 
     private function get_customer_basics( $request ) {
@@ -145,6 +144,19 @@ class ChatApi  {
     /**
      * Validation Callbacks
      */
+    public function validate_new_customer( $request ) {
+
+     if ( $this->get_customer_id() ) {
+        $this->set_assigned_admin();
+        return true;
+     } else {
+        $this->set_customer_id_cookie();
+        return true;
+     }
+
+     return false;
+    }
+
     public function validate_customer( $request ) {
 
       if ( $this->get_customer_id() ) {

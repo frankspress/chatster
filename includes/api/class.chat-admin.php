@@ -123,11 +123,22 @@ class ChatApiAdmin  {
            if ( isset( $request['new_message'] ) &&
                     strlen($request['new_message']) <= 799 ) {
 
+             /** Sanitizes new message **/
              $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
+
+             /** Sanitizes message link ids **/
+             if ( !empty( $request['msg_link'] ) ) {
+               $product_ids = array();
+               foreach ( $request['msg_link'] as $key => $value ) {
+                    $prod_id = isset( $value ) ? intval( $value ) : false;
+                    if ( $prod_id ) {
+                        $product_ids []= $prod_id;
+                    }
+               }
+               $request['msg_link'] = $product_ids;
+             }
              return true;
-
            }
-
        }
        return false;
      }
@@ -172,7 +183,7 @@ class ChatApiAdmin  {
 
     public function insert_admin_messages( \WP_REST_Request $data ) {
 
-        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'] );
+        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'] );
         return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
 
     }

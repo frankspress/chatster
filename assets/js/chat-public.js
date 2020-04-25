@@ -3,6 +3,7 @@
   /**
    * It sends a presence ping to the database
    */
+  var presence_set = false;
   function presence() {
     $.ajax( {
 
@@ -14,6 +15,7 @@
         data: {},
         success: function(data) {
           console.log(data);
+          presence_set = true;
         },
         error: function(error) {
 
@@ -25,6 +27,18 @@
   }
   setInterval(presence, 10000);
   presence();
+
+  /**
+   * Chat sound function
+   */
+  function ch_chat_sound(){
+    var mp3Source = '<source src="' + chatsterDataPublic.sound_file_path + '.mp3" type="audio/mpeg">';
+    var oggSource = '<source src="' + chatsterDataPublic.sound_file_path + '.ogg" type="audio/ogg">';
+    var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataPublic.sound_file_path +'.mp3">';
+    document.getElementById("sound").innerHTML='<audio id="ch-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource +'</audio>';
+    var chatSound = document.getElementById("ch-audio");
+    chatSound.volume = chatsterDataPublic.chat_sound_vol;
+  }
 
   /**
    * Inserts current messages into the conversation
@@ -107,40 +121,33 @@
 
     payload = { last_msg_id: ch_last_msg };
 
-    $.ajax( {
-        url: chatsterDataPublic.api_base_url + '/chat/poll',
-        method: 'POST',
-        beforeSend: function ( xhr ) {
-            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-        },
-        data: payload,
-        success: function(data) {
-           build_current_conv(data.payload);
-           setTimeout( long_poll_msg, 500 );
+    if ( presence_set ) {
+      $.ajax( {
+          url: chatsterDataPublic.api_base_url + '/chat/poll',
+          method: 'POST',
+          beforeSend: function ( xhr ) {
+              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+          },
+          data: payload,
+          success: function(data) {
+            if ( data.payload ) {
+              build_current_conv(data.payload);
+            }
+            setTimeout( long_poll_msg, 500 );
 
-        },
-        error: function(error) {
-          //  $('#ch-roller-container').addClass('hidden');
-        },
+          },
+          error: function(error) {
+             setTimeout( long_poll_msg, 500 );
+          },
 
-      } ).done( function ( response ) {
+        } ).done( function ( response ) {
 
-      });
+        });
+      } else {
+        setTimeout( long_poll_msg, 500 );
+      }
   }
   long_poll_msg();
-
-  /**
-   * Chat sound function
-   */
-  function ch_chat_sound(){
-        var mp3Source = '<source src="' + chatsterDataPublic.sound_file_path + '.mp3" type="audio/mpeg">';
-        var oggSource = '<source src="' + chatsterDataPublic.sound_file_path + '.ogg" type="audio/ogg">';
-        var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataPublic.sound_file_path +'.mp3">';
-        document.getElementById("sound").innerHTML='<audio id="ch-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource + '</audio>';
-        var chatSound = document.getElementById("ch-audio");
-        chatSound.volume = chatsterDataPublic.chat_sound_vol;
-  }
-
 
   function chat_form() {
 
@@ -163,8 +170,6 @@
 
      });
  }
-
-// setInterval(chat_form, 4000);
 
 
 

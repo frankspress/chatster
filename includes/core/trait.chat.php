@@ -30,18 +30,13 @@ trait ChatCollection {
  * Api Methods
  */
 
-  protected function insert_form_data( $customer_id, $form_data ) {
-     global $wpdb;
-     $wp_table_presence = self::get_table_name('presence');
-     $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, form_data = %s ";
-     $sql = $wpdb->prepare( $sql, $customer_id, $form_data, $form_data );
-
-     $result = $wpdb->get_results( $sql );
-     wp_reset_postdata();
-
-     return ! empty( $result ) ? $result : false;
-
-
+  protected function add_msg_links( $payload ) {
+    foreach ( $payload as $field ) {
+      if (!empty($field->product_ids)) {
+        $field->product_ids = unserialize($field->product_ids);
+      }
+    }
+    return $payload;
   }
 
   protected function insert_presence_customer( $customer_id ) {
@@ -86,6 +81,34 @@ trait ChatCollection {
     return $result;
   }
 
+  protected function get_all_convs_admin( $admin_email, $last_conv_poll = 0 ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_message = self::get_table_name('message');
+    $wp_table_presence = self::get_table_name('presence');
+    $Table_Users = self::get_table_name('users');
+
+    $sql = " SELECT  c.*, u.user_nicename as reg_customer_name, p.last_presence, p.form_data, COUNT(m.id) as not_read
+             FROM $wp_table_conversation as c
+             INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
+             LEFT JOIN $wp_table_message as m ON m.conv_id = c.id AND m.is_read = false
+             LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
+             WHERE admin_email = %s
+             AND c.id > %d
+             AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
+             AND c.is_connected = TRUE
+             GROUP BY c.id
+             ORDER BY c.created_at ASC
+             LIMIT 20 ";
+
+    $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
+    $result = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
   protected function get_current_conv_public( $admin_email, $customer_id ) {
 
     global $wpdb;
@@ -104,10 +127,11 @@ trait ChatCollection {
 
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
+    $wp_table_message_link = self::get_table_name('message_link');
     $wp_table_conversation = self::get_table_name('conversation');
 
     $sql = " SELECT mm.*
-             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, c.id as conv_id, m.created_at as created_at
+             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, c.id as conv_id, m.product_ids, m.created_at as created_at
                      FROM $wp_table_message as m
                      INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
                      WHERE conv_id = %d AND ( customer_id = %s OR admin_email = %s ) AND m.id > %d
@@ -119,7 +143,7 @@ trait ChatCollection {
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : false;
+    return ! empty( $result ) ? $this->add_msg_links( $result ) : false;
   }
 
   protected function get_latest_messages_public( $last_msg_id = 0, $assigned_admin, $customer_id = '' ) {
@@ -129,7 +153,7 @@ trait ChatCollection {
     $wp_table_conversation = self::get_table_name('conversation');
 
     $sql = " SELECT mm.*
-             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, c.id as conv_id, m.created_at as created_at
+             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, m.product_ids, m.created_at as created_at
                      FROM $wp_table_message as m
                      INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
                      WHERE  ( customer_id = %s AND admin_email = %s ) AND c.is_connected = true AND m.id > %d
@@ -144,11 +168,11 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function insert_new_message( $admin, $customer, $sender, $msg, $temp_id ) {
+  protected function insert_new_message( $admin, $customer, $sender, $msg, $temp_id, $message_links = [] ) {
     global $wpdb;
-
-    $sql = " CALL chatster_insert( %s, %s, %s, %s, %d ) ";
-    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg, $temp_id );
+    $message_links = !empty($message_links) ? serialize($message_links) : null;
+    $sql = " CALL chatster_insert( %s, %s, %s, %s, %d, %s ) ";
+    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg, $temp_id, $message_links );
 
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
@@ -171,6 +195,20 @@ trait ChatCollection {
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
+  }
+
+  protected function insert_form_data( $customer_id, $form_data ) {
+     global $wpdb;
+     $wp_table_presence = self::get_table_name('presence');
+     $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, form_data = %s ";
+     $sql = $wpdb->prepare( $sql, $customer_id, $form_data, $form_data );
+
+     $result = $wpdb->get_results( $sql );
+     wp_reset_postdata();
+
+     return ! empty( $result ) ? $result : false;
+
+
   }
 
   protected function find_active_admin( $customer ) {
@@ -203,32 +241,6 @@ trait ChatCollection {
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
-  }
-
-  protected function get_all_convs_admin( $admin_email, $last_conv_poll = 0 ) {
-    global $wpdb;
-    $wp_table_conversation = self::get_table_name('conversation');
-    $wp_table_message = self::get_table_name('message');
-    $wp_table_presence = self::get_table_name('presence');
-    $Table_Users = self::get_table_name('users');
-
-    $sql = " SELECT  c.*, u.user_nicename as reg_customer_name, p.last_presence, p.form_data, COUNT(m.id) as not_read
-             FROM $wp_table_conversation as c
-             INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
-             LEFT JOIN $wp_table_message as m ON m.conv_id = c.id AND m.is_read = false
-             LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
-             WHERE admin_email = %s AND c.id > %d
-             AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
-             GROUP BY c.id
-             ORDER BY c.created_at DESC
-             LIMIT 20 ";
-
-    $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
-    $result = $wpdb->get_results( $sql );
-    wp_reset_postdata();
-
-    return ! empty( $result ) ? $result : false;
-
   }
 
   protected function disconnect_chat( $conv_id ) {

@@ -34,10 +34,17 @@ function display_admin_chat( $admin_status ) {
                 <div id="ch-message-board" data-conv_id=""  data-last_msg_id="" data-customer_id="">
                 </div>
 
+                <div id="ch-attachments"><div id="link-id-1" data-link_id="1">Attachemnt1</div>
+                                            <div id="link-id-2" data-link_id="2">Attachemnt2</div>
+                                          </div>
                 <div class="ch-input">
-                  <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="2" maxlength="799"></textarea>
+                  <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="1" maxlength="799"></textarea>
                 </div>
 
+                <div class="ch-input-link">
+
+                  <input id="ch-reply-link" placeholder="Find a product or page.." type="text" maxlength="40">
+                </div>
             </div>
 
        </div>

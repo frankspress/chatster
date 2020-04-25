@@ -26,6 +26,7 @@ class ActivationLoader  {
     $wp_table_presence_admin = self::get_table_name('presence_admin');
     $wp_table_presence = self::get_table_name('presence');
     $wp_table_message = self::get_table_name('message');
+    $wp_table_message_link = self::get_table_name('message_link');
     $wp_table_conversation = self::get_table_name('conversation');
     $Table_Users = self::get_table_name('users');
     $charset_collate = $wpdb->get_charset_collate();
@@ -65,7 +66,6 @@ class ActivationLoader  {
         $success = $success && empty($wpdb->last_error);
     }
 
-
     if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_conversation' " ) != $wp_table_conversation)  {
 
         $sql  = " CREATE TABLE $wp_table_conversation ( " ;
@@ -92,6 +92,7 @@ class ActivationLoader  {
         $sql .= " id BIGINT(11) NOT NULL AUTO_INCREMENT , ";
         $sql .= " temp_id INT(11) DEFAULT NULL , ";
         $sql .= " conv_id INT(11) NOT NULL , ";
+        $sql .= " product_ids TINYTEXT DEFAULT NULL , ";
         $sql .= " message VARCHAR(800) NOT NULL , ";
         $sql .= " author_id VARCHAR(100) NOT NULL , ";
         $sql .= " is_read BOOLEAN NOT NULL DEFAULT false , ";
@@ -164,7 +165,7 @@ class ActivationLoader  {
        */
        $wpdb->query( " DROP PROCEDURE IF EXISTS chatster_insert ");
 
-       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800), t_msg_id INT(11))
+       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800), t_msg_id INT(11), msg_links TINYTEXT)
                 BEGIN
 
                 	DECLARE c_id INT DEFAULT NULL;
@@ -177,17 +178,17 @@ class ActivationLoader  {
 
                         THEN
 
-                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id)
-                                VALUES (c_id, sender, msg, t_msg_id);
+                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id, product_ids)
+                                VALUES (c_id, sender, msg, t_msg_id, msg_links);
                                 SELECT LAST_INSERT_ID() as message_id , c_id as conv_id;
-                                
+
                         ELSE
 
                                 INSERT INTO $wp_table_conversation ( admin_email, customer_id )
                                 VALUES ( admin, customer );
                                 SET last_id = LAST_INSERT_ID();
-                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id )
-                                VALUES (last_id, sender, msg, t_msg_id);
+                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id, product_ids )
+                                VALUES (last_id, sender, msg, t_msg_id, msg_links);
                                 SELECT LAST_INSERT_ID() as message_id, last_id as conv_id;
                     END IF;
                 END  ";

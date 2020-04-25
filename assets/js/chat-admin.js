@@ -32,8 +32,9 @@
   function insert_messages( new_message, temp_id ) {
 
     let customer_id = $("#ch-message-board").attr("data-curr_customer_id");
-    payload = { new_message: new_message, customer_id: customer_id, temp_id: temp_id };
 
+    payload = { new_message: new_message, msg_link: get_msg_links(), customer_id: customer_id, temp_id: temp_id };
+ 
     $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/insert/admin',
         method: 'POST',
@@ -51,6 +52,17 @@
       } ).done( function ( response ) {
 
       });
+  }
+  function get_msg_links() {
+    let attachments = $("#ch-attachments div");
+    let links = [];
+    if ( attachments ) {
+      $.each( attachments, function( key, attachment ) {
+        let link_id = $(attachment).attr('data-link_id');
+        links.push(link_id);
+      });
+    }
+    return links;
   }
   $('#ch-reply').on('keypress', function(e) {
     if ( e.keyCode == 13 && ! e.shiftKey) {
@@ -77,8 +89,8 @@
   function build_convs(convs) {
 
     if ( convs ) {
-      console.log(convs);
-       let last_conv_id = convs[Object.keys(convs)[0]].id;
+
+       let last_conv_id = convs[Object.keys(convs)[convs.length - 1]].id;
        $("#conversations-block").attr('data-last_conv_id', last_conv_id);
 
        $.each( convs, function( key, conversation ) {
@@ -152,7 +164,6 @@
           //  $('#ch-roller-container').addClass('hidden');
 
             if ( $('#chatster-chat-switch').prop("checked") ) {
-              $('#ch-message-board').empty();
               build_current_conv(data.payload.current_conv, ch_current_conv);
             }
 
