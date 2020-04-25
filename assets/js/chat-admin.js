@@ -34,7 +34,7 @@
     let customer_id = $("#ch-message-board").attr("data-curr_customer_id");
 
     payload = { new_message: new_message, msg_link: get_msg_links(), customer_id: customer_id, temp_id: temp_id };
- 
+
     $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/insert/admin',
         method: 'POST',
@@ -263,5 +263,27 @@
 
       long_poll();
   }
+
+ /**
+  * Insert Link Autocomplete
+  */
+  $('.js-user-autocomplete').each(function() {
+      var autocompleteURL =  chatsterDataAdmin.api_base_url + '/chat/admin/message_links';
+      $(this).autocomplete({hint: true}, [
+          {
+              source: function (query, cb) {
+                  $.ajax({
+                      url: autocompleteURL+'?q='+query
+                  }).then(function(data) {
+                      // console.log(data);
+                      cb(data)
+                  })
+
+              },
+              displayKey: 'email',
+              debounce: 500
+          }
+      ]);
+  });
 
 })(jQuery);
