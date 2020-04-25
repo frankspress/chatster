@@ -35,7 +35,7 @@ function display_admin_chat( $admin_status ) {
                 </div>
 
                 <div id="ch-attachments"><div id="link-id-1" data-link_id="1">Attachemnt1</div>
-                                            <div id="link-id-2" data-link_id="2">Attachemnt2</div>
+                                            <div id="link-id-2" data-link_id="19">Attachemnt2</div>
                                           </div>
                 <div class="ch-input">
                   <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="1" maxlength="799"></textarea>

@@ -30,10 +30,41 @@ trait ChatCollection {
  * Api Methods
  */
 
-  protected function add_msg_links( $payload ) {
-    foreach ( $payload as $field ) {
-      if (!empty($field->product_ids)) {
-        $field->product_ids = unserialize($field->product_ids);
+  protected function construct_msg_links( $payload ) {
+    foreach ( $payload as $key=>$field ) {
+      if (!empty($field['product_ids'])) {
+        $constructed_links = [];
+        $link_ids = unserialize($field['product_ids']);
+        // Builds the product or page link info for each message.
+        foreach ($link_ids as $id) {
+
+          if ( $product = wc_get_product($id) ) {
+
+            $link = [  "type" => "product",
+                       "id" => esc_attr( $id ),
+                       "title"=> esc_html( $product->get_title() ),
+                       "link"=> esc_url( get_post_permalink( $id ) ) ,
+                       "thumbnail"=> esc_url( get_the_post_thumbnail_url($id, 'thumbnail') ),
+                       "product_type" => esc_html($product->get_type()),
+                       "available" => esc_attr( $product->is_in_stock())
+                    ];
+            $constructed_links []= $link;
+
+          } elseif ( get_post_status($id) ) {
+
+            $link = [  "type" => "post",
+                       "id" => esc_attr( $id ),
+                       "title"=> esc_html( get_the_title( $id ) ),
+                       "link"=> esc_url( get_post_permalink( $id ) ),
+                       "thumbnail"=> esc_url( get_the_post_thumbnail_url( $id , 'thumbnail' ))
+                    ];
+
+            $constructed_links []= $link;
+          }
+
+          wp_reset_postdata();
+        }
+        $payload[$key]['product_ids'] = $constructed_links;
       }
     }
     return $payload;
@@ -140,10 +171,10 @@ trait ChatCollection {
              AS mm ORDER BY mm.created_at ASC ";
 
     $sql = $wpdb->prepare( $sql, $user_id, $conv_id, $user_id, $user_id, $last_msg_id );
-    $result = $wpdb->get_results($sql);
+    $result = $wpdb->get_results($sql, ARRAY_A);
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $this->add_msg_links( $result ) : false;
+    return ! empty( $result ) ? $this->construct_msg_links( $result ) : false;
   }
 
   protected function get_latest_messages_public( $last_msg_id = 0, $assigned_admin, $customer_id = '' ) {
