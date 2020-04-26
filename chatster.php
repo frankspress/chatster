@@ -15,6 +15,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * If WooCommerce is active it sets a constant.
  */

@@ -17,7 +17,6 @@ class ChatApiAdmin  {
       $this->poll_conv_route();
       $this->get_messages_route();
       $this->insert_msg_route();
-      $this->get_msg_links_route();
       $this->admin_presence_route();
       $this->admin_status_route();
 
@@ -72,16 +71,6 @@ class ChatApiAdmin  {
                      'methods'  => 'POST',
                      'callback' => array( $this, 'insert_admin_messages' ),
                      'permission_callback' => array( $this, 'validate_message' )
-           ));
-      });
-    }
-
-    public function get_msg_links_route() {
-      add_action('rest_api_init', function () {
-       register_rest_route( 'chatster/v1', '/chat/admin/message_links', array(
-                     'methods'  => 'POST',
-                     'callback' => array( $this, 'find_query_msg_links' ),
-                     'permission_callback' => array( $this, 'validate_query_string' )
            ));
       });
     }
@@ -154,19 +143,6 @@ class ChatApiAdmin  {
        return false;
      }
 
-     public function validate_query_string( $request ) {
-       if ( $this->validate_admin( $request ) ) {
-         if ( !empty( $request['q'] ) &&
-                is_string($request['q']) &&
-                  strlen(trim($request['q'])) < 50 ) {
-
-                    $request['q'] = trim($request['q']);
-                    return true;
-         }
-       }
-       return false;
-     }
-
     /**
      * Routes Callbacks
      */
@@ -209,13 +185,6 @@ class ChatApiAdmin  {
 
         $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'] );
         return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
-
-    }
-
-    public function find_query_msg_links( \WP_REST_Request $data ) {
-
-        // $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'] );
-        // return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
 
     }
 

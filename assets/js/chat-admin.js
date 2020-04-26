@@ -264,26 +264,4 @@
       long_poll();
   }
 
- /**
-  * Insert Link Autocomplete
-  */
-  $('.js-user-autocomplete').each(function() {
-      var autocompleteURL =  chatsterDataAdmin.api_base_url + '/chat/admin/message_links';
-      $(this).autocomplete({hint: true}, [
-          {
-              source: function (query, cb) {
-                  $.ajax({
-                      url: autocompleteURL+'?q='+query
-                  }).then(function(data) {
-                      // console.log(data);
-                      cb(data)
-                  })
-
-              },
-              displayKey: 'email',
-              debounce: 500
-          }
-      ]);
-  });
-
 })(jQuery);

@@ -42,7 +42,7 @@ function display_admin_chat( $admin_status ) {
                 </div>
 
                 <div class="ch-input-link">
-                  <input id="ch-reply-link" placeholder="Find a product or page.." type="text" maxlength="40">
+                  <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
                 </div>
                 <script src="https://cdn.jsdelivr.net/autocomplete.js/0.37.1/autocomplete.jquery.min.js"></script>
 
