@@ -36,6 +36,7 @@ class AdminMenu
           wp_localize_script( 'chatster-chat-admin', 'chatsterDataAdmin', array(
             'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
             'wp_api_base_url' => esc_url_raw( get_rest_url() ),
+            'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
             'nonce' => wp_create_nonce( 'wp_rest' ),
             'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
             'chat_sound_vol' => 0.2
