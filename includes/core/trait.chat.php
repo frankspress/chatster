@@ -45,6 +45,7 @@ trait ChatCollection {
                        "title"=> esc_html( $product->get_title() ),
                        "link"=> esc_url( get_post_permalink( $id ) ) ,
                        "thumbnail"=> esc_url( get_the_post_thumbnail_url($id, 'thumbnail') ),
+                       "excerpt"=> esc_html( get_the_excerpt( $id )),
                        "product_type" => esc_html($product->get_type()),
                        "available" => esc_attr( $product->is_in_stock())
                     ];
@@ -56,7 +57,8 @@ trait ChatCollection {
                        "id" => esc_attr( $id ),
                        "title"=> esc_html( get_the_title( $id ) ),
                        "link"=> esc_url( get_post_permalink( $id ) ),
-                       "thumbnail"=> esc_url( get_the_post_thumbnail_url( $id , 'thumbnail' ))
+                       "thumbnail"=> esc_url( get_the_post_thumbnail_url( $id , 'thumbnail' )),
+                       "excerpt"=> esc_html( get_the_excerpt( $id ))
                     ];
 
             $constructed_links []= $link;

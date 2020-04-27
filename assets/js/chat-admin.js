@@ -53,8 +53,29 @@
 
       });
   }
+  function get_attachment_objs() {
+
+    let attachments = $(".ch-product-auto");
+    let attachment_cont = [];
+    if ( attachments ) {
+
+      $.each( attachments, function( key, attachment ) {
+        let found_attachment = {};
+        found_attachment['id'] = $(attachment).attr('data-link_id');
+        found_attachment['thumbnail'] = $(attachment).find('img').attr('src');
+        found_attachment['title'] = $(attachment).find('ch-auto-title').text();
+        found_attachment['excerpt'] = $(attachment).find('ch-auto-excerpt').text();
+        found_attachment['link'] = $(attachment).find('ch-auto-exlink').attr('src');
+        console.log(found_attachment);
+
+        attachment_cont.push(found_attachment);
+      });
+      return attachment_cont;
+    }
+    return false;
+  }
   function get_msg_links() {
-    let attachments = $("#ch-attachments div");
+    let attachments = $(".ch-product-auto");
     let links = [];
     if ( attachments ) {
       $.each( attachments, function( key, attachment ) {
@@ -62,6 +83,7 @@
         links.push(link_id);
       });
     }
+    $("#ch-attachments div").slideUp( 300, function() {$("#ch-attachments div").remove();});
     return links;
   }
   $('#ch-reply').on('keypress', function(e) {
@@ -72,9 +94,19 @@
         $(this).val('');
         let temp_id = (new Date()).getTime().toString();
         temp_id = temp_id.slice(4, temp_id.length);
-        $message = $("<div>", {id: "message-"+temp_id, "class": "single-message-local self", "data-author_id": "self" });
-        $message.text(message);
-        $("#ch-message-board").append($message);
+        // Create elements
+        let $message_cont = $("<div>", {id: "message-"+temp_id, "class": "single-message-local self", "data-author_id": "self" });
+        let $message_text = $("<div>", {"class": "ch-msg-text"});
+        let $message_links = $("<div>", {"class": "ch-link-cont"});
+        // Populate elements
+        $message_text.text(message);
+        $message_links.html(msg_link_template(get_attachment_objs()));
+        // Append elements
+        $message_cont.append($message_text);
+        $message_cont.append($message_links);
+        // Append Message Block
+        $("#ch-message-board").append($message_cont);
+        // Insert Message - Ajax Call
         insert_messages(message, temp_id);
       }
     }
@@ -120,15 +152,41 @@
             $( "#message-" + message.temp_id ).attr("id", "message-" + message.id );
           } else {
             let is_self = message.is_author == "1" ? "single-message self" : "single-message";
-            $message = $("<div>", {id: "message-" + message.id, "class": is_self });
-            $message.html(message.message);
-            $("#ch-message-board").append($message);
+            let $message_cont = $("<div>", {id: "message-" + message.id, "class": is_self });
+            let $message_text = $("<div>", {"class": "ch-msg-text"});
+            let $message_links = $("<div>", {"class": "ch-link-cont"});
+            $message_text.text(message.message);
+            $message_links.html(msg_link_template(message.product_ids));
+            $message_cont.append($message_text);
+            $message_cont.append($message_links);
+            $("#ch-message-board").append($message_cont);
           }
         });
       }
 
     }
 
+  }
+  function msg_link_template(links) {
+
+    if ( links ) {
+      let template;
+      $.each( links, function( key, attachment ) {
+        let thumbnail = attachment.thumbnail ? attachment.thumbnail : chatsterDataAdmin.no_image_link;
+        template += '<div class="ch-link-chat" id="link-id-'+ attachment.id +'" data-link_id="' + attachment.id + '">';
+        template += ' <div class="ch-link-img">';
+        template +=    '<img src="' + thumbnail + '" alt="product or page" height="32" width="32">';
+        template += ' </div>';
+        template += ' <div class="ch-link-descr">';
+        template +=     '<div class="ch-link-title">' + attachment.title + '</div>';
+        template +=     '<div class="ch-link-excerpt">' + attachment.excerpt + '</div>';
+        template += ' </div>';
+        template += ' <div class="ch-link-exlink"><a href="' + attachment.link + '"  target="_blank">Open</a></div>';
+        template += '</div>';
+      });
+      return template;
+    }
+    return '';
   }
   $('.single-conversation').live('click',function() {
     $('#ch-message-board').empty();
