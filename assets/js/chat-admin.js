@@ -1,5 +1,5 @@
 (function ($) {
-
+"use strict";
   /**
    * It sends a presence ping to the database
    */
@@ -33,7 +33,7 @@
 
     let customer_id = $("#ch-message-board").attr("data-curr_customer_id");
 
-    payload = { new_message: new_message, msg_link: get_msg_links(), customer_id: customer_id, temp_id: temp_id };
+    var payload = { new_message: new_message, msg_link: get_msg_links(), customer_id: customer_id, temp_id: temp_id };
 
     $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/insert/admin',
@@ -63,11 +63,9 @@
         let found_attachment = {};
         found_attachment['id'] = $(attachment).attr('data-link_id');
         found_attachment['thumbnail'] = $(attachment).find('img').attr('src');
-        found_attachment['title'] = $(attachment).find('ch-auto-title').text();
-        found_attachment['excerpt'] = $(attachment).find('ch-auto-excerpt').text();
-        found_attachment['link'] = $(attachment).find('ch-auto-exlink').attr('src');
-        console.log(found_attachment);
-
+        found_attachment['title'] = $(attachment).find('.ch-auto-title').text();
+        found_attachment['excerpt'] = $(attachment).find('.ch-auto-excerpt').text();
+        found_attachment['link'] = $(attachment).find('.ch-auto-exlink a').attr('href');
         attachment_cont.push(found_attachment);
       });
       return attachment_cont;
@@ -87,11 +85,11 @@
     return links;
   }
   $('#ch-reply').on('keypress', function(e) {
-    if ( e.keyCode == 13 && ! e.shiftKey) {
+    if ( e.keyCode == 13 && ! e.shiftKey ) {
       e.preventDefault();
       var message = $(this).val().trim();
       if (message && ( message.length <= 799 ) ) {
-        $(this).val('');
+        $(this).attr('rows', 1 ).val('');
         let temp_id = (new Date()).getTime().toString();
         temp_id = temp_id.slice(4, temp_id.length);
         // Create elements
@@ -109,6 +107,19 @@
         // Insert Message - Ajax Call
         insert_messages(message, temp_id);
       }
+    }
+  });
+  // Textarea rows controller
+  $('#ch-reply').on('keydown', function(e) {
+    if ( e.keyCode == 13 && e.shiftKey ) {
+      let rows = $(this).attr('rows');
+      $(this).attr('rows', parseInt(rows) + 1 );
+    }
+    else if ( e.keyCode == 8 ) {
+      let lines = $(this).val().split(/\r*\n/).length;
+      let rows = parseInt(lines) - 1;
+      rows = rows >= 1 ? rows : 1;
+      $(this).attr('rows', rows);
     }
   });
 
@@ -155,7 +166,7 @@
             let $message_cont = $("<div>", {id: "message-" + message.id, "class": is_self });
             let $message_text = $("<div>", {"class": "ch-msg-text"});
             let $message_links = $("<div>", {"class": "ch-link-cont"});
-            $message_text.text(message.message);
+            $message_text.html(message.message);
             $message_links.html(msg_link_template(message.product_ids));
             $message_cont.append($message_text);
             $message_cont.append($message_links);
@@ -170,10 +181,10 @@
   function msg_link_template(links) {
 
     if ( links ) {
-      let template;
+      var template = '';
       $.each( links, function( key, attachment ) {
         let thumbnail = attachment.thumbnail ? attachment.thumbnail : chatsterDataAdmin.no_image_link;
-        template += '<div class="ch-link-chat" id="link-id-'+ attachment.id +'" data-link_id="' + attachment.id + '">';
+        template += '<div class="ch-link-chat" data-link_id="' + attachment.id + '">';
         template += ' <div class="ch-link-img">';
         template +=    '<img src="' + thumbnail + '" alt="product or page" height="32" width="32">';
         template += ' </div>';
@@ -209,7 +220,7 @@
     let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
     ch_last_msg = ch_last_msg ? ch_last_msg : 0;
 
-    payload = { current_conv: ch_current_conv, last_message: ch_last_msg };
+    var payload = { current_conv: ch_current_conv, last_message: ch_last_msg };
 
     $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/messages/admin',
@@ -250,7 +261,7 @@
       let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
       ch_last_msg = ch_last_msg ? ch_last_msg : 0;
 
-      payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg };
+      var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg };
 
       $.ajax( {
           url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',

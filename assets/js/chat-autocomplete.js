@@ -128,6 +128,10 @@
     template += '</div>';
     return template;
   }
-
+  // Removes attachment from pending message
+  $('.ch-auto-delete').live('click',function(e) {
+      e.preventDefault();
+      $(this).parent().remove();
+  });
 
 })(jQuery);

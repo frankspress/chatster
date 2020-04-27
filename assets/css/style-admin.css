@@ -78,7 +78,7 @@
    font-weight: 600;
  }
 
- .single-message-local {
+ .single-message-local .ch-msg-text {
    white-space: pre-wrap;
  }
 /** Toggle Switch **/
