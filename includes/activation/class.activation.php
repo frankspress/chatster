@@ -123,8 +123,11 @@ class ActivationLoader  {
 
         $sql  = " CREATE TABLE $wp_table_request ( " ;
         $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
+        $sql .= " name VARCHAR(100) NOT NULL , ";
         $sql .= " email VARCHAR(100) NOT NULL , ";
+        $sql .= " subject VARCHAR(200) NOT NULL , ";
         $sql .= " message VARCHAR(2500) NOT NULL , ";
+        $sql .= " is_flagged BOOLEAN NOT NULL DEFAULT false , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) ) ENGINE=InnoDB " . $charset_collate ;
 

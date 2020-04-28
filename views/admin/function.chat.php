@@ -46,9 +46,7 @@ function display_admin_chat( $admin_status ) {
        <!-- Loads autocomplete.js -->
        <script src="https://cdn.jsdelivr.net/autocomplete.js/0.37.1/autocomplete.jquery.min.js"></script>
 
-     </div>
-
+    </div>
 
     <?php
-
 }

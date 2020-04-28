@@ -12,6 +12,7 @@ require_once( CHATSTER_PATH . '/includes/activation/class.deactivation.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.search-api-extender.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.chat.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.chat-admin.php' );
+require_once( CHATSTER_PATH . '/includes/api/class.request-all.php' );
 require_once( CHATSTER_PATH . '/includes/core/class.add-chat-public.php' );
 require_once( CHATSTER_PATH . '/views/class.display-manager.php' );
 
