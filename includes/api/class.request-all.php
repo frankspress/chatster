@@ -16,6 +16,7 @@ class RequestApiAdmin  {
 
       $this->reply_request_message();
       $this->delete_request_message();
+      $this->get_request_message();
       $this->insert_request_message();
 
     }
@@ -27,7 +28,7 @@ class RequestApiAdmin  {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/send', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'reply_request' ),
+                     'callback' => array( $this, 'reply_received_request' ),
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -37,18 +38,29 @@ class RequestApiAdmin  {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/delete', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'delete_request' ),
+                     'callback' => array( $this, 'delete_received_request' ),
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
     }
+
+    public function get_request_message() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/request/admin/retrieve', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'read_received_request' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
+           ));
+      });
+    }
+
     // Public Route - Insert Request
     public function insert_request_message() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/public/insert', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'delete_request' ),
-                     'permission_callback' => array( $this, 'validate_admin' )
+                     'callback' => array( $this, 'insert_public_request' ),
+                     'permission_callback' => array( $this, 'validate_user' )
            ));
       });
     }
@@ -85,6 +97,20 @@ class RequestApiAdmin  {
      }
 
      public function delete_received_request( \WP_REST_Request $data ) {
+
+        $result = $this->delete_request( $data['request_id'] );
+        return array( 'action'=>'delete_request', 'payload'=> $result, 'request_id'=>$data['request_id'] );
+
+     }
+
+     public function read_received_request( \WP_REST_Request $data ) {
+
+        $result = $this->delete_request( $data['request_id'] );
+        return array( 'action'=>'delete_request', 'payload'=> $result, 'request_id'=>$data['request_id'] );
+
+     }
+
+     public function insert_public_request( \WP_REST_Request $data ) {
 
         $result = $this->delete_request( $data['request_id'] );
         return array( 'action'=>'delete_request', 'payload'=> $result, 'request_id'=>$data['request_id'] );

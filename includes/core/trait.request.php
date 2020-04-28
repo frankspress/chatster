@@ -24,7 +24,6 @@ trait RequestCollection {
       }
 
       $count = $wpdb->get_var( $sql );
-      dump($count);
       return !empty($count) ? $count : false;
   }
 
