@@ -4,10 +4,11 @@ namespace Chatster\Api;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.request.php' );
+require_once( CHATSTER_PATH . '/includes/api/class.global-api.php' );
 
 use Chatster\Core\RequestCollection;
 
-class RequestApiAdmin  {
+class RequestApiAdmin extends GlobalApi  {
   use RequestCollection;
 
   private $admin_email;
@@ -18,6 +19,7 @@ class RequestApiAdmin  {
       $this->delete_request_message();
       $this->get_request_message();
       $this->insert_request_message();
+      $this->pin_request_message();
 
     }
 
@@ -48,7 +50,17 @@ class RequestApiAdmin  {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/retrieve', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'read_received_request' ),
+                     'callback' => array( $this, 'get_admin_replies' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
+           ));
+      });
+    }
+
+    public function pin_request_message() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/request/admin/pin', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'set_request_pin' ),
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -103,11 +115,21 @@ class RequestApiAdmin  {
 
      }
 
-     public function read_received_request( \WP_REST_Request $data ) {
+     public function get_admin_replies( \WP_REST_Request $data ) {
 
-        $result = $this->delete_request( $data['request_id'] );
-        return array( 'action'=>'delete_request', 'payload'=> $result, 'request_id'=>$data['request_id'] );
+        if ( $result = $this->get_replies( $data['request_id'] ) ) {
+          foreach ($result as $value) {
+            if ( $value->replied_at ) {
+              $value->replied_at = $this->format_timezone($value->replied_at);
+            }
+          }
+        }
+        return array( 'action'=>'retrieve_message', 'payload'=> $result, 'request_id'=>$data['request_id'] );
+     }
 
+     public function set_request_pin( \WP_REST_Request $data ) {
+        $result = $this->pin_request( $data['request_id'], $data['pinned_value'] );
+        return array( 'action'=>'retrieve_message', 'payload'=> $result );
      }
 
      public function insert_public_request( \WP_REST_Request $data ) {

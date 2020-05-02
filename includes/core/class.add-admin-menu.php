@@ -26,18 +26,25 @@ class AdminMenu
       );
 
       add_action('admin_print_scripts-'.$menu_page, function() {
+
           $current_tab = isset( $_GET['chtab'] ) ? $_GET['chtab'] : false;
 
           wp_enqueue_style( 'wp-color-picker' );
           wp_enqueue_style( 'chatster-css-autocomplete', CHATSTER_URL_PATH . 'assets/css/chat-autocomplete.css');
           wp_enqueue_style( 'chatster-css-admin', CHATSTER_URL_PATH . 'assets/css/style-admin.css');
-          wp_enqueue_script( 'chatster-chat-admin', CHATSTER_URL_PATH . 'assets/js/chat-admin.js',  array('jquery'), 1.0, true);
-          wp_enqueue_script( 'chatster-request-admin', CHATSTER_URL_PATH . 'assets/js/request-admin.js',  array('jquery'), 1.0, true);
-          wp_enqueue_script( 'chatster-settings-admin', CHATSTER_URL_PATH . 'assets/js/settings-admin.js',  array('jquery', 'wp-color-picker'), 1.0, true);
+          wp_enqueue_style( 'chatster-css-admin-loaders', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
+          wp_enqueue_script( 'chatster-general', CHATSTER_URL_PATH . 'assets/js/general-admin.js',  array('jquery'), 1.0, true);
           if ( !$current_tab || $current_tab == 'chat' ) {
+            wp_enqueue_script( 'chatster-chat-admin', CHATSTER_URL_PATH . 'assets/js/chat-admin.js',  array('jquery'), 1.0, true);
             wp_enqueue_script( 'chatster-autocomplete-admin', CHATSTER_URL_PATH . 'assets/js/chat-autocomplete.js',  array('jquery'), 1.0, true);
           }
-          wp_localize_script( 'chatster-chat-admin', 'chatsterDataAdmin', array(
+          if ( $current_tab == 'request' ) {
+            wp_enqueue_script( 'chatster-request-admin', CHATSTER_URL_PATH . 'assets/js/request-admin.js',  array('jquery'), 1.0, true);
+          }
+          if ( $current_tab == 'settings' ) {
+            wp_enqueue_script( 'chatster-settings-admin', CHATSTER_URL_PATH . 'assets/js/settings-admin.js',  array('jquery', 'wp-color-picker'), 1.0, true);
+          }
+          wp_localize_script( 'chatster-general', 'chatsterDataAdmin', array(
             'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
             'wp_api_base_url' => esc_url_raw( get_rest_url() ),
             'nonce' => wp_create_nonce( 'wp_rest' ),

@@ -32,13 +32,26 @@ trait RequestCollection {
       global $wpdb;
       $wp_table_request = self::get_table_name('request');
       $wp_table_reply = self::get_table_name('reply');
+      $Table_Users = self::get_table_name('users');
       $offset = ( $current_page - 1 ) * $per_page;
 
-      $sql  = " SELECT r.*, rp.admin_email as replied_by, rp.message as reply_context, rp.created_at as replied_at FROM $wp_table_request AS r
-                LEFT JOIN $wp_table_reply as rp ON r.id = rp.request_id ";
+      $sql  = " SELECT  r.*, CONVERT_TZ( r.created_at, @@session.time_zone, '+00:00') as created_at,
+                        r.message as request_message,
+                        rp.admin_email as last_replied_by,
+                        u.user_nicename as admin_name,
+                        MAX(CONVERT_TZ( rp.created_at, @@session.time_zone, '+00:00')) as replied_at
+                FROM $wp_table_request AS r
+                LEFT JOIN (
+                            SELECT * FROM $wp_table_reply
+                            WHERE created_at = ( SELECT MAX(created_at) as created_at FROM $wp_table_reply GROUP by request_id )
+                            GROUP BY request_id )
+                AS rp ON r.id = rp.request_id
+                LEFT JOIN $Table_Users as u ON rp.admin_email = u.user_email ";
+
       if ( $unreplied_only ) {
         $sql .= " WHERE rp.created_at IS NULL OR ( r.is_flagged = true ) ";
       }
+      $sql .= " GROUP BY r.id ";
       $sql .= " ORDER BY is_flagged DESC, ". esc_sql($order_by)." ".esc_sql($order). "
                 LIMIT %d, %d ";
 
@@ -67,8 +80,12 @@ trait RequestCollection {
    protected function get_replies( $request_id ) {
      global $wpdb;
      $wp_table_reply = self::get_table_name('reply');
+     $Table_Users = self::get_table_name('users');
 
-     $sql  = " SELECT * FROM $wp_table_reply WHERE request_id = %d ";
+     $sql  = " SELECT r.*, CONVERT_TZ( r.created_at, @@session.time_zone, '+00:00') as replied_at, u.user_nicename as admin_name
+               FROM $wp_table_reply as r
+               LEFT JOIN $Table_Users as u ON r.admin_email = u.user_email
+               WHERE r.request_id = %d ";
 
      $sql = $wpdb->prepare( $sql, $request_id);
      $result = $wpdb->get_results( $sql);
@@ -87,6 +104,22 @@ trait RequestCollection {
      wp_reset_postdata();
 
      return ! empty( $result ) ? $result : false;
+   }
+
+   protected function pin_request($request_id, $pin_value) {
+     global $wpdb;
+     $wp_table_request = self::get_table_name('request');
+     $pin_value = $pin_value ? 1 : 0;
+
+     $sql = " UPDATE $wp_table_request SET is_flagged = %d WHERE id = %d ";
+     $sql = $wpdb->prepare( $sql, $pin_value, $request_id );
+     $wpdb->query( $sql );
+     $sql = " SELECT is_flagged FROM $wp_table_request WHERE id = %d ";
+     $sql = $wpdb->prepare( $sql, $request_id );
+     $result = $wpdb->get_var( $sql );
+     wp_reset_postdata();
+
+     return ! empty( $result ) ? $result : 0;
    }
 
    // Public Insert

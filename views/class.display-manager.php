@@ -1,6 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+require_once( CHATSTER_PATH . '/views/functions.loading-templates.php' );
 require_once( CHATSTER_PATH . '/includes/core/trait.request.php' );
 require_once( CHATSTER_PATH . '/views/admin/function.header.php' );
 require_once( CHATSTER_PATH . '/views/admin/function.chat.php' );

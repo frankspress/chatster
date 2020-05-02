@@ -4,12 +4,13 @@ namespace Chatster\Api;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
+require_once( CHATSTER_PATH . '/includes/api/class.global-api.php' );
 
 use Chatster\Core\ChatCollection;
 use Chatster\Core\Crypto;
 use Chatster\Core\CookieCatcher;
 
-class ChatApi  {
+class ChatApi extends GlobalApi  {
   use ChatCollection;
 
     private $customer_id;

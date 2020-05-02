@@ -103,10 +103,10 @@ trait ChatCollection {
   protected function change_admin_status( $admin_email, $status = false ) {
     global $wpdb;
     $wp_table_presence_admin = self::get_table_name('presence_admin');
-    $safe_status = $status ? 'true' : 'false';
+    $safe_status = $status ? 1 : 0;
 
-    $sql = " INSERT INTO $wp_table_presence_admin ( admin_email, is_active ) VALUES( %s, $safe_status ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, is_active = $safe_status ";
-    $sql = $wpdb->prepare( $sql, $admin_email );
+    $sql = " INSERT INTO $wp_table_presence_admin ( admin_email, is_active ) VALUES( %s, $safe_status ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, is_active = %d ";
+    $sql = $wpdb->prepare( $sql, $admin_email, $safe_status );
 
     $result = $wpdb->query( $sql );
     wp_reset_postdata();
