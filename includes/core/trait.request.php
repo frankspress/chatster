@@ -109,7 +109,7 @@ trait RequestCollection {
 
      $sql = $wpdb->prepare( $sql, $request_id);
      $result = $wpdb->get_results( $sql);
- 
+
      return ! empty( $result ) ? array_shift($result) : false;
    }
 
@@ -124,6 +124,17 @@ trait RequestCollection {
      wp_reset_postdata();
 
      return ! empty( $result ) ? $result : false;
+   }
+
+   protected function get_request_by_id( $request_id ) {
+     global $wpdb;
+     $wp_table_request = self::get_table_name('request');
+
+     $sql  = " SELECT * FROM $wp_table_request WHERE id = %d ";
+     $sql = $wpdb->prepare( $sql, $request_id);
+     $result = $wpdb->get_results( $sql);
+ 
+     return ! empty( $result ) ? array_shift($result) : false;
    }
 
    protected function pin_request($request_id, $pin_value) {

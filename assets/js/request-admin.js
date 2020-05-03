@@ -121,9 +121,9 @@
   /**
    * Sends the email and saves the reply to the database
    */
-  function send_reply_email(request_id, replay_text) {
+  function send_reply_email(request_id, reply_text) {
 
-     var payload = { request_id: request_id, replay_text: replay_text };
+     var payload = { request_id: request_id, reply_text: reply_text };
 
      $.ajax( {
          url: chatsterDataAdmin.api_base_url + '/request/admin/reply',
@@ -134,9 +134,12 @@
          data: payload,
          success: function(data) {
           if (data.payload) {
+            $('#reply-section-' + request_id).find('textarea').val('');
             let $reply_container = $('#reply-section-' + request_id).find('.reply-all-container');
             let $reply = reply_template(data.payload);
+            $reply.hide();
             $reply_container.append($reply);
+            $reply.slideDown(300);
           }
          },
          error: function(error) {
@@ -148,10 +151,9 @@
    }
   $(".ch-reply-form").submit(function(e){
       e.preventDefault();
-      let replay_text = $(this).find('textarea').val();
+      let reply_text = $(this).find('textarea').val();
       let request_id =  $(this).attr('data-request_id');
-      send_reply_email(request_id, replay_text);
+      send_reply_email(request_id, reply_text);
   });
-
 
 })(jQuery);

@@ -103,13 +103,19 @@ class RequestApiAdmin extends GlobalApi  {
       * Routes Callbacks
       */
      public function reply_received_request( \WP_REST_Request $data ) {
-
-        $result = $this->insert_reply( $this->admin_email, $data['replay_text'], $data['request_id'] );
-        if ( $result ) {
+        $emailer = new Emailer;
+        $result = false;
+        $response = $this->get_request_by_id($data['request_id']);
+        $response->reply = $data['reply_text'];
+        //$email_status = $emailer->send_reply_email($response);
+        $email_status = true;
+        if ( $email_status ) {
+          $this->insert_reply( $this->admin_email, $data['reply_text'], $data['request_id'] );
           $latest_email = $this->get_latest_reply($data['request_id']);
           $latest_email->replied_at = $this->format_timezone($latest_email->replied_at);
           $result = $latest_email;
         }
+
         return array( 'action'=>'reply_request', 'payload'=> $result );
 
      }
