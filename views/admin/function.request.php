@@ -56,7 +56,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
               $dt = new DateTime("now", chatter_get_timezone() );
               $dt->setTimestamp(strtotime($request->replied_at));
               echo '<div title="'.esc_attr( $dt->format('F d, Y h:i A') ) .'">'. esc_html( $dt->format('F d, Y h:i A') ) . '</div>';
-              echo '<div title="'. esc_html( $request->last_replied_by ) .'">'. esc_html__('Replied by: ', CHATSTER_DOMAIN ). esc_html( $request->last_replied_by ) . '</div>';
+              echo '<div title="'. esc_html( $request->last_replied_by ) .'">'. esc_html__('By: ', CHATSTER_DOMAIN ). esc_html( $request->last_replied_by ) . '</div>';
             }
             echo '</div></td>';
             // Request is flagged
@@ -72,16 +72,22 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             echo '<tr id="reply-section-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit type-product status-publish has-post-thumbnail hentry product_cat-posters">';
             echo '<td style="width:100%;" colspan="5">';
             echo '<div class="row-actions" data-request_id="'.esc_attr( $request->id ).'">';
-            echo '<span class="reply" ><a href="" aria-label="Reply">'.( empty($request->replied_at) ? 'Reply' : 'Show&#47;Reply' ).'</a> |</span> ';
-            echo '<span class="delete"><a href="" class="submitdelete" aria-label="Delete">Delete</a></span></div>';
+            echo '<span class="reply" ><a href="" aria-label="Reply">'.( empty($request->replied_at) ? esc_html__( 'Reply', CHATSTER_DOMAIN ) : esc_html__( 'Show&#47;Reply', CHATSTER_DOMAIN )  ).'</a> |</span> ';
+            echo '<span class="delete"><a href="" class="submitdelete" aria-label="Delete">'.esc_html__( 'Delete', CHATSTER_DOMAIN ).'</a></span></div>';
             echo '<div class="reply-container hidden">';
             echo '<div class="reply-message">'.esc_html( $request->message ).'</div>';
             echo !empty($request->replied_at) ? ch_small_loader() : '';
             echo '<div class="reply-all-container hidden"></div>
-                  <div class="ch-reply-input">
-                    <textarea placeholder="'.esc_html__( 'Type here your message..', CHATSTER_DOMAIN ).'" type="text" rows="1" maxlength="799"></textarea>
+                    <div class="ch-reply-input">
+                    <form class="ch-reply-form" data-request_id="'.esc_attr( $request->id ).'" >
+                      <textarea required placeholder="'.esc_html__( 'Type here your message..', CHATSTER_DOMAIN ).'" type="text" rows="6" maxlength="799"></textarea>
+                      <div class="ch-btn-reply">
+                        <input type="submit" value="'.esc_html__( 'Send Email', CHATSTER_DOMAIN ).'">
+                      <div>
+                    </form>
+                    </div>
                   </div>
-                  </div></td>';
+                  </td>';
             echo '</tr>';
          }
 

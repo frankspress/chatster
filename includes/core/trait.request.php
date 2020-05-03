@@ -17,7 +17,7 @@ trait RequestCollection {
       $wp_table_request = self::get_table_name('request');
       $wp_table_reply = self::get_table_name('reply');
 
-      $sql  = " SELECT COUNT(*) AS count FROM $wp_table_request AS r ";
+      $sql  = " SELECT COUNT( DISTINCT r.id ) AS count FROM $wp_table_request AS r ";
       $sql .= " LEFT JOIN $wp_table_reply AS rp ON r.id = rp.request_id ";
       if ( $unreplied_only ) {
         $sql .= " WHERE rp.created_at IS NULL ";
@@ -42,9 +42,10 @@ trait RequestCollection {
                         MAX(CONVERT_TZ( rp.created_at, @@session.time_zone, '+00:00')) as replied_at
                 FROM $wp_table_request AS r
                 LEFT JOIN (
-                            SELECT * FROM $wp_table_reply
-                            WHERE created_at = ( SELECT MAX(created_at) as created_at FROM $wp_table_reply GROUP by request_id )
-                            GROUP BY request_id )
+                            SELECT subr.* FROM $wp_table_reply as subr
+                            INNER JOIN ( SELECT request_id , MAX(created_at) as created_at FROM $wp_table_reply GROUP by request_id ) as subrp
+                            ON subrp.created_at = subr.created_at
+                          )
                 AS rp ON r.id = rp.request_id
                 LEFT JOIN $Table_Users as u ON rp.admin_email = u.user_email ";
 
@@ -71,10 +72,10 @@ trait RequestCollection {
      $sql = " INSERT INTO $wp_table_reply ( request_id, admin_email, message ) VALUES( %d, %s, %s ) ";
      $sql = $wpdb->prepare( $sql, array( $request_id, $admin_email, $message ) );
 
-     $result = $wpdb->get_results( $sql );
+     $wpdb->query( $sql );
      wp_reset_postdata();
 
-     return ! empty( $result ) ? $result : false;
+     return ! empty( $wpdb->insert_id ) ? $wpdb->insert_id : false;
    }
 
    protected function get_replies( $request_id ) {
@@ -85,12 +86,31 @@ trait RequestCollection {
      $sql  = " SELECT r.*, CONVERT_TZ( r.created_at, @@session.time_zone, '+00:00') as replied_at, u.user_nicename as admin_name
                FROM $wp_table_reply as r
                LEFT JOIN $Table_Users as u ON r.admin_email = u.user_email
-               WHERE r.request_id = %d ";
+               WHERE r.request_id = %d
+               ORDER BY replied_at ASC ";
 
      $sql = $wpdb->prepare( $sql, $request_id);
      $result = $wpdb->get_results( $sql);
 
      return ! empty( $result ) ? $result : false;
+   }
+
+   protected function get_latest_reply( $request_id ) {
+     global $wpdb;
+     $wp_table_reply = self::get_table_name('reply');
+     $Table_Users = self::get_table_name('users');
+
+     $sql  = " SELECT r.*, CONVERT_TZ( r.created_at, @@session.time_zone, '+00:00') as replied_at, u.user_nicename as admin_name
+               FROM $wp_table_reply as r
+               LEFT JOIN $Table_Users as u ON r.admin_email = u.user_email
+               WHERE r.request_id = %d
+               ORDER BY replied_at DESC
+               LIMIT 1 ";
+
+     $sql = $wpdb->prepare( $sql, $request_id);
+     $result = $wpdb->get_results( $sql);
+ 
+     return ! empty( $result ) ? array_shift($result) : false;
    }
 
    protected function delete_request( $request_id ) {
@@ -121,7 +141,6 @@ trait RequestCollection {
 
      return ! empty( $result ) ? $result : 0;
    }
-
    // Public Insert
    protected function insert_request( $name, $email, $subject, $message ) {
      global $wpdb;

@@ -1,27 +1,31 @@
 (function ($) {
 "use strict";
 
-
+  /**
+   * Builds the reply messages and shows the reply section
+   */
   function esc_json(str) {
      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function reply_template( message_obj ) {
+    let $reply = $("<div>", {id: "message-" + esc_json(message_obj.id), "class": "ch-single-reply"});
+    let $reply_info = $("<div>", { "class": "ch-reply-info" });
+    let $reply_text = $("<div>", {"class": "ch-reply-text"});
+
+    $reply_info =  '<span>'+ esc_json(message_obj.admin_name ? message_obj.admin_name : '') +'</span>';
+    $reply_info += '<span>('+ esc_json(message_obj.admin_email)+')</span>';
+    $reply_info += '<span>'+ esc_json(message_obj.replied_at)+'</span>';
+
+    $reply_text.text(message_obj.message);
+    $reply.append($reply_info).append($reply_text);
+    return $reply;
   }
   function build_reply_conv(replies, request_id) {
 
     if ( replies ) {
       var $reply_container = $('#reply-section-' + request_id).find('.reply-all-container').empty();
       $.each( replies, function( key, message ) {
-
-        let $reply = $("<div>", {id: "message-" + esc_json(message.id), "class": "ch-single-reply"});
-        let $reply_info = $("<div>", { "class": "ch-reply-info" });
-        let $reply_text = $("<div>", {"class": "ch-reply-text"});
-
-        $reply_info =  '<span>'+ esc_json(message.admin_name ? message.admin_name : '') +'</span>';
-        $reply_info += '<span>('+ esc_json(message.admin_email)+')</span>';
-        $reply_info += '<span>'+ esc_json(message.replied_at)+'</span>';
-
-        $reply_text.text(message.message);
-        $reply.append($reply_info).append($reply_text);
-
+        let $reply = reply_template(message);
         $reply_container.append($reply);
       });
 
@@ -62,12 +66,21 @@
 
   });
 
+  /**
+   * Changes the pinned status for each request
+   */
   function change_flagged(request_id, flag_status) {
     let $flag = $('#request-' + request_id).find('.pinned-flag');
+    // Reverses to actual status if DB not updated.
     if (flag_status) {
       $flag.removeClass('unflagged');
     } else {
       $flag.addClass('unflagged');
+    }
+    // Removes the request id from the debounce array so it can be called again.
+    var index = debounce_id.indexOf(request_id);
+    if (index > -1) {
+       debounce_id.splice(index, 1);
     }
 
   }
@@ -86,14 +99,11 @@
           change_flagged(request_id, data.payload);
         },
         error: function(error) {
-
+          change_flagged(request_id, !pinned_status);
         },
 
       } ).done( function ( response ) {
-          var index = debounce_id.indexOf(request_id);
-          if (index > -1) {
-             debounce_id.splice(index, 1);
-          }
+
       });
   }
   var debounce_id = [];
@@ -107,5 +117,41 @@
         pin_request(request_id, pinned_status);
     }
   });
+
+  /**
+   * Sends the email and saves the reply to the database
+   */
+  function send_reply_email(request_id, replay_text) {
+
+     var payload = { request_id: request_id, replay_text: replay_text };
+
+     $.ajax( {
+         url: chatsterDataAdmin.api_base_url + '/request/admin/reply',
+         method: 'POST',
+         beforeSend: function ( xhr ) {
+             xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+         },
+         data: payload,
+         success: function(data) {
+          if (data.payload) {
+            let $reply_container = $('#reply-section-' + request_id).find('.reply-all-container');
+            let $reply = reply_template(data.payload);
+            $reply_container.append($reply);
+          }
+         },
+         error: function(error) {
+
+         },
+
+       } ).done( function ( response ) {
+       });
+   }
+  $(".ch-reply-form").submit(function(e){
+      e.preventDefault();
+      let replay_text = $(this).find('textarea').val();
+      let request_id =  $(this).attr('data-request_id');
+      send_reply_email(request_id, replay_text);
+  });
+
 
 })(jQuery);

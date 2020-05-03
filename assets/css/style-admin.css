@@ -146,3 +146,26 @@
 .unflagged:hover {
   opacity:.5;
 }
+
+.reply-container {
+  width: 70%;
+  margin: 0 auto;
+}
+.ch-reply-input textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1.2em;
+}
+
+.ch-btn-reply {
+  text-align: right;
+  padding: 10px 0;
+}
+
+.ch-btn-reply input {
+  padding: 10px 20px;
+  background-color: gray;
+  color: #FEFEFE;
+  cursor: pointer;
+  outline: none;
+}

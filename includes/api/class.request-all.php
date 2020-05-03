@@ -5,8 +5,10 @@ namespace Chatster\Api;
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.request.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.global-api.php' );
+require_once( CHATSTER_PATH . '/includes/core/class.emailer.php' );
 
 use Chatster\Core\RequestCollection;
+use Chatster\Core\Emailer;
 
 class RequestApiAdmin extends GlobalApi  {
   use RequestCollection;
@@ -28,7 +30,7 @@ class RequestApiAdmin extends GlobalApi  {
      */
     public function reply_request_message() {
       add_action('rest_api_init', function () {
-       register_rest_route( 'chatster/v1', '/request/admin/send', array(
+       register_rest_route( 'chatster/v1', '/request/admin/reply', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'reply_received_request' ),
                      'permission_callback' => array( $this, 'validate_admin' )
@@ -65,7 +67,6 @@ class RequestApiAdmin extends GlobalApi  {
            ));
       });
     }
-
     // Public Route - Insert Request
     public function insert_request_message() {
       add_action('rest_api_init', function () {
@@ -103,8 +104,13 @@ class RequestApiAdmin extends GlobalApi  {
       */
      public function reply_received_request( \WP_REST_Request $data ) {
 
-        $result = $this->insert_reply( $this->admin_email, $data['message'], $data['request_id'] );
-        return array( 'action'=>'reply_request', 'temp_id'=> $data['temp_id'], 'payload'=> $result );
+        $result = $this->insert_reply( $this->admin_email, $data['replay_text'], $data['request_id'] );
+        if ( $result ) {
+          $latest_email = $this->get_latest_reply($data['request_id']);
+          $latest_email->replied_at = $this->format_timezone($latest_email->replied_at);
+          $result = $latest_email;
+        }
+        return array( 'action'=>'reply_request', 'payload'=> $result );
 
      }
 
