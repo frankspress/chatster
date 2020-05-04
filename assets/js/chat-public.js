@@ -1,5 +1,5 @@
 (function ($) {
-
+"use strict";
   /**
    * It sends a presence ping to the database
    */
@@ -29,7 +29,7 @@
   presence();
 
   /**
-   * Chat sound function
+   * User Utility fn
    */
   function ch_chat_sound(){
     var mp3Source = '<source src="' + chatsterDataPublic.sound_file_path + '.mp3" type="audio/mpeg">';
@@ -39,6 +39,36 @@
     var chatSound = document.getElementById("ch-audio");
     chatSound.volume = chatsterDataPublic.chat_sound_vol;
   }
+  function scrollTopChat() {
+    $("#ch-msg-container").animate({ scrollTop: $('#ch-msg-container').prop("scrollHeight")}, 400);
+  }
+
+  /**
+   * Simplified Cookie fn
+   */
+  function setCookie(name, value, days) {
+      if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          var expires = "; expires=" + date.toGMTString();
+      }
+      else var expires = "";
+
+      document.cookie = name + "=" + value + expires + "; path=/";
+  }
+  function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+  }
+  function deleteCookie(name) {
+      createCookie(name, "", -1);
+  }
 
   /**
    * Inserts current messages into the conversation
@@ -46,7 +76,7 @@
   function insert_messages( new_message, temp_id ) {
 
     let customer_id = $("#ch-message-board").attr("data-curr_customer_id");
-    payload = { new_message: new_message, temp_id: temp_id };
+    var payload = { new_message: new_message, temp_id: temp_id };
 
     $.ajax( {
         url: chatsterDataPublic.api_base_url + '/chat/insert',
@@ -67,19 +97,28 @@
       });
   }
   $('#ch-reply-public').on('keypress', function(e) {
+
     if ( e.keyCode == 13 && ! e.shiftKey) {
       e.preventDefault();
       var message = $(this).val().trim();
       if (message && ( message.length <= 799 ) ) {
+        scrollTopChat();
         $(this).val('');
         let temp_id = (new Date()).getTime().toString();
         temp_id = temp_id.slice(4, temp_id.length);
-        $message = $("<div>", {id: "ch-msg-"+temp_id, "class": "ch-single-message ch-right", "data-author_id": "self" });
+        let $message = $("<div>", {id: "ch-msg-"+temp_id, "class": "ch-single-message ch-right", "data-author_id": "self" });
         $message.text(message);
         $("#ch-msg-container").append($message);
         insert_messages(message, temp_id);
       }
     }
+  });
+  $('#ch-chat-msg').on('click', function() {
+    var press = jQuery.Event("keypress");
+    press.ctrlKey = false;
+    press.which = 13;
+    press.keyCode = 13;
+    $('#ch-reply-public').trigger(press);
   });
 
   /**
@@ -100,7 +139,7 @@
             $( "#ch-msg-" + message.temp_id ).attr("id", "ch-msg-" + message.id );
           } else {
             let is_self = message.is_author == "1" ? "ch-single-message ch-right" : "single-message";
-            $message = $("<div>", {id: "ch-msg-" + message.id, "class": is_self });
+            let $message = $("<div>", {id: "ch-msg-" + message.id, "class": is_self });
             $message.html(message.message);
             $("#ch-msg-container").append($message);
             if ( current_msg_id ) {
@@ -119,7 +158,7 @@
     let ch_last_msg = $("#ch-msg-container").attr('data-last_msg_id');
     ch_last_msg = ch_last_msg ? ch_last_msg : 0;
 
-    payload = { last_msg_id: ch_last_msg };
+    var payload = { last_msg_id: ch_last_msg };
 
     if ( presence_set ) {
       $.ajax( {
@@ -132,6 +171,7 @@
           success: function(data) {
             if ( data.payload ) {
               build_current_conv(data.payload);
+              scrollTopChat();
             }
             setTimeout( long_poll_msg, 500 );
 
@@ -149,6 +189,9 @@
   }
   long_poll_msg();
 
+  /**
+   * Adds Live chat initial form / Sends request questions (Offline)
+   */
   function chat_form() {
 
    $.ajax( {
@@ -171,7 +214,26 @@
      });
  }
 
-
-
+  /**
+   * Chat Open/Close
+   */
+  function ch_open_chat() {
+    $('#chatster-opener').animate({
+      right: '-10%'
+    });
+    $('#chatster-container').animate({
+      bottom: '15px'
+    });
+  }
+  function ch_close_chat() {
+    $('#chatster-opener').animate({
+      right: '2%'
+    });
+    $('#chatster-container').animate({
+      bottom: '-650px'
+    });
+  }
+  $('#chatster-opener').on('click', ch_open_chat );
+  $('.ch-arrow').on('click', ch_close_chat);
 
 })(jQuery);

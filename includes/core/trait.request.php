@@ -133,7 +133,7 @@ trait RequestCollection {
      $sql  = " SELECT * FROM $wp_table_request WHERE id = %d ";
      $sql = $wpdb->prepare( $sql, $request_id);
      $result = $wpdb->get_results( $sql);
- 
+
      return ! empty( $result ) ? array_shift($result) : false;
    }
 

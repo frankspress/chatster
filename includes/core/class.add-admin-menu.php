@@ -22,7 +22,7 @@ class AdminMenu
                                   $this->get_menu_title_link(),
                                   'manage_options',
                                   'chatster-menu',
-                                  array( 'DisplayManager', 'find_admin_view'), 'dashicons-format-status'
+                                  array( 'Chatster\Views\DisplayManager', 'find_admin_view'), 'dashicons-format-status'
       );
 
       add_action('admin_print_scripts-'.$menu_page, function() {

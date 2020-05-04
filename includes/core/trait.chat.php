@@ -26,6 +26,30 @@ trait ChatCollection {
     return $is_active;
   }
 
+  protected static function get_current_customer_conv( $customer_id ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+
+    $sql = " SELECT * FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = 1 LIMIT 1 ";
+    $sql = $wpdb->prepare( $sql, $customer_id );
+
+    $conversation = $wpdb->get_results( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $conversation ) ? $conversation : false;
+  }
+
+  protected static function is_chat_available() {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+
+    $sql = " SELECT COUNT(*) FROM $wp_table_presence_admin WHERE is_active = 1 AND last_presence >= NOW() - INTERVAL 4 MINUTE ";
+
+    $result = $wpdb->get_var( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? true : false;
+  }
 /**
  * Api Methods
  */

@@ -12,7 +12,7 @@ class ChatPublic
 
   function __construct() {
       add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_front_js' ) , 30 );
-      add_action( 'wp_footer', array( 'DisplayManager', 'public_chat_view'));
+      add_action( 'wp_footer', array( 'Chatster\Views\DisplayManager', 'public_chat_view'));
   }
 
   public function enqueue_front_js() {
