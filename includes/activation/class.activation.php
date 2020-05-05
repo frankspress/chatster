@@ -28,6 +28,7 @@ class ActivationLoader  {
     $wp_table_message = self::get_table_name('message');
     $wp_table_message_link = self::get_table_name('message_link');
     $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_ticket = self::get_table_name('ticket');
     $Table_Users = self::get_table_name('users');
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -100,6 +101,22 @@ class ActivationLoader  {
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
         $sql .= " CONSTRAINT conv_id FOREIGN KEY (conv_id) REFERENCES $wp_table_conversation(id) ON DELETE CASCADE ";
+        $sql .= ") ENGINE=InnoDB " . $charset_collate ;
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+        $success = $success && empty($wpdb->last_error);
+    }
+
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_ticket' " ) != $wp_table_ticket)  {
+
+        $sql  = " CREATE TABLE $wp_table_ticket ( " ;
+        $sql .= " id BIGINT(11) NOT NULL AUTO_INCREMENT , ";
+        $sql .= " customer_id VARCHAR(100) NOT NULL , ";
+        $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
+        $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
+        $sql .= " PRIMARY KEY (id), ";
+        $sql .= " CONSTRAINT unq_tick_cstm_id UNIQUE (customer_id) ";
         $sql .= ") ENGINE=InnoDB " . $charset_collate ;
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

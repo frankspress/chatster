@@ -4,6 +4,7 @@
 
 #chatster-container section {
   margin: 0; padding: 0;
+  position: relative;
 }
 
 #chatster-container, #chatster-opener {
@@ -60,10 +61,6 @@
 
 }
 
-#ch-msg-container{
-  overflow-y: auto;
-}
-
 .ch-msg-wrapper {
   margin: 18px 0;
 }
@@ -116,8 +113,8 @@
 }
 
 #ch-msg-container {
-  max-height: 250px;
   overflow-y: auto;
+  height: 210px;
 }
 /* width */
 #ch-msg-container::-webkit-scrollbar {
@@ -147,4 +144,9 @@
 /***** TESTTTTT *****/
 #ch-message-section, #chatster-opener {
 
+}
+
+.ch-small-loader {
+  position: relative;
+  top: 40%;
 }

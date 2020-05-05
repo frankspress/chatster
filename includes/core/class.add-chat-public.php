@@ -25,8 +25,9 @@ class ChatPublic
       'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
       'chat_sound_vol' => 0.2
     ) );
-
+    wp_enqueue_style( 'chatster-loader-pbl', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
+
 
   }
 

@@ -211,9 +211,37 @@ class ChatApi extends GlobalApi  {
 
     public function insert_form_data_db( \WP_REST_Request $data ) {
         if ( !empty(CookieCatcher::serialized_form_data(false))) {
-          $this->insert_form_data( $this->customer_id, CookieCatcher::serialized_form_data(false) );
+          $result = $this->insert_form_data( $this->customer_id, CookieCatcher::serialized_form_data(false) );
         }
-        return array('action'=> 'form_data');
+        return array( 'action'=> $result );
+    }
+
+    public function long_poll_ticketing( \WP_REST_Request $data ) {
+
+      $current_conv = $this->get_active_conv_public($this->customer_id);
+      if ( $current_conv ) {
+        return array('action'=>'ticket_polling', 'payload'=> array( 'current_conv' => $current_conv ) );
+      }
+
+      $queue_status = 1;
+      for ($x = 0; $x <= 4; $x++) {
+        $queue_total = $this->get_queue_number();
+
+        if ( $queue_total == 0 || $queue_status == 0 ) {
+
+          $assigned_admin = $this->find_active_admin();
+          $current_conv = $this->set_new_conversation( $this->customer_id, $assigned_admin->id );
+
+          return array('action'=>'ticket_polling', 'payload'=> array( 'current_conv' => $current_conv ) );
+        }
+
+        $ticket = $this->get_ticket($this->customer_id);
+        $queue_status = $this->get_queue_status( $ticket );
+
+        sleep(1);
+      }
+
+      return array('action'=>'ticket_polling', 'payload'=> array('queue_status' => $queue_status) );
     }
 
     public function insert_msg_db( \WP_REST_Request $data) {
@@ -236,9 +264,10 @@ class ChatApi extends GlobalApi  {
     }
 
     public function disconnect_chat_db( \WP_REST_Request $data ) {
-
-        return array('action'=> 'form_data');
+        $disconnect = $this->disconnect_chat_customer($this->customer_id);
+        return array('action'=> 'diconnect', 'payload'=> $disconnect );
     }
+
 
 }
 

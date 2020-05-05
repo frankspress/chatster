@@ -42,6 +42,24 @@
   function scrollTopChat() {
     $("#ch-msg-container").animate({ scrollTop: $('#ch-msg-container').prop("scrollHeight")}, 400);
   }
+  function ch_open_chat() {
+    $('#chatster-opener').animate({
+      right: '-10%'
+    });
+    $('#chatster-container').animate({
+      bottom: '15px'
+    });
+  }
+  function ch_close_chat() {
+    $('#chatster-opener').animate({
+      right: '2%'
+    });
+    $('#chatster-container').animate({
+      bottom: '-650px'
+    });
+  }
+  $('#chatster-opener').on('click', ch_open_chat );
+  $('.ch-arrow').on('click', ch_close_chat);
 
   /**
    * Simplified Cookie fn
@@ -122,6 +140,37 @@
   });
 
   /**
+   * Ends current conversation
+   */
+  function disconnect_chat() {
+
+   var payload = {};
+
+   $.ajax( {
+       url: chatsterDataPublic.api_base_url + '/chat/disconnect',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+       },
+       data: payload,
+       success: function(data) {
+         console.log(data);
+         $('#ch-chat-section').css('background-color','#FAFAFA');
+         $('#ch-reply-public').attr('disabled',true);
+       },
+       error: function(error) {
+
+       },
+
+     } ).done( function ( response ) {
+
+     });
+  }
+  $('#ch-end-chat').on('click', function() {
+    disconnect_chat();
+  });
+
+  /**
    * Accessory functions to build the conversation list and current convs
    */
   function esc_json(str) {
@@ -172,6 +221,7 @@
             if ( data.payload ) {
               build_current_conv(data.payload);
               scrollTopChat();
+              $("#ch-msg-container").find('.ch-small-loader').hide();
             }
             setTimeout( long_poll_msg, 500 );
 
@@ -192,7 +242,7 @@
   /**
    * Adds Live chat initial form / Sends request questions (Offline)
    */
-  function chat_form() {
+  function request_form() {
 
    $.ajax( {
 
@@ -215,25 +265,29 @@
  }
 
   /**
-   * Chat Open/Close
+   * Chat Select Options
    */
-  function ch_open_chat() {
-    $('#chatster-opener').animate({
-      right: '-10%'
-    });
-    $('#chatster-container').animate({
-      bottom: '15px'
-    });
-  }
-  function ch_close_chat() {
-    $('#chatster-opener').animate({
-      right: '2%'
-    });
-    $('#chatster-container').animate({
-      bottom: '-650px'
-    });
-  }
-  $('#chatster-opener').on('click', ch_open_chat );
-  $('.ch-arrow').on('click', ch_close_chat);
+  $('#ch-btn-chat').on('click', function(e) {
+    if ( $(this).hasClass('ch-unavailable') ) {
+        return;
+    }
 
+    $("#ch-chat-select").animate({
+      top: '600px'
+    });
+    $('#ch-chat-form').slideDown(300);
+
+
+  });
+  $('#ch-btn-request').on('click', function(e) {
+
+
+  });
+  $("#ch-start-chat-form").submit(function(e){
+      e.preventDefault();
+      let c_name = $(this).find('#ch-customer-name').val();
+      let c_email =  $(this).find('#ch-customer-email').val();
+      let c_question =  $(this).find('#ch-customer-question').val();
+      //queue_chat_poll();
+  });
 })(jQuery);

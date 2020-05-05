@@ -107,7 +107,6 @@ trait ChatCollection {
 
     return ! empty( $result ) ? $result : false;
 
-
   }
 
   protected function insert_presence_admin( $admin_email ) {
@@ -172,6 +171,20 @@ trait ChatCollection {
     $wp_table_conversation = self::get_table_name('conversation');
 
     $sql = " SELECT id FROM $wp_table_conversation WHERE customer_id = %s AND admin_email = %s AND is_connected = TRUE ";
+
+    $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
+    $result = $wpdb->get_var($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+  }
+
+  protected function get_active_conv_public( $customer_id ) {
+
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+
+    $sql = " SELECT id FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = TRUE LIMIT 1 ";
 
     $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
     $result = $wpdb->get_var($sql);
@@ -268,17 +281,126 @@ trait ChatCollection {
 
   }
 
-  protected function find_active_admin( $customer ) {
+  protected function disconnect_chat( $conv_id ) {
     global $wpdb;
-    $wp_table_presence = self::get_table_name('presence');
+    $wp_table_conversation= self::get_table_name('conversation');
 
-    $sql = " SELECT * FROM $wp_table_presence WHERE is_active = true AND last_presence >= NOW() - INTERVAL 10 MINUTE ";
+    $sql = " UPDATE $wp_table_conversation
+             SET is_connected = FALSE
+             WHERE id = %d
+             LIMIT 1 ";
+
+    $sql = $wpdb->prepare( $sql, $conv_id );
+
     $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function find_current_admin( $customer_id ) {
+  protected function disconnect_chat_customer( $customer_id ) {
+    global $wpdb;
+    $wp_table_conversation= self::get_table_name('conversation');
+
+    $sql = " UPDATE $wp_table_conversation
+             SET is_connected = FALSE
+             WHERE customer_id = %s
+             LIMIT 1 ";
+
+    $sql = $wpdb->prepare( $sql, $customer_id );
+
+    $result = $wpdb->query($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+  }
+
+  // Ticketing system
+
+  protected function get_ticket( $customer_id ) {
+    global $wpdb;
+    $wp_table_ticket = self::get_table_name('ticket');
+    $sql = " INSERT INTO $wp_table_ticket ( customer_id ) VALUES( %s ) ON DUPLICATE KEY UPDATE updated_at = DEFAULT ";
+    $sql = $wpdb->prepare( $sql, $customer_id );
+    $wpdb->query( $sql );
+
+    $sql = " SELECT * FROM $wp_table_ticket WHERE customer_id = %s ";
+    $sql = $wpdb->prepare( $sql, $customer_id );
+    $result = $wpdb->get_var( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+  protected function delete_ticket( $ticket_id ) {
+    global $wpdb;
+    $wp_table_ticket = self::get_table_name('ticket');
+    $sql = " DELETE FROM $wp_table_ticket WHERE id <= %d ";
+    $sql = $wpdb->prepare( $sql, $ticket_id );
+
+    $result = $wpdb->query( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+  protected function get_queue_status( $ticket_id ) {
+    global $wpdb;
+    $wp_table_ticket = self::get_table_name('ticket');
+    $wp_table_presence = self::get_table_name('presence');
+
+    $sql = " SELECT COUNT(*) as count
+             FROM $wp_table_ticket as t
+             INNER JOIN $wp_table_presence  as p
+             ON t.customer_id = p.customer_id
+             WHERE t.id < %d
+             AND p.last_presence >= NOW() - INTERVAL 1 MINUTE ";
+
+    $sql = $wpdb->prepare( $sql, $ticket_id );
+
+    $result = $wpdb->get_var( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+  protected function get_queue_number() {
+    global $wpdb;
+    $wp_table_ticket = self::get_table_name('ticket');
+    $sql = " SELECT COUNT(*) as count FROM $wp_table_ticket ";
+    $result = $wpdb->get_var( $sql );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+  protected function find_active_admin() {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+    $wp_table_conversation = self::get_table_name('conversation');
+    $Table_Users = self::get_table_name('users');
+
+    $sql = " SELECT SUM(c.id) as total, c.admin_id as admin_id, u.user_nicename as admin_name
+             FROM $wp_table_presence_admin as p
+             INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
+             LEFT JOIN $wp_table_conversation as c ON p.admin_id = c.admin_id
+             WHERE p.is_active = true
+             AND p.last_presence >= NOW() - INTERVAL 4 MINUTE
+             AND c.is_connected = TRUE
+             GROUP BY admin_id
+             ORDER BY total ASC 
+             LIMIT 1 ";
+
+    $result = $wpdb->get_results($sql);
+
+    return ! empty( $result ) ? array_shift($result) : false;
+  }
+
+  protected function set_new_conversation( $customer_id, $admin_id ) {
     global $wpdb;
     $wp_table_presence = self::get_table_name('presence');
     $wp_table_conversation= self::get_table_name('conversation');
@@ -300,22 +422,6 @@ trait ChatCollection {
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function disconnect_chat( $conv_id ) {
-    global $wpdb;
-    $wp_table_conversation= self::get_table_name('conversation');
-
-    $sql = " UPDATE $wp_table_conversation
-             SET is_connected = FALSE
-             WHERE id = %d
-             LIMIT 1 ";
-
-    $sql = $wpdb->prepare( $sql, $conv_id );
-
-    $result = $wpdb->get_results($sql);
-    wp_reset_postdata();
-
-    return ! empty( $result ) ? $result : false;
-  }
 
 /**
  * Cron Jobs

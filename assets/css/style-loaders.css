@@ -13,6 +13,7 @@
   height: 15px;
   -webkit-animation: spin .4s linear infinite;
   animation: spin .4s linear infinite;
+  box-sizing: unset;
 }
 
 /* Safari */
