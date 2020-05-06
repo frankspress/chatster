@@ -21,9 +21,10 @@ class ChatApi extends GlobalApi  {
 
     public function __construct() {
       $this->presence_route();
-      $this->form_data_route();
-      $this->insert_msg_route();
+      $this->set_chat_form_route();
+      $this->poll_ticketing_route();
       $this->poll_msg_route();
+      $this->insert_msg_route();
       $this->disconnect_chat_route();
     }
 
@@ -35,14 +36,14 @@ class ChatApi extends GlobalApi  {
        register_rest_route( 'chatster/v1', '/chat/presence/customer', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'set_presence' ),
-                     'permission_callback' => array( $this, 'validate_new_customer' )
+                     'permission_callback' => array( $this, 'validate_customer' )
            ));
       });
     }
 
-    public function form_data_route() {
+    public function set_chat_form_route() {
       add_action('rest_api_init', function () {
-        register_rest_route( 'chatster/v1', '/chat/form-data', array(
+        register_rest_route( 'chatster/v1', '/chat/chat-form', array(
                       'methods'  => 'POST',
                       'callback' => array( $this, 'insert_form_data_db' ),
                       'permission_callback' => array( $this, 'validate_customer_form' )
@@ -50,12 +51,12 @@ class ChatApi extends GlobalApi  {
       });
     }
 
-    public function insert_msg_route() {
+    public function poll_ticketing_route() {
       add_action('rest_api_init', function () {
-        register_rest_route( 'chatster/v1', '/chat/insert', array(
+        register_rest_route( 'chatster/v1', '/chat/ticketing', array(
                       'methods'  => 'POST',
-                      'callback' => array( $this, 'insert_msg_db' ),
-                      'permission_callback' => array( $this, 'validate_message' )
+                      'callback' => array( $this, 'long_poll_ticketing' ),
+                      'permission_callback' => array( $this, 'validate_customer' )
             ));
       });
     }
@@ -66,6 +67,16 @@ class ChatApi extends GlobalApi  {
                       'methods'  => 'POST',
                       'callback' => array( $this, 'long_poll_db' ),
                       'permission_callback' => array( $this, 'validate_msg_poll' )
+            ));
+      });
+    }
+
+    public function insert_msg_route() {
+      add_action('rest_api_init', function () {
+        register_rest_route( 'chatster/v1', '/chat/insert', array(
+                      'methods'  => 'POST',
+                      'callback' => array( $this, 'insert_msg_db' ),
+                      'permission_callback' => array( $this, 'validate_message' )
             ));
       });
     }
@@ -109,7 +120,8 @@ class ChatApi extends GlobalApi  {
        if ( empty($this->customer_id) ) {
          $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);
        }
-       return setrawcookie('ch_ctmr_id', base64_encode($this->customer_id) , (time() + 8419200), "/");
+       setrawcookie('ch_ctmr_id', base64_encode($this->customer_id) , (time() + 8419200), "/");
+       return $this->customer_id;
     }
 
     private function get_customer_id() {
@@ -123,7 +135,7 @@ class ChatApi extends GlobalApi  {
         return $this->customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
       }
 
-      return false;
+      return $this->set_customer_id_cookie();
     }
 
     private function get_customer_basics( $request ) {
@@ -138,34 +150,15 @@ class ChatApi extends GlobalApi  {
       return CookieCatcher::deserialized_form_data();
     }
 
-    private function set_assigned_admin() {
-      // TODO
-      $this->assigned_admin = 'frankieeeit@gmail.com';
-    }
     /**
      * Validation Callbacks
      */
-    public function validate_new_customer( $request ) {
-
-     if ( $this->get_customer_id() ) {
-        $this->set_assigned_admin();
-        return true;
-     } else {
-        $this->set_customer_id_cookie();
-        return true;
-     }
-
-     return false;
-    }
 
     public function validate_customer( $request ) {
 
-      if ( $this->get_customer_id() ) {
-        $request['chatster_customer_id'] = $this->customer_id;
-        $this->set_assigned_admin();
-        return true;
-      }
-      return false;
+      $request['chatster_customer_id'] = $this->get_customer_id();
+      return true;
+
     }
 
     public function validate_message( $request ) {
@@ -217,31 +210,41 @@ class ChatApi extends GlobalApi  {
     }
 
     public function long_poll_ticketing( \WP_REST_Request $data ) {
-
+      // If Admins go offline
+      if ( ! self::is_chat_available() ) {
+        return array('action'=>'ticket_polling', 'payload'=> array( 'chat_active' => false );
+      }
+      // If conversation was already started and active
       $current_conv = $this->get_active_conv_public($this->customer_id);
       if ( $current_conv ) {
-        return array('action'=>'ticket_polling', 'payload'=> array( 'current_conv' => $current_conv ) );
+        return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $current_conv->id,
+                                                                    'admin_name' => $current_conv->admin_name ) );
       }
-
+      // Ticket polling system
       $queue_status = 1;
       for ($x = 0; $x <= 4; $x++) {
+        // Check queue status
         $queue_total = $this->get_queue_number();
-
         if ( $queue_total == 0 || $queue_status == 0 ) {
-
-          $assigned_admin = $this->find_active_admin();
-          $current_conv = $this->set_new_conversation( $this->customer_id, $assigned_admin->id );
-
-          return array('action'=>'ticket_polling', 'payload'=> array( 'current_conv' => $current_conv ) );
+          // Check if any admin is available and has less than n chats open
+          if ( $assigned_admin = $this->find_active_admin( $max_allowed = 10 ) ) {
+            if ( isset($ticket ) ) {
+              $this->delete_ticket($ticket);
+            }
+            // Returns the new conversation id with admin name
+            $conv_id = $this->set_new_conversation( $this->customer_id, $assigned_admin->id );
+            return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $conv_id,
+                                                                        'admin_name' => $assigned_admin->admin_name ) );
+          }
         }
-
+        // Gets a new ticket or refresh the same ticket updated_at
         $ticket = $this->get_ticket($this->customer_id);
         $queue_status = $this->get_queue_status( $ticket );
 
         sleep(1);
       }
-
-      return array('action'=>'ticket_polling', 'payload'=> array('queue_status' => $queue_status) );
+      // Returns the queue number of people waiting
+      return array('action'=>'ticket_polling', 'payload'=> array( 'queue_status' => $queue_status  ) );
     }
 
     public function insert_msg_db( \WP_REST_Request $data) {

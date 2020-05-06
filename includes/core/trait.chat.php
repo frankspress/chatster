@@ -10,7 +10,7 @@ trait ChatCollection {
   use ChatsterTableBuilder;
 
 /**
- * Static Methods for Display Manager
+ * Static Methods 
  */
 
   protected static function get_admin_status( $admin_email ) {
@@ -184,10 +184,10 @@ trait ChatCollection {
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
 
-    $sql = " SELECT id FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = TRUE LIMIT 1 ";
+    $sql = " SELECT id, admin_name FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = TRUE LIMIT 1 ";
 
     $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
-    $result = $wpdb->get_var($sql);
+    $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
@@ -349,14 +349,11 @@ trait ChatCollection {
   protected function get_queue_status( $ticket_id ) {
     global $wpdb;
     $wp_table_ticket = self::get_table_name('ticket');
-    $wp_table_presence = self::get_table_name('presence');
 
     $sql = " SELECT COUNT(*) as count
-             FROM $wp_table_ticket as t
-             INNER JOIN $wp_table_presence  as p
-             ON t.customer_id = p.customer_id
-             WHERE t.id < %d
-             AND p.last_presence >= NOW() - INTERVAL 1 MINUTE ";
+             FROM $wp_table_ticket
+             WHERE id < %d
+             AND updated_at >= NOW() - INTERVAL 1 MINUTE ";
 
     $sql = $wpdb->prepare( $sql, $ticket_id );
 
@@ -370,7 +367,7 @@ trait ChatCollection {
   protected function get_queue_number() {
     global $wpdb;
     $wp_table_ticket = self::get_table_name('ticket');
-    $sql = " SELECT COUNT(*) as count FROM $wp_table_ticket ";
+    $sql = " SELECT COUNT(*) as count FROM $wp_table_ticket WHERE updated_at >= NOW() - INTERVAL 1 MINUTE ";
     $result = $wpdb->get_var( $sql );
     wp_reset_postdata();
 
@@ -378,7 +375,7 @@ trait ChatCollection {
 
   }
 
-  protected function find_active_admin() {
+  protected function find_active_admin( $max_allowed = 10 ) {
     global $wpdb;
     $wp_table_presence_admin = self::get_table_name('presence_admin');
     $wp_table_conversation = self::get_table_name('conversation');
@@ -391,35 +388,29 @@ trait ChatCollection {
              WHERE p.is_active = true
              AND p.last_presence >= NOW() - INTERVAL 4 MINUTE
              AND c.is_connected = TRUE
+             AND total <= %d
              GROUP BY admin_id
-             ORDER BY total ASC 
+             ORDER BY total ASC
              LIMIT 1 ";
 
+    $sql = $wpdb->prepare( $sql, $max_allowed );
     $result = $wpdb->get_results($sql);
+    wp_reset_postdata();
 
     return ! empty( $result ) ? array_shift($result) : false;
   }
 
   protected function set_new_conversation( $customer_id, $admin_id ) {
     global $wpdb;
-    $wp_table_presence = self::get_table_name('presence');
     $wp_table_conversation= self::get_table_name('conversation');
-    $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT * FROM $wp_table_presence as p
-             INNER JOIN $wp_table_conversation as c
-             INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
-             ON customer_id = %s
-             WHERE p.is_active = true AND p.last_presence >= NOW() - INTERVAL 10 MINUTE
-             ORDER by c.updated_at DESC
-             LIMIT 1 ";
-
-    $sql = $wpdb->prepare( $sql, $customer_id );
-
-    $result = $wpdb->get_results($sql);
+    $sql = " INSERT INTO $wp_table_conversation ( customer_id, admin_id ) VALUES ( %s, %s ) ";
+    $sql = $wpdb->prepare( $sql, $customer_id, $admin_id );
+    $wpdb->query($sql);
+    $conv_id = $wpdb->insert_id;
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : false;
+    return ! empty( $conv_id ) ? $conv_id : false;
   }
 
 
