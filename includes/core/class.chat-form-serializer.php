@@ -3,7 +3,7 @@
 namespace Chatster\Core;
 require_once( CHATSTER_PATH . '/includes/functions.global.php' );
 
-class CookieCatcher  {
+class ChatFormSerializer  {
 
   private static $customer_name = false;
   private static $customer_email = false;
@@ -28,8 +28,8 @@ class CookieCatcher  {
 
   public static function deserialized_form_data() {
 
-      if ( !isset( $_COOKIE['ch_form_data']) &&
-            !empty( $_COOKIE['ch_form_data'])) return false;
+      if ( !isset( $_COOKIE['ch_form_data']) ||
+             empty( $_COOKIE['ch_form_data'])) return false;
 
       $form_container = unserialize( base64url_decode( $_COOKIE['ch_form_data'] ));
 
@@ -47,10 +47,11 @@ class CookieCatcher  {
     foreach ( self::$form_fields as $field ) {
       if ( !empty($form[$field])) {
          self::$$field = $form[$field];
-         $is_not_empty = true;
+      } else {
+        return false;
       }
     }
-    return $is_not_empty;
+    return true;
   }
 
   public static function set_cookie_form_data() {

@@ -237,33 +237,57 @@
         setTimeout( long_poll_msg, 500 );
       }
   }
-  long_poll_msg();
 
   /**
-   * Adds Live chat initial form / Sends request questions (Offline)
+   * Adds Live chat initial form / Initiates chat
    */
-  function request_form() {
+  function set_request_form() {
 
-   $.ajax( {
+    let c_name = $('#ch-chat-name').val();
+    let c_email =  $('#ch-chat-email').val();
+    let c_subject =  $('#ch-chat-subject').val();
+    var payload = { customer_name: c_name, customer_email: c_email, chat_subject: c_subject };
 
-       url: chatsterDataPublic.api_base_url + '/chat/form-data',
-       method: 'POST',
-       beforeSend: function ( xhr ) {
-           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-       },
-       data: {customer_name: 'meeee', chat_subject: 'testing... ee'},
-       success: function(data) {
-         console.log(data);
-       },
-       error: function(error) {
+     $.ajax( {
 
-       },
+         url: chatsterDataPublic.api_base_url + '/chat/chat-form',
+         method: 'POST',
+         beforeSend: function ( xhr ) {
+             xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+         },
+         data: payload,
+         success: function(data) {
+           $('#ch-chat-form').slideUp(300);
+           $('#ch-chat-section').slideDown(300);
+           long_poll_ticketing();
+         },
+         error: function(error) {
 
-     } ).done( function ( response ) {
+         },
 
-     });
+       } ).done( function ( response ) {
+
+       });
  }
+  function long_poll_ticketing() {
+    $.ajax( {
 
+        url: chatsterDataPublic.api_base_url + '/chat/ticketing',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+        },
+        success: function(data) {
+          console.log(data);
+        },
+        error: function(error) {
+
+        },
+
+      } ).done( function ( response ) {
+
+      });
+  }
   /**
    * Chat Select Options
    */
@@ -285,9 +309,7 @@
   });
   $("#ch-start-chat-form").submit(function(e){
       e.preventDefault();
-      let c_name = $(this).find('#ch-customer-name').val();
-      let c_email =  $(this).find('#ch-customer-email').val();
-      let c_question =  $(this).find('#ch-customer-question').val();
-      //queue_chat_poll();
+      set_request_form();
   });
+
 })(jQuery);

@@ -8,7 +8,7 @@ require_once( CHATSTER_PATH . '/includes/api/class.global-api.php' );
 
 use Chatster\Core\ChatCollection;
 use Chatster\Core\Crypto;
-use Chatster\Core\CookieCatcher;
+use Chatster\Core\ChatFormSerializer;
 
 class ChatApi extends GlobalApi  {
   use ChatCollection;
@@ -132,22 +132,13 @@ class ChatApi extends GlobalApi  {
       }
 
       if ( isset($_COOKIE['ch_ctmr_id'])) {
-        return $this->customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
+        $this->customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
+        if ( is_email( $this->customer_id ) ) {
+          $this->customer_id = '';
+        }
       }
 
       return $this->set_customer_id_cookie();
-    }
-
-    private function get_customer_basics( $request ) {
-
-      $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
-      $request['customer_email'] = isset($request['customer_email']) ? validate_email($request['customer_email']) : false;
-      $request['chat_subject'] = isset($request['chat_subject']) ? $this->validate_subject($request['chat_subject']) : false;
-
-      if ( CookieCatcher::set_form_data($request) ) {
-        return CookieCatcher::set_cookie_form_data();
-      }
-      return CookieCatcher::deserialized_form_data();
     }
 
     /**
@@ -188,8 +179,11 @@ class ChatApi extends GlobalApi  {
 
     public function validate_customer_form( $request ) {
       if ( $this->validate_customer( $request ) ) {
-          $this->get_customer_basics( $request );
-          return true;
+          $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
+          $request['customer_email'] = isset($request['customer_email']) ? $this->validate_email($request['customer_email']) : false;
+          $request['chat_subject'] = isset($request['chat_subject']) ? $this->validate_subject($request['chat_subject']) : false;
+
+          return ChatFormSerializer::set_form_data($request);
       }
       return false;
     }
@@ -203,19 +197,17 @@ class ChatApi extends GlobalApi  {
     }
 
     public function insert_form_data_db( \WP_REST_Request $data ) {
-        if ( !empty(CookieCatcher::serialized_form_data(false))) {
-          $result = $this->insert_form_data( $this->customer_id, CookieCatcher::serialized_form_data(false) );
-        }
-        return array( 'action'=> $result );
+        $result = $this->insert_form_data( $this->customer_id, ChatFormSerializer::serialized_form_data(false) );
+        return array( 'action'=> 'chat_form', 'payload'=> $result );
     }
 
     public function long_poll_ticketing( \WP_REST_Request $data ) {
-      // If Admins go offline
+      // If ALL Admins are no longer available
       if ( ! self::is_chat_available() ) {
-        return array('action'=>'ticket_polling', 'payload'=> array( 'chat_active' => false );
+        return array('action'=>'ticket_polling', 'payload'=> array( 'chat_active' => false ) );
       }
-      // If conversation was already started and active
-      $current_conv = $this->get_active_conv_public($this->customer_id);
+      // If conversation was already started and still active
+      $current_conv = $this->get_active_conv_public( $this->customer_id );
       if ( $current_conv ) {
         return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $current_conv->id,
                                                                     'admin_name' => $current_conv->admin_name ) );
@@ -228,19 +220,18 @@ class ChatApi extends GlobalApi  {
         if ( $queue_total == 0 || $queue_status == 0 ) {
           // Check if any admin is available and has less than n chats open
           if ( $assigned_admin = $this->find_active_admin( $max_allowed = 10 ) ) {
-            if ( isset($ticket ) ) {
-              $this->delete_ticket($ticket);
+            if ( isset( $ticket ) ) {
+              $this->delete_ticket( $ticket );
             }
             // Returns the new conversation id with admin name
-            $conv_id = $this->set_new_conversation( $this->customer_id, $assigned_admin->id );
+            $conv_id = $this->set_new_conversation( $this->customer_id, $assigned_admin->admin_email );
             return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $conv_id,
                                                                         'admin_name' => $assigned_admin->admin_name ) );
           }
         }
         // Gets a new ticket or refresh the same ticket updated_at
-        $ticket = $this->get_ticket($this->customer_id);
+        $ticket = $this->get_ticket( $this->customer_id );
         $queue_status = $this->get_queue_status( $ticket );
-
         sleep(1);
       }
       // Returns the queue number of people waiting

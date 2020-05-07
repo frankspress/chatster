@@ -10,7 +10,7 @@ trait ChatCollection {
   use ChatsterTableBuilder;
 
 /**
- * Static Methods 
+ * Static Methods
  */
 
   protected static function get_admin_status( $admin_email ) {
@@ -183,10 +183,14 @@ trait ChatCollection {
 
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
+    $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT id, admin_name FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = TRUE LIMIT 1 ";
+    $sql = " SELECT c.id, u.user_nicename as admin_name
+    FROM $wp_table_conversation as c
+    INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
+    WHERE c.customer_id = %s AND c.is_connected = TRUE LIMIT 1 ";
 
-    $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
+    $sql = $wpdb->prepare( $sql, $customer_id );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
@@ -273,10 +277,10 @@ trait ChatCollection {
      $sql = " INSERT INTO $wp_table_presence ( customer_id, form_data ) VALUES( %s, %s ) ON DUPLICATE KEY UPDATE last_presence = DEFAULT, form_data = %s ";
      $sql = $wpdb->prepare( $sql, $customer_id, $form_data, $form_data );
 
-     $result = $wpdb->get_results( $sql );
+     $result = $wpdb->query( $sql );
      wp_reset_postdata();
 
-     return ! empty( $result ) ? $result : false;
+     return ! empty( $result ) ? true : false;
 
 
   }
@@ -381,31 +385,30 @@ trait ChatCollection {
     $wp_table_conversation = self::get_table_name('conversation');
     $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT SUM(c.id) as total, c.admin_id as admin_id, u.user_nicename as admin_name
+    $sql = " SELECT COALESCE( SUM(c.id), 0 ) as count, p.admin_email as admin_email, u.user_nicename as admin_name
              FROM $wp_table_presence_admin as p
-             INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
-             LEFT JOIN $wp_table_conversation as c ON p.admin_id = c.admin_id
+             INNER JOIN $Table_Users as u ON p.admin_email = u.user_email
+             LEFT JOIN $wp_table_conversation as c ON p.admin_email = c.admin_email  AND c.is_connected = TRUE
              WHERE p.is_active = true
              AND p.last_presence >= NOW() - INTERVAL 4 MINUTE
-             AND c.is_connected = TRUE
-             AND total <= %d
-             GROUP BY admin_id
-             ORDER BY total ASC
+             GROUP BY admin_email
+             HAVING count <= %d
+             ORDER BY count ASC
              LIMIT 1 ";
 
     $sql = $wpdb->prepare( $sql, $max_allowed );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 
-    return ! empty( $result ) ? array_shift($result) : false;
+    return ! empty( $result ) ? array_shift( $result ) : false;
   }
 
-  protected function set_new_conversation( $customer_id, $admin_id ) {
+  protected function set_new_conversation( $customer_id, $admin_email ) {
     global $wpdb;
     $wp_table_conversation= self::get_table_name('conversation');
 
-    $sql = " INSERT INTO $wp_table_conversation ( customer_id, admin_id ) VALUES ( %s, %s ) ";
-    $sql = $wpdb->prepare( $sql, $customer_id, $admin_id );
+    $sql = " INSERT INTO $wp_table_conversation ( customer_id, admin_email ) VALUES ( %s, %s ) ";
+    $sql = $wpdb->prepare( $sql, $customer_id, $admin_email );
     $wpdb->query($sql);
     $conv_id = $wpdb->insert_id;
     wp_reset_postdata();

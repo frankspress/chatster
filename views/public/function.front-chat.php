@@ -39,13 +39,13 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
       <section id="ch-chat-form" class="hidden">
         <form id="ch-start-chat-form">
           <div class="ch-input">
-            <input type="text" id="ch-customer-name" value="" placeholder="Your name" info="name" required >
+            <input type="text" id="ch-chat-name" value="" placeholder="Your name" info="name" required >
           </div>
           <div class="ch-input">
-            <input type="email" id="ch-customer-email" value="" placeholder="Your email" info="email" required >
+            <input type="email" id="ch-chat-email" value="" placeholder="Your email" info="email" required >
           </div>
           <div class="ch-input">
-            <textarea id="ch-customer-question" placeholder="Type here your question.." type="text" required ></textarea>
+            <textarea id="ch-chat-subject" placeholder="Type here your question.." type="text" required ></textarea>
           </div>
             <input id="ch-start-chatting" class="ch-send-btn" type="submit" value="<?php echo esc_html__( 'Start Chatting', CHATSTER_DOMAIN ); ?>">
         </form>

@@ -3,7 +3,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-require_once( CHATSTER_PATH . '/includes/core/class.cookie.php' );
+require_once( CHATSTER_PATH . '/includes/core/class.chat-form-serializer.php' );
 require_once( CHATSTER_PATH . '/includes/core/class.cron-manager.php' );
 require_once( CHATSTER_PATH . '/includes/functions.global.php' );
 require_once( CHATSTER_PATH . '/includes/core/class.encrypter.php' );
