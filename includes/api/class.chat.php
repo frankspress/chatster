@@ -159,7 +159,6 @@ class ChatApi extends GlobalApi  {
                       isset( $request['temp_id'] ) ) {
 
           $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
-          $this->set_assigned_admin();
           return true;
 
         }
@@ -226,35 +225,40 @@ class ChatApi extends GlobalApi  {
             // Returns the new conversation id with admin name
             $conv_id = $this->set_new_conversation( $this->customer_id, $assigned_admin->admin_email );
             return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $conv_id,
-                                                                        'admin_name' => $assigned_admin->admin_name ) );
+                                                                        'admin_name' => ucfirst($assigned_admin->admin_name )) );
           }
         }
+        // Returns the poll if no ticket issued yet and shows the queue length to the user
+        if ( false === $this->get_ticket( $this->customer_id ) ) {
+          $ticket = $this->set_ticket( $this->customer_id );
+          $queue_status = $this->get_queue_status( $ticket );
+          break;
+        }
         // Gets a new ticket or refresh the same ticket updated_at
-        $ticket = $this->get_ticket( $this->customer_id );
+        $ticket = $this->set_ticket( $this->customer_id );
         $queue_status = $this->get_queue_status( $ticket );
         sleep(1);
       }
       // Returns the queue number of people waiting
-      return array('action'=>'ticket_polling', 'payload'=> array( 'queue_status' => $queue_status  ) );
+      return array('action'=>'ticket_polling', 'payload'=> array( 'queue_status' => $queue_status ) );
     }
 
     public function insert_msg_db( \WP_REST_Request $data) {
 
-      $result = $this->insert_new_message( $this->assigned_admin, $this->customer_id, $this->customer_id, $data['new_message'], $data['temp_id'] );
+      $result = $this->insert_new_message( $data['conv_id'], $this->customer_id, $data['new_message'], $data['temp_id'] );
       return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=> $data['temp_id'] );
     }
 
     public function long_poll_db( \WP_REST_Request $data ) {
         for ($x = 0; $x <= 10; $x++) {
-            $current_conv = $this->get_latest_messages_public( $data['last_msg_id'], $this->assigned_admin, $this->customer_id );
-            if ( $current_conv ) {
-              $conv_id = $this->get_current_conv_public($this->assigned_admin, $this->customer_id);
-              $this->set_message_read( $this->customer_id, $conv_id, $data['last_msg_id'] );
+            $new_messages = $this->get_latest_messages_public( $this->customer_id, $data['conv_id'], $data['last_msg_id'] );
+            if ( $new_messages ) {
+              $this->set_message_read( $this->customer_id, $data['conv_id'], $data['last_msg_id'] );
               break;
             };
             usleep(700000);
         }
-        return array('action'=>'polling', 'payload'=> $current_conv );
+        return array('action'=>'polling', 'payload'=> $new_messages );
     }
 
     public function disconnect_chat_db( \WP_REST_Request $data ) {

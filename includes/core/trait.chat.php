@@ -29,14 +29,18 @@ trait ChatCollection {
   protected static function get_current_customer_conv( $customer_id ) {
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
+    $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT * FROM $wp_table_conversation WHERE customer_id = %s AND is_connected = 1 LIMIT 1 ";
+    $sql = " SELECT c.*, u.user_nicename as admin_name FROM $wp_table_conversation as c
+             INNER JOIN $Table_Users as u ON c.admin_email = u.user_email
+             WHERE c.customer_id = %s AND c.is_connected = 1 LIMIT 1 ";
+
     $sql = $wpdb->prepare( $sql, $customer_id );
 
     $conversation = $wpdb->get_results( $sql );
     wp_reset_postdata();
 
-    return ! empty( $conversation ) ? $conversation : false;
+    return ! empty( $conversation ) ? array_shift($conversation) : false;
   }
 
   protected static function is_chat_available() {
@@ -50,6 +54,7 @@ trait ChatCollection {
 
     return ! empty( $result ) ? true : false;
   }
+
 /**
  * Api Methods
  */
@@ -62,6 +67,9 @@ trait ChatCollection {
         // Builds the product or page link info for each message.
         foreach ($link_ids as $id) {
 
+          $excerpt = get_the_excerpt( $id );
+          $excerpt = strlen($excerpt) > 35 ? trim(substr($excerpt, 0, 35))." ..." : $excerpt;
+
           if ( $product = wc_get_product($id) ) {
 
             $link = [  "type" => "product",
@@ -69,7 +77,7 @@ trait ChatCollection {
                        "title"=> esc_html( $product->get_title() ),
                        "link"=> esc_url( get_post_permalink( $id ) ) ,
                        "thumbnail"=> esc_url( get_the_post_thumbnail_url($id, 'thumbnail') ),
-                       "excerpt"=> esc_html( get_the_excerpt( $id )),
+                       "excerpt"=> esc_html( $excerpt ),
                        "product_type" => esc_html($product->get_type()),
                        "available" => esc_attr( $product->is_in_stock())
                     ];
@@ -82,7 +90,7 @@ trait ChatCollection {
                        "title"=> esc_html( get_the_title( $id ) ),
                        "link"=> esc_url( get_post_permalink( $id ) ),
                        "thumbnail"=> esc_url( get_the_post_thumbnail_url( $id , 'thumbnail' )),
-                       "excerpt"=> esc_html( get_the_excerpt( $id ))
+                       "excerpt"=> esc_html( $excerpt )
                     ];
 
             $constructed_links []= $link;
@@ -165,6 +173,31 @@ trait ChatCollection {
 
   }
 
+  protected function get_disconnected_convs( $admin_email, $conv_ids ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $prep_sql_list = '';
+    $values = array();
+
+    foreach ($conv_ids as $key => $value) {
+        $prep_sql_list .= ' %d,';
+        $sql_values []= $value;
+    }
+    $prep_sql_list = rtrim( $prep_sql_list, "," );
+
+    $sql = " SELECT id FROM $wp_table_conversation
+             WHERE id IN( $prep_sql_list ) AND is_connected = FALSE
+             LIMIT 20 ";
+
+    $sql = $wpdb->prepare( $sql, $sql_values );
+    $result = $wpdb->get_results( $sql, ARRAY_A );
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+
+  }
+
+
   protected function get_current_conv_public( $admin_email, $customer_id ) {
 
     global $wpdb;
@@ -201,7 +234,6 @@ trait ChatCollection {
 
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
-    $wp_table_message_link = self::get_table_name('message_link');
     $wp_table_conversation = self::get_table_name('conversation');
 
     $sql = " SELECT mm.*
@@ -220,33 +252,60 @@ trait ChatCollection {
     return ! empty( $result ) ? $this->construct_msg_links( $result ) : false;
   }
 
-  protected function get_latest_messages_public( $last_msg_id = 0, $assigned_admin, $customer_id = '' ) {
+  protected function get_unread_messages( $admin_email ) {
 
     global $wpdb;
     $wp_table_message = self::get_table_name('message');
+    $wp_table_presence = self::get_table_name('presence');
     $wp_table_conversation = self::get_table_name('conversation');
 
-    $sql = " SELECT mm.*
-             FROM (  SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, m.product_ids, m.created_at as created_at
-                     FROM $wp_table_message as m
-                     INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
-                     WHERE  ( customer_id = %s AND admin_email = %s ) AND c.is_connected = true AND m.id > %d
-                     ORDER BY m.created_at DESC
-                     LIMIT 25 )
-             AS mm ORDER BY mm.created_at ASC ";
+    $sql = " SELECT c.id, COUNT(m.id) as not_read
+             FROM  $wp_table_conversation as c
+             INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
+             LEFT JOIN $wp_table_message as m ON m.conv_id = c.id AND m.is_read = false
+             WHERE admin_email = %s
+             AND c.is_connected = TRUE
+             GROUP BY c.id
+             HAVING not_read > 0
+             ORDER BY c.created_at ASC
+             LIMIT 20 ";
 
-    $sql = $wpdb->prepare( $sql, $customer_id, $customer_id, $assigned_admin, $last_msg_id );
-    $result = $wpdb->get_results($sql);
+    $sql = $wpdb->prepare( $sql, $admin_email );
+    $result = $wpdb->get_results($sql, ARRAY_A );
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
   }
 
-  protected function insert_new_message( $admin, $customer, $sender, $msg, $temp_id, $message_links = [] ) {
+  protected function get_latest_messages_public( $customer_id = '', $conv_id, $last_msg_id = 0 ) {
+
+    global $wpdb;
+    $wp_table_message = self::get_table_name('message');
+    $wp_table_conversation = self::get_table_name('conversation');
+
+     $sql = " SELECT mm.*
+              FROM (
+                      SELECT m.id, m.temp_id, m.message, IF( m.author_id = %s , TRUE, FALSE ) AS is_author, m.product_ids, m.created_at as created_at
+                      FROM $wp_table_message as m
+                      INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
+                      WHERE  ( c.customer_id = %s AND c.id = %d ) AND c.is_connected = true AND m.id > %d
+                      ORDER BY m.created_at DESC
+                      LIMIT 25 )
+              AS mm ORDER BY mm.created_at ASC ";
+
+    $sql = $wpdb->prepare( $sql, $customer_id, $customer_id, $conv_id, $last_msg_id );
+    $result = $wpdb->get_results($sql, ARRAY_A);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $this->construct_msg_links( $result ) : false;
+  }
+
+  protected function insert_new_message( $conv_id, $admin, $msg, $temp_id, $message_links = [], $is_admin = false ) {
     global $wpdb;
     $message_links = !empty($message_links) ? serialize($message_links) : null;
-    $sql = " CALL chatster_insert( %s, %s, %s, %s, %d, %s ) ";
-    $sql = $wpdb->prepare( $sql, $admin, $customer, $sender, $msg, $temp_id, $message_links );
+    $is_admin_safe = $is_admin ? 1 : 0;
+    $sql = " CALL chatster_insert( %d, %s, %s, %d, %s, $is_admin_safe ) ";
+    $sql = $wpdb->prepare( $sql, $conv_id, $admin, $msg, $temp_id, $message_links );
 
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
@@ -308,27 +367,34 @@ trait ChatCollection {
 
     $sql = " UPDATE $wp_table_conversation
              SET is_connected = FALSE
-             WHERE customer_id = %s
-             LIMIT 1 ";
+             WHERE customer_id = %s ";
 
     $sql = $wpdb->prepare( $sql, $customer_id );
 
     $result = $wpdb->query($sql);
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : false;
+    return ! empty( $result ) ? $result : $customer_id;
   }
 
   // Ticketing system
 
-  protected function get_ticket( $customer_id ) {
+  protected function set_ticket( $customer_id ) {
     global $wpdb;
     $wp_table_ticket = self::get_table_name('ticket');
+
     $sql = " INSERT INTO $wp_table_ticket ( customer_id ) VALUES( %s ) ON DUPLICATE KEY UPDATE updated_at = DEFAULT ";
     $sql = $wpdb->prepare( $sql, $customer_id );
     $wpdb->query( $sql );
 
-    $sql = " SELECT * FROM $wp_table_ticket WHERE customer_id = %s ";
+    return ! empty( $wpdb->insert_id ) ? $wpdb->insert_id : $this->get_ticket( $customer_id );
+  }
+
+  protected function get_ticket( $customer_id ) {
+    global $wpdb;
+    $wp_table_ticket = self::get_table_name('ticket');
+
+    $sql = " SELECT id FROM $wp_table_ticket WHERE customer_id = %s ";
     $sql = $wpdb->prepare( $sql, $customer_id );
     $result = $wpdb->get_var( $sql );
     wp_reset_postdata();
@@ -357,21 +423,21 @@ trait ChatCollection {
     $sql = " SELECT COUNT(*) as count
              FROM $wp_table_ticket
              WHERE id < %d
-             AND updated_at >= NOW() - INTERVAL 1 MINUTE ";
+             AND updated_at >= NOW() - INTERVAL 3 MINUTE ";
 
     $sql = $wpdb->prepare( $sql, $ticket_id );
 
     $result = $wpdb->get_var( $sql );
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : false;
+    return ! empty( $result ) ? $result : 0;
 
   }
 
   protected function get_queue_number() {
     global $wpdb;
     $wp_table_ticket = self::get_table_name('ticket');
-    $sql = " SELECT COUNT(*) as count FROM $wp_table_ticket WHERE updated_at >= NOW() - INTERVAL 1 MINUTE ";
+    $sql = " SELECT COUNT(*) as count FROM $wp_table_ticket WHERE updated_at >= NOW() - INTERVAL 3 MINUTE ";
     $result = $wpdb->get_var( $sql );
     wp_reset_postdata();
 
@@ -385,7 +451,7 @@ trait ChatCollection {
     $wp_table_conversation = self::get_table_name('conversation');
     $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT COALESCE( SUM(c.id), 0 ) as count, p.admin_email as admin_email, u.user_nicename as admin_name
+    $sql = " SELECT COALESCE( COUNT(c.id), 0 ) as count, p.admin_email as admin_email, u.user_nicename as admin_name
              FROM $wp_table_presence_admin as p
              INNER JOIN $Table_Users as u ON p.admin_email = u.user_email
              LEFT JOIN $wp_table_conversation as c ON p.admin_email = c.admin_email  AND c.is_connected = TRUE

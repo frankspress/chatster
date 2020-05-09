@@ -32,8 +32,9 @@
   function insert_messages( new_message, temp_id ) {
 
     let customer_id = $("#ch-message-board").attr("data-curr_customer_id");
+    let conv_id = $("#ch-message-board").attr("data-conv_id");
 
-    var payload = { new_message: new_message, msg_link: get_msg_links(), customer_id: customer_id, temp_id: temp_id };
+    var payload = { new_message: new_message, msg_link: get_msg_links(), conv_id: conv_id, customer_id: customer_id, temp_id: temp_id };
 
     $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/insert/admin',
@@ -91,7 +92,7 @@
       if (message && ( message.length <= 799 ) ) {
         $(this).attr('rows', 1 ).val('');
         let temp_id = (new Date()).getTime().toString();
-        temp_id = temp_id.slice(4, temp_id.length);
+        temp_id = parseInt(temp_id.slice(4, temp_id.length));
         // Create elements
         let $message_cont = $("<div>", {id: "message-"+temp_id, "class": "single-message-local self", "data-author_id": "self" });
         let $message_text = $("<div>", {"class": "ch-msg-text"});
@@ -139,6 +140,7 @@
        $.each( convs, function( key, conversation ) {
          let $conversation = $("<div>", {id: "conv-"+conversation.id, "class": "single-conversation", "data-customer_id": conversation.customer_id, "data-single_conv_id": conversation.id });
          $conversation.html('cock');
+         // TODO
          $("#conversations-block").append($conversation);
        });
 
@@ -260,8 +262,9 @@
       ch_current_conv = ch_current_conv ? ch_current_conv : 0;
       let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
       ch_last_msg = ch_last_msg ? ch_last_msg : 0;
-
-      var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg };
+      var ch_conv_list = $(".single-conversation").map(function(){return $(this).attr("data-single_conv_id");}).get();
+      ch_conv_list = ch_conv_list ? ch_conv_list : 0;
+      var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg, conv_ids: ch_conv_list };
 
       $.ajax( {
           url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',

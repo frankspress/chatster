@@ -29,6 +29,8 @@ class DeactivationLoader {
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('message');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
+      $wp_table = self::get_table_name('current_conversation');
+      $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('conversation');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('presence_admin');

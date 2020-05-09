@@ -4,7 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 function display_front_chat( $current_conv = false, $chat_available = false )  { ?>
-
    <div id="chatster-container" class="">
     <section id="ch-header">Header here <div class="ch-arrow"><i class="ch-down"></i></div>
     </section>
@@ -13,11 +12,19 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
     <div id="ch-main-conv-container">
 
       <section id="ch-chat-section" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>" data-is_conv_active="<?php echo $current_conv ? '1' : '0'; ?>">
-        <div id="ch-msg-container" data-last_msg_id="">
+        <div id="ch-msg-container" data-last_msg_id="" data-conv_id="<?php echo !empty($current_conv) ? esc_attr($current_conv->id) : ''; ?>">
           <div class="ch-small-loader" ></div>
         </div>
+        <div id="ch-queue-info">
+            <div id="ch-inqueue" class="hidden"><?php echo esc_html__('Customers already waiting: ', CHATSTER_DOMAIN ) ?><span></span></div>
+            <div id="ch-inqueue-end" class="hidden"><?php echo esc_html__('An admin will be here shortly..', CHATSTER_DOMAIN ) ?><span></span></div>
+            <div id="ch-admin-info" class="hidden"><?php echo esc_html__('You are beign helped by ', CHATSTER_DOMAIN ) ?><span></span></div>
+            <div id="ch-chat-unavailbale" class="hidden"><?php echo esc_html__('Sorry, we are currently unavailable.. ', CHATSTER_DOMAIN) ?><span></span></div>
+            <div id="ch-chat-disconnected" class="hidden"><?php echo esc_html__('You are now disconnected..', CHATSTER_DOMAIN) ?><span></span></div>
+            <div id="ch-assigned-admin" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>"><?php echo esc_html__('You are chatting with ', CHATSTER_DOMAIN) ?><span><?php echo !empty($current_conv) ? esc_html(ucfirst($current_conv->admin_name)) : ''; ?></span></div>
+        </div>
         <div class="ch-input">
-          <input type="text" id="ch-reply-public" value="" placeholder="Your message here.." maxlength="799">
+          <input type="text" id="ch-reply-public" value="" placeholder="Your message here.." maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
         </div>
         <div id="ch-chat-msg" class="ch-send-btn"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div>
         <div id="ch-end-chat" class="ch-end-btn"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>

@@ -22,6 +22,7 @@ class ChatPublic
     wp_localize_script( 'chatster-public', 'chatsterDataPublic', array(
       'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
       'nonce' => wp_create_nonce( 'wp_rest' ),
+      'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
       'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
       'chat_sound_vol' => 0.2
     ) );

@@ -161,16 +161,26 @@ class ChatApiAdmin  {
         for ($x = 0; $x <= 10; $x++) {
             $convs = $this->get_all_convs_admin( $this->admin_email, $data['last_conv'] );
             $messages = false;
+            $new_messages = false;
+            $disconnected = false;
             if ( $data['current_conv'] ) {
               $this->set_message_read( $this->admin_email, $data['current_conv'], $data['last_message'] );
               $messages = $this->get_latest_messages( $data['current_conv'], $data['last_message'], $this->admin_email );
             }
-            if ( $convs || $messages ) break;
+            if ( !empty($data['conv_ids']) && is_array($data['conv_ids']) ) {
+              $disconnected = $this->get_disconnected_convs( $this->admin_email, $data['conv_ids'] );
+            }
+            if ( $convs || $messages || $disconnected ) break;
             usleep(700000);
         }
-
+        
+        $new_messages = $this->get_unread_messages( $this->admin_email );
+        $queue_number = $this->get_queue_number();
         return array( 'action'=>'polling', 'payload'=> array( 'convs' => $convs,
-                                                              'current_conv' => $messages ) );
+                                                              'current_conv' => $messages,
+                                                              'new_messages' => $new_messages,
+                                                              'disconnected' => $disconnected,
+                                                              'queue_number' => $queue_number ) );
 
     }
 
@@ -183,7 +193,7 @@ class ChatApiAdmin  {
 
     public function insert_admin_messages( \WP_REST_Request $data ) {
 
-        $result = $this->insert_new_message($this->admin_email, $data['customer_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'] );
+        $result = $this->insert_new_message( $data['conv_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'], true );
         return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
 
     }

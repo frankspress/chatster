@@ -26,8 +26,8 @@ class ActivationLoader  {
     $wp_table_presence_admin = self::get_table_name('presence_admin');
     $wp_table_presence = self::get_table_name('presence');
     $wp_table_message = self::get_table_name('message');
-    $wp_table_message_link = self::get_table_name('message_link');
     $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_current_conversation = self::get_table_name('current_conversation');
     $wp_table_ticket = self::get_table_name('ticket');
     $Table_Users = self::get_table_name('users');
     $charset_collate = $wpdb->get_charset_collate();
@@ -78,8 +78,21 @@ class ActivationLoader  {
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
-        $sql .= " CONSTRAINT ctsr_admin_customer UNIQUE ( admin_email , customer_id ) , ";
         $sql .= " CONSTRAINT ctsr_admin_email FOREIGN KEY (admin_email) REFERENCES $Table_Users( user_email )  ON DELETE CASCADE ";
+        $sql .= ") ENGINE=InnoDB " . $charset_collate ;
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+        $success = $success && empty($wpdb->last_error);
+    }
+
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_current_conversation' " ) != $wp_table_current_conversation)  {
+
+        $sql  = " CREATE TABLE $wp_table_current_conversation ( " ;
+        $sql .= " id INT(11) NOT NULL AUTO_INCREMENT , ";
+        $sql .= " conv_id INT(11) NOT NULL , ";
+        $sql .= " PRIMARY KEY (id) , ";
+        $sql .= " CONSTRAINT ctsr_current_conv FOREIGN KEY (conv_id) REFERENCES $wp_table_conversation( id ) ON DELETE CASCADE ";
         $sql .= ") ENGINE=InnoDB " . $charset_collate ;
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -185,33 +198,28 @@ class ActivationLoader  {
        */
        $wpdb->query( " DROP PROCEDURE IF EXISTS chatster_insert ");
 
-       $sql = " CREATE PROCEDURE chatster_insert(IN admin VARCHAR(100), customer VARCHAR(100), sender VARCHAR(100), msg VARCHAR(800), t_msg_id INT(11), msg_links TINYTEXT)
-                BEGIN
+       $sql = " CREATE PROCEDURE chatster_insert(IN conversation_id INT(11), sender VARCHAR(100), msg VARCHAR(800), t_msg_id INT(11), msg_links TINYTEXT, is_admin BOOLEAN)
+               BEGIN
 
-                	DECLARE c_id INT DEFAULT NULL;
-                	DECLARE last_id INT DEFAULT 0;
+               	DECLARE c_id INT DEFAULT NULL;
+               	DECLARE last_id INT DEFAULT 0;
 
-                    SELECT id INTO c_id FROM $wp_table_conversation WHERE
-                                (admin_email = admin AND customer_id = customer) LIMIT 1;
+                   SELECT id INTO c_id FROM $wp_table_conversation WHERE
+                   IF ( is_admin = TRUE, admin_email = sender, customer_id = sender )
+                   AND id = conversation_id
+                   AND is_connected = TRUE
+                   LIMIT 1;
 
-                    IF (c_id IS NOT NULL)
+                   IF ( c_id IS NOT NULL )
 
-                        THEN
+                       THEN
 
-                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id, product_ids)
-                                VALUES (c_id, sender, msg, t_msg_id, msg_links);
-                                SELECT LAST_INSERT_ID() as message_id , c_id as conv_id;
+                               INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id, product_ids)
+                               VALUES (c_id, sender, msg, t_msg_id, msg_links);
+                               SELECT LAST_INSERT_ID() as message_id , c_id as conv_id;
 
-                        ELSE
-
-                                INSERT INTO $wp_table_conversation ( admin_email, customer_id )
-                                VALUES ( admin, customer );
-                                SET last_id = LAST_INSERT_ID();
-                                INSERT INTO $wp_table_message (conv_id, author_id, message, temp_id, product_ids )
-                                VALUES (last_id, sender, msg, t_msg_id, msg_links);
-                                SELECT LAST_INSERT_ID() as message_id, last_id as conv_id;
-                    END IF;
-                END  ";
+                   END IF;
+               END  ";
 
         $wpdb->query( $sql );
         $success = $success && empty($wpdb->last_error);
