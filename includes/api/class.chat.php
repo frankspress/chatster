@@ -21,6 +21,7 @@ class ChatApi extends GlobalApi  {
 
     public function __construct() {
       $this->presence_route();
+      $this->send_request_form_route();
       $this->set_chat_form_route();
       $this->poll_ticketing_route();
       $this->poll_msg_route();
@@ -38,6 +39,16 @@ class ChatApi extends GlobalApi  {
                      'callback' => array( $this, 'set_presence' ),
                      'permission_callback' => array( $this, 'validate_customer' )
            ));
+      });
+    }
+
+    public function send_request_form_route() {
+      add_action('rest_api_init', function () {
+        register_rest_route( 'chatster/v1', '/chat/request-form', array(
+                      'methods'  => 'POST',
+                      'callback' => array( $this, 'insert_request_form' ),
+                      'permission_callback' => array( $this, 'validate_customer_request_form' )
+            ));
       });
     }
 
@@ -116,6 +127,13 @@ class ChatApi extends GlobalApi  {
       return false;
     }
 
+    private function validate_request_msg( $message = '') {
+      if ( !empty($message) && strlen( $message ) <= 1500 ) {
+        return nl2br( htmlentities( $message, ENT_QUOTES, 'UTF-8'));
+      }
+      return false;
+    }
+
     private function set_customer_id_cookie() {
        if ( empty($this->customer_id) ) {
          $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);
@@ -187,12 +205,29 @@ class ChatApi extends GlobalApi  {
       return false;
     }
 
+    public function validate_customer_request_form( $request ) {
+      if ( $this->validate_customer( $request ) ) {
+          $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
+          $request['customer_email'] = isset($request['customer_email']) ? $this->validate_email($request['customer_email']) : false;
+          $request['customer_subject'] = isset($request['customer_subject']) ? $this->validate_subject($request['customer_subject']) : false;
+          $request['customer_message'] = isset($request['customer_message']) ? $this->validate_request_msg($request['customer_message']) : false;
+          return true;
+      }
+      return false;
+    }
+
     /**
      * Routes Callbacks
      */
     public function set_presence( \WP_REST_Request $data ) {
         $this->insert_presence_customer( $this->customer_id );
         return array('action'=> $this->customer_id);
+    }
+
+    public function insert_request_form( \WP_REST_Request $data ) {
+
+        $result = $this->insert_request_data( $data['customer_name'], $data['customer_email'], $data['customer_subject'], $data['customer_message']);
+        return array( 'action'=> 'request_form', 'payload'=> $result );
     }
 
     public function insert_form_data_db( \WP_REST_Request $data ) {

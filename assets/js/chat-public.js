@@ -89,6 +89,37 @@
   }
 
   /**
+   * Sends request form
+   */
+   function send_request_form() {
+
+     let r_name = $('#ch-customer-name').val();
+     let r_email =  $('#ch-customer-email').val();
+     let r_message =  $('#ch-customer-message').val();
+     var payload = { customer_name: r_name, customer_email: r_email, customer_message: r_message };
+
+      $.ajax( {
+
+          url: chatsterDataPublic.api_base_url + '/chat/request-form',
+          method: 'POST',
+          beforeSend: function ( xhr ) {
+              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+          },
+          data: payload,
+          success: function(data) {
+
+          },
+          error: function(error) {
+
+          },
+
+        } ).done( function ( response ) {
+
+        });
+   }
+
+
+  /**
    * Inserts current messages into the conversation
    */
   function insert_messages( new_message, temp_id ) {
@@ -276,7 +307,7 @@
   /**
    * Adds Live chat initial form / Initiates chat
    */
-  function set_request_form() {
+  function set_chat_form() {
 
     let c_name = $('#ch-chat-name').val();
     let c_email =  $('#ch-chat-email').val();
@@ -379,12 +410,25 @@
 
   });
   $('#ch-btn-request').on('click', function(e) {
-
+    $("#ch-chat-select").animate({
+      top: '600px'
+    });
+    $('#ch-request-form').slideDown(300);
 
   });
   $("#ch-start-chat-form").submit(function(e){
       e.preventDefault();
-      set_request_form();
+      set_chat_form();
   });
-
+  $('#ch-send-request-form').submit(function(e){
+      e.preventDefault();
+      send_request_form();
+  });
+  $(".ch-cancel-btn").on('click', function() {
+    $("#ch-chat-select").animate({
+      top: '0px'
+    });
+    $('#ch-request-form').slideUp(200);
+    $('#ch-chat-form').slideUp(200);
+  });
 })(jQuery);

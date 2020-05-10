@@ -30,17 +30,20 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         <div id="ch-end-chat" class="ch-end-btn"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
       </section>
 
-      <section id="ch-message-section" class="hidden">
-        <div class="ch-input">
-          <input type="text" id="ch-customer-name" value="" placeholder="Your name" info="name">
-        </div>
-        <div class="ch-input">
-          <input type="email" id="ch-customer-email" value="" placeholder="Your email" info="email">
-        </div>
-        <div class="ch-input">
-          <textarea id="ch-customer-message" placeholder="Type here your message.." type="text" ></textarea>
-        </div>
-        <div class="ch-send-btn"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div>
+      <section id="ch-request-form" class="hidden">
+        <form id="ch-send-request-form">
+          <div class="ch-input">
+            <input type="text" id="ch-customer-name" value="" placeholder="Your name" info="name" required>
+          </div>
+          <div class="ch-input">
+            <input type="email" id="ch-customer-email" value="" placeholder="Your email" info="email" required>
+          </div>
+          <div class="ch-input">
+            <textarea id="ch-customer-message" placeholder="Type here your message.." type="text" required></textarea>
+          </div>
+            <input id="ch-send-request" class="ch-send-btn" type="submit" value="<?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?>">
+            <div id="ch-send-request" class="ch-cancel-btn"><?php echo esc_html__( 'Cancel', CHATSTER_DOMAIN ); ?></div>
+        </form>
       </section>
 
       <section id="ch-chat-form" class="hidden">
@@ -55,13 +58,14 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
             <textarea id="ch-chat-subject" placeholder="Type here your question.." type="text" required ></textarea>
           </div>
             <input id="ch-start-chatting" class="ch-send-btn" type="submit" value="<?php echo esc_html__( 'Start Chatting', CHATSTER_DOMAIN ); ?>">
+            <div id="ch-send-request" class="ch-cancel-btn"><?php echo esc_html__( 'Cancel', CHATSTER_DOMAIN ); ?></div>
         </form>
       </section>
 
       <section id="ch-chat-select" class="<?php echo $current_conv ? 'hidden' : '';  ?>">
         <div id="ch-select-container">
             <div id="ch-btn-chat" class="<?php echo ! $chat_available ? 'ch-unavailable' : ''; ?>">Chat</div>
-            <div id="ch-btn-request">Send a message</div>
+            <div id="ch-btn-request"><?php echo esc_html__( 'Send us message', CHATSTER_DOMAIN ); ?></div>
         </div>
       </section>
 
