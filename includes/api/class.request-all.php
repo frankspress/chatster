@@ -17,18 +17,18 @@ class RequestApiAdmin extends GlobalApi  {
 
     public function __construct() {
 
-      $this->reply_request_message();
-      $this->delete_request_message();
-      $this->get_request_message();
-      $this->insert_request_message();
-      $this->pin_request_message();
+      $this->reply_request_message_route();
+      $this->delete_request_message_route();
+      $this->get_request_message_route();
+      $this->insert_request_message_route();
+      $this->pin_request_message_route();
 
     }
 
     /**
      * Routes
      */
-    public function reply_request_message() {
+    public function reply_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/reply', array(
                      'methods'  => 'POST',
@@ -38,7 +38,7 @@ class RequestApiAdmin extends GlobalApi  {
       });
     }
 
-    public function delete_request_message() {
+    public function delete_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/delete', array(
                      'methods'  => 'POST',
@@ -48,7 +48,7 @@ class RequestApiAdmin extends GlobalApi  {
       });
     }
 
-    public function get_request_message() {
+    public function get_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/retrieve', array(
                      'methods'  => 'POST',
@@ -58,7 +58,7 @@ class RequestApiAdmin extends GlobalApi  {
       });
     }
 
-    public function pin_request_message() {
+    public function pin_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/pin', array(
                      'methods'  => 'POST',
@@ -67,13 +67,14 @@ class RequestApiAdmin extends GlobalApi  {
            ));
       });
     }
+
     // Public Route - Insert Request
-    public function insert_request_message() {
+    public function insert_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/public/insert', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'insert_public_request' ),
-                     'permission_callback' => array( $this, 'validate_user' )
+                     'callback' => array( $this, 'insert_request_form' ),
+                     'permission_callback' => array( $this, 'validate_customer_request_form' )
            ));
       });
     }
@@ -97,6 +98,16 @@ class RequestApiAdmin extends GlobalApi  {
          return true;
        }
        return false;
+     }
+
+     public function validate_customer_request_form( $request ) {
+
+           $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
+           $request['customer_email'] = isset($request['customer_email']) ? $this->validate_email($request['customer_email']) : false;
+           $request['customer_subject'] = isset($request['customer_subject']) ? $this->validate_subject($request['customer_subject']) : false;
+           $request['customer_message'] = isset($request['customer_message']) ? $this->validate_request_msg($request['customer_message']) : false;
+           return true;
+
      }
 
      /**
@@ -144,11 +155,10 @@ class RequestApiAdmin extends GlobalApi  {
         return array( 'action'=>'retrieve_message', 'payload'=> $result );
      }
 
-     public function insert_public_request( \WP_REST_Request $data ) {
+     public function insert_request_form( \WP_REST_Request $data ) {
 
-        $result = $this->delete_request( $data['request_id'] );
-        return array( 'action'=>'delete_request', 'payload'=> $result, 'request_id'=>$data['request_id'] );
-
+           $result = $this->insert_request_data( $data['customer_name'], $data['customer_email'], $data['customer_subject'], $data['customer_message']);
+           return array( 'action'=> 'request_form', 'payload'=> $result );
      }
 }
 

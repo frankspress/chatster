@@ -278,7 +278,9 @@
   function update_unread_messages( new_messages_count ) {
    if ( new_messages_count ) {
      $.each( new_messages_count, function( key, conversation ) {
-       $('#conv-'+conversation.id).find('.unread').text( conversation.not_read ).show(300);
+       if ($('#ch-message-board').attr('data-conv_id') != conversation.id ) {
+         $('#conv-'+conversation.id).find('.unread').text( conversation.not_read ).show(300);
+       }
      });
    }
   }

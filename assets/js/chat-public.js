@@ -100,7 +100,7 @@
 
       $.ajax( {
 
-          url: chatsterDataPublic.api_base_url + '/chat/request-form',
+          url: chatsterDataPublic.api_base_url + '/request/public/insert',
           method: 'POST',
           beforeSend: function ( xhr ) {
               xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );

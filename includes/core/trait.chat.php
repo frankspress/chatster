@@ -496,20 +496,6 @@ trait ChatCollection {
     return ! empty( $conv_id ) ? $conv_id : false;
   }
 
-  // Request submitted
-  protected function insert_request_data( $name, $email, $subject, $message ) {
-     global $wpdb;
-     $wp_table_request = self::get_table_name('request');
-     $sql = " INSERT INTO $wp_table_request ( name, email, subject, message ) VALUES( %s, %s, %s, %s ) ";
-     $parameters = array( $name, $email, $subject, $message );
-     $sql = $wpdb->prepare( $sql, $parameters);
-
-     $result = $wpdb->query( $sql );
-     wp_reset_postdata();
-
-     return ! empty( $result ) ? true : false;
-  }
-
 /**
  * Cron Jobs
  */

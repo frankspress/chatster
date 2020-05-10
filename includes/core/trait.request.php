@@ -152,18 +152,19 @@ trait RequestCollection {
 
      return ! empty( $result ) ? $result : 0;
    }
+
    // Public Insert
-   protected function insert_request( $name, $email, $subject, $message ) {
-     global $wpdb;
-     $wp_table_request = self::get_table_name('request');
+   protected function insert_request_data( $name, $email, $subject, $message ) {
+      global $wpdb;
+      $wp_table_request = self::get_table_name('request');
+      $sql = " INSERT INTO $wp_table_request ( name, email, subject, message ) VALUES( %s, %s, %s, %s ) ";
+      $parameters = array( $name, $email, $subject, $message );
+      $sql = $wpdb->prepare( $sql, $parameters);
 
-     $sql = " INSERT INTO $wp_table_request ( name, email, subject, message ) VALUES( %s, %s, %s, %s ) ";
-     $sql = $wpdb->prepare( $sql, array( $name, $email, $subject, $message ) );
+      $result = $wpdb->query( $sql );
+      wp_reset_postdata();
 
-     $result = $wpdb->get_results( $sql );
-     wp_reset_postdata();
-
-     return ! empty( $result ) ? $result : false;
+      return ! empty( $result ) ? true : false;
    }
 
 }
