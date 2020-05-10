@@ -104,6 +104,19 @@ trait ChatCollection {
     return $payload;
   }
 
+  protected function construct_chat_form( $payload ) {
+    foreach ( $payload as $key=>$field ) {
+      if (!empty($field['form_data'])) {
+        $form_data = unserialize($field['form_data']);
+        foreach ($form_data as $fkey => $value) {
+          $form_data[$fkey] = esc_html($value);
+        }
+        $payload[$key]['form_data'] = $form_data;
+      }
+    }
+    return $payload;
+  }
+
   protected function insert_presence_customer( $customer_id ) {
     global $wpdb;
     $wp_table_presence = self::get_table_name('presence');
@@ -152,7 +165,8 @@ trait ChatCollection {
     $wp_table_presence = self::get_table_name('presence');
     $Table_Users = self::get_table_name('users');
 
-    $sql = " SELECT  c.*, u.user_nicename as reg_customer_name, p.last_presence, p.form_data, COUNT(m.id) as not_read
+    $sql = " SELECT  c.*, u.user_nicename as reg_customer_name, p.last_presence, p.form_data, COUNT(m.id) as not_read,
+                     CONVERT_TZ( c.created_at, @@session.time_zone, '+00:00') as created_at
              FROM $wp_table_conversation as c
              INNER JOIN $wp_table_presence as p ON p.customer_id = c.customer_id
              LEFT JOIN $wp_table_message as m ON m.conv_id = c.id AND m.is_read = false
@@ -166,10 +180,10 @@ trait ChatCollection {
              LIMIT 20 ";
 
     $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
-    $result = $wpdb->get_results( $sql );
+    $result = $wpdb->get_results( $sql, ARRAY_A );
     wp_reset_postdata();
 
-    return ! empty( $result ) ? $result : false;
+    return ! empty( $result ) ? $this->construct_chat_form($result) : false;
 
   }
 

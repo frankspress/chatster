@@ -24,6 +24,7 @@ function display_admin_chat( $admin_status ) {
                   <div class="ch-roller" ><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                 </div>
               </div>
+
             </div>
 
             <div id="ch-reply-block">
@@ -32,6 +33,15 @@ function display_admin_chat( $admin_status ) {
             </div>
 
        </div>
+
+          <div id="ch-queue-counter">
+            <div class="ch-singular hidden">
+              <?php echo sprintf(esc_html__("There is %s customer waiting in line", CHATSTER_DOMAIN), '<span></span>'); ?>
+            </div>
+            <div class="ch-plural hidden">
+              <?php echo sprintf(esc_html__("There are %s customers waiting in line", CHATSTER_DOMAIN), '<span></span>'); ?>
+            </div>
+          </div>
 
        <div id="ch-attachments">
        </div>

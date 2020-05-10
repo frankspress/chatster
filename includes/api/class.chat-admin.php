@@ -173,7 +173,7 @@ class ChatApiAdmin  {
             if ( $convs || $messages || $disconnected ) break;
             usleep(700000);
         }
-        
+
         $new_messages = $this->get_unread_messages( $this->admin_email );
         $queue_number = $this->get_queue_number();
         return array( 'action'=>'polling', 'payload'=> array( 'convs' => $convs,

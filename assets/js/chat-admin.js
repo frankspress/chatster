@@ -127,21 +127,62 @@
   /**
    * Accessory functions to build the conversation list and current convs
    */
+  function time_ago(date) {
+      var t = date.split(/[- :]/);
+      var date = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+
+      var periods = {
+        month: 30 * 24 * 60 * 60 * 1000,
+        week: 7 * 24 * 60 * 60 * 1000,
+        day: 24 * 60 * 60 * 1000,
+        hour: 60 * 60 * 1000,
+        minute: 60 * 1000
+      };
+
+      var diff = Date.now() - date;
+
+      if (diff > periods.day) {
+          return chatsterDataAdmin.translation.created + ' ' +chatsterDataAdmin.translation.hours_plus;
+      } else if (diff > periods.hour) {
+        if (Math.floor(diff > periods.hour) > 1 ) {
+          return chatsterDataAdmin.translation.created + ' ' + Math.floor(diff > periods.hour) + ' ' + chatsterDataAdmin.translation.hours;
+        } else {
+          return chatsterDataAdmin.translation.created + ' ' + Math.floor(diff > periods.hour) + ' ' + chatsterDataAdmin.translation.hour;
+        }
+      } else if (diff > periods.minute) {
+        if (Math.floor(diff / periods.minute) > 1 ) {
+          return chatsterDataAdmin.translation.created + ' ' + Math.floor(diff / periods.minute) + ' ' + chatsterDataAdmin.translation.minutes;
+        } else {
+          return chatsterDataAdmin.translation.created + ' ' + Math.floor(diff / periods.minute) + ' ' + chatsterDataAdmin.translation.minute;
+        }
+      }
+      return chatsterDataAdmin.translation.created + ' ' + chatsterDataAdmin.translation.now;
+
+  }
   function esc_json(str) {
      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function build_convs(convs) {
 
     if ( convs ) {
-
+       $('#ch-load-conv-container').hide();
        let last_conv_id = convs[Object.keys(convs)[convs.length - 1]].id;
        $("#conversations-block").attr('data-last_conv_id', last_conv_id);
 
        $.each( convs, function( key, conversation ) {
-         let $conversation = $("<div>", {id: "conv-"+conversation.id, "class": "single-conversation", "data-customer_id": conversation.customer_id, "data-single_conv_id": conversation.id });
-         $conversation.html('cock');
-         // TODO
+         let $conversation = $("<div>", {id: "conv-"+conversation.id, "class": "single-conversation", "data-customer_id": conversation.customer_id, "data-single_conv_id": conversation.id, "data-is_connected": true });
+         let $subject = $("<div>", { "class": "ch-subject" }).text(conversation.form_data.chat_subject);
+         let $email = $("<div>", { "class": "ch-email" }).text(conversation.form_data.customer_email);
+         let $customer_name = $("<div>", { "class": "ch-name" }).text(conversation.form_data.customer_name);
+         let $info = $("<div>", { "class": "ch-created-at", "data-created_at":conversation.created_at }).text(time_ago(conversation.created_at));
+         let $unread = $("<div>", { "class": "unread"}).hide();
+         if ( conversation.not_read > 0 ) {
+           $unread.text( conversation.not_read ).show();
+         }
+         $conversation.append($subject).append($email).append($customer_name).append($info).append($unread);
+         $conversation.hide();
          $("#conversations-block").append($conversation);
+         $conversation.slideDown(200);
        });
 
     }
@@ -202,6 +243,9 @@
     return '';
   }
   $('.single-conversation').live('click',function() {
+    $('.single-conversation').removeClass('selected');
+    $(this).addClass('selected');
+    $(this).find('.unread').hide(100);
     $('#ch-message-board').empty();
     let current_conv_id = $(this).attr('data-single_conv_id');
     let current_customer_id = $(this).attr('data-customer_id');
@@ -211,6 +255,51 @@
     get_messages();
 
   });
+  // Updates Timestamps on conversations
+  setInterval(function(){
+
+    $('.ch-created-at').each(function() {
+        let timestamp = $( this ).attr('data-created_at');
+        $( this ).text(time_ago(timestamp));
+      });
+
+  }, 30000);
+  /**
+   * Live Update status fns
+   */
+  function update_disconnected( disconnected ) {
+   if ( disconnected ) {
+       $.each( disconnected, function( key, conversation ) {
+         $('#conv-'+conversation.id).attr( 'data-is_connected', false );
+         $('#conv-'+conversation.id).addClass('disconnected');
+       });
+   }
+  }
+  function update_unread_messages( new_messages_count ) {
+   if ( new_messages_count ) {
+     $.each( new_messages_count, function( key, conversation ) {
+       $('#conv-'+conversation.id).find('.unread').text( conversation.not_read ).show(300);
+     });
+   }
+  }
+  function update_queue( queue_number ) {
+
+   if ( queue_number && queue_number == 1 ) {
+     $("#ch-queue-counter").find('.ch-plural').slideUp(200);
+     let $queue = $("#ch-queue-counter").find('.ch-singular');
+     $queue.find('span').text(queue_number);
+     $queue.slideDown(200);
+   }
+   else if ( queue_number > 1 ){
+     $("#ch-queue-counter").find('.ch-singular').slideUp(200);
+     let $queue = $("#ch-queue-counter").find('.ch-plural');
+     $queue.find('span').text(queue_number);
+     $queue.slideDown(200);
+   } else {
+     $("#ch-queue-counter div").hide(100);
+   }
+
+  }
 
   /**
    * Retrieves messages for the current conversation
@@ -262,7 +351,10 @@
       ch_current_conv = ch_current_conv ? ch_current_conv : 0;
       let ch_last_msg = $("#ch-message-board").attr('data-last_msg_id');
       ch_last_msg = ch_last_msg ? ch_last_msg : 0;
-      var ch_conv_list = $(".single-conversation").map(function(){return $(this).attr("data-single_conv_id");}).get();
+      var ch_conv_list = $(".single-conversation").map(function(){
+        if ( $(this).attr("data-is_connected") == 'true' ) { return $(this).attr("data-single_conv_id"); }
+          return;
+        }).get();
       ch_conv_list = ch_conv_list ? ch_conv_list : 0;
       var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg, conv_ids: ch_conv_list };
 
@@ -276,8 +368,13 @@
           success: function(data) {
               $('#ch-roller-container').addClass('hidden');
               if ( $('#chatster-chat-switch').prop("checked") ) {
+
                 build_convs(data.payload.convs);
                 build_current_conv(data.payload.current_conv, ch_current_conv);
+                update_disconnected(data.payload.disconnected);
+                update_unread_messages(data.payload.new_messages);
+                update_queue(data.payload.queue_number);
+
                 setTimeout( long_poll, 500 );
               }
               LongPollRun = false;

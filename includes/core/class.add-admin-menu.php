@@ -50,8 +50,16 @@ class AdminMenu
             'nonce' => wp_create_nonce( 'wp_rest' ),
             'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
             'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
-            'chat_sound_vol' => 0.2
-          ) );
+            'chat_sound_vol' => 0.2,
+            'translation' => array(
+                                    'created' => esc_html('Created', CHATSTER_DOMAIN),
+                                    'hours_plus' => esc_html('more than one hour ago', CHATSTER_DOMAIN),
+                                    'hour' => esc_html('hour ago', CHATSTER_DOMAIN),
+                                    'minutes' => esc_html('minutes ago', CHATSTER_DOMAIN),
+                                    'minute' => esc_html('minute ago', CHATSTER_DOMAIN),
+                                    'now' => esc_html('just now', CHATSTER_DOMAIN) )
+            )
+          );
       });
 
   }
