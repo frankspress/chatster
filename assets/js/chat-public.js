@@ -402,17 +402,13 @@
         return;
     }
 
-    $("#ch-chat-select").animate({
-      top: '600px'
-    });
+    $("#ch-chat-select").slideUp(300);
     $('#ch-chat-form').slideDown(300);
 
 
   });
   $('#ch-btn-request').on('click', function(e) {
-    $("#ch-chat-select").animate({
-      top: '600px'
-    });
+    $("#ch-chat-select").slideUp(300);
     $('#ch-request-form').slideDown(300);
 
   });
@@ -425,10 +421,89 @@
       send_request_form();
   });
   $(".ch-cancel-btn").on('click', function() {
-    $("#ch-chat-select").animate({
-      top: '0px'
-    });
+    $("#ch-chat-select").slideDown(200);
     $('#ch-request-form').slideUp(200);
     $('#ch-chat-form').slideUp(200);
   });
+
+  /**
+   * Bot Activation
+   */
+  var answer_ids = [];
+  function scrollTopBotChat() {
+    $("#ch-bot-msg-container").animate({ scrollTop: $('#ch-bot-msg-container').prop("scrollHeight")}, 400);
+  }
+  function build_bot_response(response) {
+
+    if ( response ) {
+
+        $.each( response, function( key, message ) {
+
+            let $message_cont = $("<div>", {id: "ch-msg-" + message.id, "class": "single-message" });
+            let $message_text = $("<div>", {"class": "ch-msg-text"});
+            if( answer_ids.indexOf(message.id) === -1) {
+                answer_ids.push(message.id);
+            }
+            $message_text.html(message.answer);
+            $message_cont.append($message_text);
+
+            $("#ch-bot-msg-container").append($message_cont);
+
+            ch_chat_sound();
+        });
+     }
+  }
+  function submit_question( question ) {
+
+    var payload = { user_question: question, answer_ids: answer_ids };
+    $('.loading-dots').removeClass('invisible');
+
+    $.ajax( {
+       url: chatsterDataPublic.api_base_url + '/bot/public/answer',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+       },
+       data: payload,
+       success: function(data) {
+         if ( data.payload ) {
+           build_bot_response(data.payload);
+           scrollTopBotChat();
+         }
+       },
+       error: function(error) {
+
+       },
+
+     } ).done( function ( response ) {
+         $('.loading-dots').addClass('invisible');
+     });
+  }
+  $("#ch-reply-bot").on('keypress', function(e) {
+
+    if ( e.keyCode == 13 && ! e.shiftKey) {
+      e.preventDefault();
+      var message = $(this).val().trim();
+      if (message && ( message.length <= 799 ) ) {
+        scrollTopBotChat();
+        $(this).val('');
+        let $message = $("<div>", { "class": "ch-single-message ch-right", "data-author_id": "self" });
+        $message.text(message);
+        $("#ch-bot-msg-container").append($message);
+        submit_question(message);
+      }
+    }
+  });
+  // $("#ch-reply-bot").on('click', function() {
+  //   var press = jQuery.Event("keypress");
+  //   press.ctrlKey = false;
+  //   press.which = 13;
+  //   press.keyCode = 13;
+  //   $("#ch-reply-bot").trigger(press);
+  // });
+  $('#chatster-opener').one('click', function(e) {
+
+
+  });
+
 })(jQuery);

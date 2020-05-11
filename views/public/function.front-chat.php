@@ -12,7 +12,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
     <div id="ch-main-conv-container">
 
       <section id="ch-chat-section" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>" data-is_conv_active="<?php echo $current_conv ? '1' : '0'; ?>">
-        <div id="ch-msg-container" data-last_msg_id="" data-conv_id="<?php echo !empty($current_conv) ? esc_attr($current_conv->id) : ''; ?>">
+        <div id="ch-msg-container" class="ch-chat-box" data-last_msg_id="" data-conv_id="<?php echo !empty($current_conv) ? esc_attr($current_conv->id) : ''; ?>">
           <div class="ch-small-loader" ></div>
         </div>
         <div id="ch-queue-info">
@@ -63,6 +63,14 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
       </section>
 
       <section id="ch-chat-select" class="<?php echo $current_conv ? 'hidden' : '';  ?>">
+
+        <div id="ch-bot-msg-container" class="ch-chat-box"></div>
+
+        <div class="loading-dots invisible"></div>
+
+        <div class="ch-input">
+          <input type="text" id="ch-reply-bot" value="" placeholder="Your message here.." maxlength="799"  >
+        </div>
         <div id="ch-select-container">
             <div id="ch-btn-chat" class="<?php echo ! $chat_available ? 'ch-unavailable' : ''; ?>">Chat</div>
             <div id="ch-btn-request"><?php echo esc_html__( 'Send us message', CHATSTER_DOMAIN ); ?></div>

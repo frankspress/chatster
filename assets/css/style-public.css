@@ -2,6 +2,10 @@
   display: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 #chatster-container section {
   margin: 0; padding: 0;
   position: relative;
@@ -112,30 +116,30 @@
   -webkit-transform: rotate(45deg);
 }
 
-#ch-msg-container {
+.ch-chat-box {
   overflow-y: auto;
   height: 210px;
 }
 /* width */
-#ch-msg-container::-webkit-scrollbar {
+.ch-chat-box::-webkit-scrollbar {
   width: 8px;
 }
 
 /* Track */
-#ch-msg-container::-webkit-scrollbar-track {
+.ch-chat-box::-webkit-scrollbar-track {
   background: #f1f1f1;
         border-radius: 30px;
 
 }
 
 /* Handle */
-#ch-msg-container::-webkit-scrollbar-thumb {
+.ch-chat-box::-webkit-scrollbar-thumb {
   background: #888;
       border-radius: 30px;
 }
 
 /* Handle on hover */
-#ch-msg-container::-webkit-scrollbar-thumb:hover {
+.ch-chat-box::-webkit-scrollbar-thumb:hover {
   /* background: #333; */
 }
 
