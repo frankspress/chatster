@@ -87,6 +87,10 @@
  .single-message-local .ch-msg-text {
    white-space: pre-wrap;
  }
+
+ .unread {
+   background-color: #f05f70;
+ }
 /** Toggle Switch **/
 
   .onoffswitch {

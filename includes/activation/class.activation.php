@@ -13,10 +13,11 @@ class ActivationLoader  {
   public static function init_activation() {
      if ( ! current_user_can( 'manage_options' ) ) return;
       return  self::create_db_chat_system() &&
-                self::create_db_request() &&
-                  self::create_db_automation() &&
-                    self::create_cron_event() &&
-                      self::generate_key_options();
+               self::create_db_request() &&
+                self::create_db_bot() &&
+                 self::create_db_automation() &&
+                  self::create_cron_event() &&
+                   self::generate_key_options();
   }
 
   public static function create_db_chat_system() {
@@ -176,6 +177,51 @@ class ActivationLoader  {
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) , ";
         $sql .= " CONSTRAINT request_id FOREIGN KEY (request_id) REFERENCES $wp_table_request(id) ON DELETE CASCADE ";
+        $sql .= ") ENGINE=InnoDB " . $charset_collate ;
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+        $success = $success && empty($wpdb->last_error);
+    }
+
+    return $success;
+
+  }
+
+  private static function create_db_bot() {
+
+    global $wpdb;
+    $success = true;
+    $wp_table_source_q = self::get_table_name('source_q');
+    $wp_table_source_a = self::get_table_name('source_a');
+    $charset_collate = $wpdb->get_charset_collate();
+
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_q' " ) != $wp_table_source_q)  {
+
+        $sql  = " CREATE TABLE $wp_table_source_q ( " ;
+        $sql .= " id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , ";
+        $sql .= " question VARCHAR(350) NOT NULL , ";
+        $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
+        $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
+        $sql .= " FULLTEXT ( question ), ";
+        $sql .= " PRIMARY KEY (id) ) ENGINE=InnoDB " . $charset_collate ;
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+        $success = $success && empty($wpdb->last_error);
+    }
+
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_a' " ) != $wp_table_source_a)  {
+
+        $sql  = " CREATE TABLE $wp_table_source_a ( " ;
+        $sql .= " id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , ";
+        $sql .= " question_id INT(11) UNSIGNED NOT NULL, ";
+        $sql .= " answer TEXT , ";
+        $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
+        $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
+        $sql .= " FULLTEXT ( answer ), ";
+        $sql .= " PRIMARY KEY (id) , ";
+        $sql .= " CONSTRAINT qa_id FOREIGN KEY (question_id) REFERENCES $wp_table_source_q( id )  ON DELETE CASCADE ";
         $sql .= ") ENGINE=InnoDB " . $charset_collate ;
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

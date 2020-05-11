@@ -280,6 +280,7 @@
      $.each( new_messages_count, function( key, conversation ) {
        if ($('#ch-message-board').attr('data-conv_id') != conversation.id ) {
          $('#conv-'+conversation.id).find('.unread').text( conversation.not_read ).show(300);
+         console.log(conversation.not_read);
        }
      });
    }

@@ -191,7 +191,7 @@ trait ChatCollection {
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
     $prep_sql_list = '';
-    $values = array();
+    $sql_values = array();
 
     foreach ($conv_ids as $key => $value) {
         $prep_sql_list .= ' %d,';
@@ -335,9 +335,13 @@ trait ChatCollection {
     $sql = " UPDATE $wp_table_message as m
              INNER JOIN $wp_table_conversation as c ON c.id = m.conv_id
              SET m.is_read = TRUE
-             WHERE m.id > %d AND c.id = %d AND ( c.customer_id = %s OR c.admin_email = %s ) AND m.author_id <> %s";
+             WHERE m.id > %d
+             AND c.id = %d
+             AND ( c.customer_id = %s OR c.admin_email = %s )
+             AND m.author_id <> %s ";
 
-    $sql = $wpdb->prepare( $sql, $msg_id, $conv_id, $user, $user, $user );
+    $parameters = array($msg_id, $conv_id, $user, $user, $user );
+    $sql = $wpdb->prepare( $sql, $parameters );
     $result = $wpdb->get_results($sql);
     wp_reset_postdata();
 

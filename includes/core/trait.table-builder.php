@@ -11,6 +11,8 @@ trait ChatsterTableBuilder {
     private static $conversation = 'chatster_conversation';
     private static $current_conversation = 'chatster_current_conversation';
     private static $ticket = 'chatster_ticket';
+    private static $source_q = 'chatster_source_q';
+    private static $source_a = 'chatster_source_a';
     private static $request = 'chatster_request';
     private static $reply = 'chatster_reply';
     private static $users = 'users';

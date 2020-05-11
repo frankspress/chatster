@@ -15,6 +15,11 @@ class GlobalApi  {
     return $dateTime;
   }
 
+  public function validate_simple_request( $request ) {
+    // TODO
+    return true;
+  }
+
   public function validate_name( $customer_name = '' ) {
     if ( !empty($customer_name) && strlen( $customer_name ) <= 100 ) {
       return htmlentities( $customer_name, ENT_QUOTES, 'UTF-8');

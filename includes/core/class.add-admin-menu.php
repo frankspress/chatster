@@ -52,7 +52,7 @@ class AdminMenu
             'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
             'chat_sound_vol' => 0.2,
             'translation' => array(
-                                    'created' => esc_html('Created', CHATSTER_DOMAIN),
+                                    'created' => esc_html('Started', CHATSTER_DOMAIN),
                                     'hours_plus' => esc_html('more than one hour ago', CHATSTER_DOMAIN),
                                     'hour' => esc_html('hour ago', CHATSTER_DOMAIN),
                                     'minutes' => esc_html('minutes ago', CHATSTER_DOMAIN),
