@@ -444,7 +444,7 @@
             if( answer_ids.indexOf(message.id) === -1) {
                 answer_ids.push(message.id);
             }
-            $message_text.html(message.answer);
+            $message_text.text(message.answer);
             $message_cont.append($message_text);
 
             $("#ch-bot-msg-container").append($message_cont);
