@@ -40,6 +40,35 @@ if ( ! function_exists( 'base64url_decode' ) ) {
 		}
 }
 
+function do_ch_settings_section( $page, $selected_section ) {
+	global $wp_settings_sections, $wp_settings_fields;
+
+	if ( ! isset( $wp_settings_sections[ $page ] ) ) {
+		return;
+	}
+
+	foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+
+		if ( $selected_section == $section['id'] ) {
+
+			if ( $section['title'] ) {
+				echo "<h2>{$section['title']}</h2>\n";
+			}
+
+			if ( $section['callback'] ) {
+				call_user_func( $section['callback'], $section );
+			}
+
+			if ( ! isset( $wp_settings_fields ) || ! isset( $wp_settings_fields[ $page ] ) || ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+				continue;
+			}
+			echo '<table class="form-table" role="presentation">';
+			do_settings_fields( $page, $section['id'] );
+			echo '</table>';
+		}
+	}
+}
+
 /***************************************************************
  * Testing
  */

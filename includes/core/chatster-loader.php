@@ -18,7 +18,8 @@ require_once( CHATSTER_PATH . '/includes/core/class.add-chat-public.php' );
 require_once( CHATSTER_PATH . '/views/class.display-manager.php' );
 
 if ( is_admin() ) {
-  require_once( CHATSTER_PATH . '/includes/options/class.add-options.php' );
+  require_once( CHATSTER_PATH . '/includes/options/class.add-options-bot.php' );
+  require_once( CHATSTER_PATH . '/includes/options/class.add-options-chat.php' );
   require_once( CHATSTER_PATH . '/includes/options/class.validate-options.php' );
   require_once( CHATSTER_PATH . '/includes/core/class.add-admin-menu.php' );
 }
