@@ -7,13 +7,13 @@ require_once( CHATSTER_PATH . '/includes/options/class.options-global.php' );
 
 class AddOptionsChat extends OptionsGlobal {
 
-  protected static $option_group = 'chatster_chat_options';
+  public static $option_group = 'chatster_chat_options';
 
   public function __construct() {
     add_action( 'admin_init', array( $this, 'register_chat_settings' ) );
   }
 
-  public function default_values() {
+  public static function default_values() {
 
       return array(
           'ch_chat_header' => 'Chat'

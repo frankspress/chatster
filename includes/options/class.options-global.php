@@ -3,14 +3,14 @@
 namespace Chatster\Options;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-require_once( CHATSTER_PATH . '/includes/options/class.validate-options.php' );
 
 class OptionsGlobal {
 
+  public static $option_group = null;
 
   public function text_field_callback( $args ) {
 
-  	$options = get_option( static::$option_group , $this->default_values() );
+  	$options = get_option( static::$option_group , static::default_values() );
 
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
@@ -31,7 +31,7 @@ class OptionsGlobal {
 
   public function switch_field_callback( $args ) {
 
-  	$options = get_option( static::$option_group, $this->default_values()  );
+  	$options = get_option( static::$option_group, static::default_values()  );
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
     $placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';

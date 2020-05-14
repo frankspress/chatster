@@ -7,13 +7,13 @@ require_once( CHATSTER_PATH . '/includes/options/class.options-global.php' );
 
 class AddOptionsBot extends OptionsGlobal {
 
-  protected static $option_group = 'chatster_bot_options';
+  public static $option_group = 'chatster_bot_options';
 
   public function __construct() {
     add_action( 'admin_init', array( $this, 'register_bot_settings' ) );
   }
 
-  public function default_values() {
+  public static function default_values() {
 
       return array(
           'ch_bot_intro' => 'Hi!! How can I help you today?',
@@ -89,7 +89,7 @@ class AddOptionsBot extends OptionsGlobal {
              ['id'=>'ch_bot_product_lookup',
               'label'=> 'Enable Product Lookup',
               'description'=> 'Matching product links with thumbnail will be listed along with the found answer.'] );
-
+              
   }
 
   public function validate_bot_options( $input ) {
@@ -109,7 +109,7 @@ class AddOptionsBot extends OptionsGlobal {
     }
 
     $err_msg = '';
-    $options = get_option( 'chatster_bot_options', $this->default_values() );
+    $options = get_option( 'chatster_bot_options', self::default_values() );
 
     foreach (array( 'ch_bot_intro', 'ch_bot_followup','ch_bot_nomatch' ) as $value) {
       if ( isset($input[$value]) ) {
