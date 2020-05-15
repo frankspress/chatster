@@ -32,5 +32,5 @@ class GetOptions {
 
 }
 
-//GLOBAL
+// GLOBAL
 $ChatsterOptions = new GetOptions();

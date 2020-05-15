@@ -6,24 +6,37 @@ function display_admin_settings() {
 
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
-    <?php settings_errors('chatster_bot_options'); ?>
-    <form id="chatster-bot-options-form" action="options.php" method="post">
-    <?php
+    <div id="ch-options-main-container">
 
-          settings_fields( 'chatster_bot_options' );
-          do_ch_settings_section( 'chatster-menu' , 'ch_bot_section');
-          submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-bot']); ?>
-    </form>
+      <div class="ch-option-block" style="border: 1px solid #CCCCCC">
+        <div class="ch-option-title">Bot Setup</div>
+        <div id="bot-options" class="ch-option-container" style="display:none;">
+          <form id="chatster-bot-options-form" action="options.php#bot-options" method="post">
+          <?php
+                settings_errors('chatster_bot_options');
+                settings_fields( 'chatster_bot_options' );
+                do_ch_settings_section( 'chatster-menu' , 'ch_bot_section');
+                submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-bot']); ?>
+          </form>
+        </div>
+      </div>
 
-    <?php  settings_errors('chatster_chat_options'); ?>
-    <form id="chatster-chat-options-form" action="options.php" method="post">
-    <?php
+      <div class="ch-option-block"  style="border: 1px solid #CCCCCC">
+        <div class="ch-option-title">Chat Configuration</div>
+        <div id="chat-options" class="ch-option-container" style="display:none;">
+          <form id="chatster-chat-options-form" action="options.php#chat-options" method="post">
+          <?php
+              settings_errors('chatster_chat_options');
+              settings_fields( 'chatster_chat_options' );
+              do_ch_settings_section( 'chatster-menu', 'ch_chat_section' );
+              submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-chat']); ?>
+          </form>
+        </div>
+      </div>
 
-        settings_fields( 'chatster_chat_options' );
-        do_ch_settings_section( 'chatster-menu', 'ch_chat_section' );
-        submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-chat']);
-        ?>
-    </form>
+    </div>
+
+
 
     <?php
 }
