@@ -134,7 +134,10 @@
          data: payload,
          success: function(data) {
           if (data.payload) {
-            $('#reply-section-' + request_id).find('textarea').val('');
+            let $reply_section = $('#reply-section-' + request_id);
+            $reply_section.find('textarea').val('');
+            $reply_section.find('.ch-smaller-loader').hide();
+            $reply_section.find(".ch-btn-reply input").prop("disabled",false).removeClass('disabled');
             let $reply_container = $('#reply-section-' + request_id).find('.reply-all-container');
             let $reply = reply_template(data.payload);
             $reply.hide();
@@ -153,50 +156,64 @@
       e.preventDefault();
       let reply_text = $(this).find('textarea').val();
       let request_id =  $(this).attr('data-request_id');
+      $(this).find('.ch-smaller-loader').show(100);
+      $(this).find(".ch-btn-reply input").prop("disabled",true).addClass('disabled');
       send_reply_email(request_id, reply_text);
   });
 
   /**
-   * Deletes the request and messages
+   * Deletes the request and related messages
    */
-   function delete_request( request_id ) {
-
-      var payload = { request_id: request_id };
-
-      $.ajax( {
-          url: chatsterDataAdmin.api_base_url + '/request/admin/delete',
-          method: 'POST',
-          beforeSend: function ( xhr ) {
-              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
-          },
-          data: payload,
-          success: function(data) {
-           if (data.payload) {
-             $('#reply-section-' + request_id).hide(200, function () {
-                $(this).remove();
-               });
-
-             $('#request-' + request_id).hide(200, function () {
-                $(this).remove();
-              });
-
-           }
-          },
-          error: function(error) {
-
-          },
-
-        } ).done( function ( response ) {
-           $('#reply-section-'+request_id).find(".ch-smaller-loader").hide();
-        });
+  function no_request_action() {
+    // IF no more results nor paginated -> Show No results Block
+    if ( $('.request-row').length == 0 &&
+           $('.ch-pagination').length == 0 ) {
+      $('#ch-no-results').show();
+      $('#ch-request-list').hide();
     }
+    // IF no more results BUT has pagination -> Reload
+    else if ( $('.request-row').length == 0 &&
+               $('.ch-pagination').length > 0 ) {
+       window.location.reload();
+    }
+  }
+  function delete_request( request_id ) {
 
-    $('.delete').on('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        let request_id = $(this).parent().attr('data-request_id');
-        $('#reply-section-'+request_id).find(".ch-smaller-loader").show();
-        delete_request(request_id);
-    });
+    var payload = { request_id: request_id };
+
+    $.ajax( {
+        url: chatsterDataAdmin.api_base_url + '/request/admin/delete',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+        },
+        data: payload,
+        success: function(data) {
+         if (data.payload) {
+           $('#reply-section-' + request_id).hide(200, function () {
+              $(this).remove();
+             });
+           $('#request-' + request_id).hide(200, function () {
+              $(this).remove();
+              no_request_action();
+            });
+         }
+        },
+        error: function(error) {
+
+        },
+
+      } ).done( function ( response ) {
+         $('#reply-section-'+request_id).find(".ch-smaller-loader").hide();
+         no_request_action();
+      });
+  }
+  $('.delete').on('click', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    let request_id = $(this).parent().attr('data-request_id');
+    $('#reply-section-'+request_id).find(".ch-smaller-loader").show(100);
+    delete_request(request_id);
+  });
 
 
 })(jQuery);

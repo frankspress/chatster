@@ -24,6 +24,10 @@
   display: none;
 }
 
+.disabled {
+  cursor: not-allowed !important;
+}
+
 .wrap {
 
 }
@@ -170,6 +174,9 @@
 .ch-btn-reply {
   text-align: right;
   padding: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .ch-btn-reply input {
@@ -179,6 +186,7 @@
   cursor: pointer;
   outline: none;
 }
+
 
 /** Options **/
 

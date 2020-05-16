@@ -10,18 +10,16 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
       /**
        * If No Results
        */
-      if ( !$requests ) { ?>
-        <table class="wp-list-table widefat fixed striped posts sent-alert ch-alert-table" width="100%">
+      ?>
+        <table id="ch-no-results" class="wp-list-table widefat fixed striped posts <?php echo !$requests ? '' : 'hidden'; ?>" width="100%">
           <tbody id="the-list"><tr><td style="vertical-align: middle; text-align: center;">
             <div class="alert-view-no-results"><?php echo esc_html__('No requests Received yet', CHATSTER_DOMAIN); ?></div></td></tr>
           </tbody>
         </table>
-        <?php
-        return;
-      } ?>
+        <?php if ( !$requests ) return; ?>
 
       <!-- Table Header -->
-      <table class="wp-list-table widefat fixed striped posts">
+      <table id="ch-request-list" class="wp-list-table widefat fixed striped posts">
         <thead>
           <tr>
             <th scope="col" class="ch-th-title" style="width:40%" ><div><?php echo esc_html__('User Name', CHATSTER_DOMAIN); ?></div></th>
@@ -40,8 +38,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
         */
         foreach ($requests as $request ) {
 
-            echo '<tr id="request-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit author-self level-0 post-74
-            type-product status-publish has-post-thumbnail hentry product_cat-posters">';
+            echo '<tr id="request-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit author-self type-product hentry request-row">';
             // Requester and reply section
             echo '<td style="width:40%;"><div>' . esc_html( $request->name ) .'</div><div>' . esc_html( $request->email ) .'</div></td>';
             // Request Subject
@@ -78,11 +75,12 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             echo '<div class="reply-container hidden">';
             echo '<div class="reply-message">'.esc_html( $request->message ).'</div>';
             echo !empty($request->replied_at) ? ch_small_loader() : '';
-            echo '<div class="reply-all-container hidden"></div>
+            echo '<div class="reply-all-container"></div>
                     <div class="ch-reply-input">
                     <form class="ch-reply-form" data-request_id="'.esc_attr( $request->id ).'" >
                       <textarea required placeholder="'.esc_html__( 'Type here your message..', CHATSTER_DOMAIN ).'" type="text" rows="6" maxlength="799"></textarea>
                       <div class="ch-btn-reply">
+                        <div class="ch-smaller-loader hidden" style="margin-right: 20px;"></div>
                         <input type="submit" value="'.esc_html__( 'Send Email', CHATSTER_DOMAIN ).'">
                       <div>
                     </form>
