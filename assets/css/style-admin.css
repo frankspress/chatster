@@ -182,6 +182,16 @@
 
 /** Options **/
 
+.ch-reply-btn {
+  display: flex;
+}
+
+.submit-reset {
+  margin-left: 20px !important;
+}
+
+
+
 /* Grouping switch */
 
 .switch-container {

@@ -7,7 +7,12 @@ require_once( CHATSTER_PATH . '/includes/options/class.options-global.php' );
 
 class AddOptionsChat extends OptionsGlobal {
 
+  public static $success_set = false;
   public static $option_group = 'chatster_chat_options';
+  public static $fields_maxlength = [
+                                      'ch_chat_header' => 90,
+                                      'ch_chat_intro' => 100
+                                    ];
 
   public function __construct() {
     add_action( 'admin_init', array( $this, 'register_chat_settings' ) );
@@ -16,7 +21,8 @@ class AddOptionsChat extends OptionsGlobal {
   public static function default_values() {
 
       return array(
-          'ch_chat_header' => 'Chat'
+          'ch_chat_header' => 'Chat or get in touch!',
+          'ch_chat_intro' => 'Contact Us'
       );
 
   }
@@ -37,6 +43,16 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu' );
 
         add_settings_field(
+                'ch_chat_intro',
+                '',
+                 array( $this, 'text_field_callback'),
+                'chatster-menu',
+                'ch_chat_section',
+                ['id'=>'ch_chat_intro',
+                 'label'=> 'Chat Intro',
+                 'description'=> 'The main link that opens the chat. (Contact Us, Chat, Send a message, etc.)'] );
+
+        add_settings_field(
                 'ch_chat_header',
                 '',
                  array( $this, 'text_field_callback'),
@@ -45,23 +61,38 @@ class AddOptionsChat extends OptionsGlobal {
                 ['id'=>'ch_chat_header',
                  'label'=> 'Chat header',
                  'description'=> 'Message stated at the top of the chat.'] );
+
+
   }
 
   public function validate_chat_options( $input ) {
-    // if ( ! current_user_can( 'manage_options' ) ) return;
-    //   // delete_option( 'chatster_chat_options' );
-    //   //       return false;
-    // if ( !empty($input['default_settings']) &&
-    //         "reset" === $input['default_settings'] ) {
-    //   delete_option( 'chatster_chat_options' );
-    //   add_settings_error(
-    //       'chatster_chat_options', // Setting slug
-    //       'success_message',
-    //       'Chatster Chat settings have been reset!',
-    //       'success'
-    //   );
-    //   return false;
-    // }
+    if ( ! current_user_can( 'manage_options' ) ) return;
+
+    if ( !empty($input['default_settings']) &&
+            "reset" === $input['default_settings'] ) {
+      delete_option( 'chatster_chat_options' );
+      add_settings_error(
+          'chatster_chat_options', // Setting slug
+          'success_message',
+          'Chatster Chat settings have been reset!',
+          'success'
+      );
+      return false;
+    }
+
+    $err_msg = '';
+  	$options = get_option( static::$option_group , static::default_values() );
+
+    foreach (array( 'ch_chat_intro', 'ch_chat_header' ) as $value) {
+      if ( isset($input[$value]) ) {
+        if ( !is_string($input[$value]) || strlen($input[$value]) > self::get_maxlength($value) ) {
+          $input[$value] = isset($options[$value]) ? $options[$value] : '';
+          $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
+        }
+      }
+    }
+
+    $this->add_success_message( $err_msg );
 
     return $input;
   }

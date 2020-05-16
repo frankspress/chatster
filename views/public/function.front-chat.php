@@ -3,9 +3,11 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 
-function display_front_chat( $current_conv = false, $chat_available = false )  { ?>
+function display_front_chat( $current_conv = false, $chat_available = false )  {
+    Global $ChatsterOptions;
+  ?>
    <div id="chatster-container" class="">
-    <section id="ch-header">Header here <div class="ch-arrow"><i class="ch-down"></i></div>
+    <section id="ch-header"><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_header')); ?><div class="ch-arrow"><i class="ch-down"></i></div>
     </section>
     <div id="ch-indent-header"></div>
 
@@ -85,7 +87,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
   <div id="chatster-opener">
     <section id="ch-open-button">
-      <div>Chat</div>
+      <div><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_intro')); ?></div>
     </section>
   </div>
 
