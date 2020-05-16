@@ -156,4 +156,47 @@
       send_reply_email(request_id, reply_text);
   });
 
+  /**
+   * Deletes the request and messages
+   */
+   function delete_request( request_id ) {
+
+      var payload = { request_id: request_id };
+
+      $.ajax( {
+          url: chatsterDataAdmin.api_base_url + '/request/admin/delete',
+          method: 'POST',
+          beforeSend: function ( xhr ) {
+              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+          },
+          data: payload,
+          success: function(data) {
+           if (data.payload) {
+             $('#reply-section-' + request_id).hide(200, function () {
+                $(this).remove();
+               });
+
+             $('#request-' + request_id).hide(200, function () {
+                $(this).remove();
+              });
+
+           }
+          },
+          error: function(error) {
+
+          },
+
+        } ).done( function ( response ) {
+           $('#reply-section-'+request_id).find(".ch-smaller-loader").hide();
+        });
+    }
+
+    $('.delete').on('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        let request_id = $(this).parent().attr('data-request_id');
+        $('#reply-section-'+request_id).find(".ch-smaller-loader").show();
+        delete_request(request_id);
+    });
+
+
 })(jQuery);

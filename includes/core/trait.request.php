@@ -120,7 +120,7 @@ trait RequestCollection {
      $sql = " DELETE FROM $wp_table_request WHERE id = %d ";
      $sql = $wpdb->prepare( $sql, $request_id );
 
-     $result = $wpdb->get_results( $sql );
+     $result = $wpdb->query( $sql );
      wp_reset_postdata();
 
      return ! empty( $result ) ? $result : false;

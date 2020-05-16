@@ -71,6 +71,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             // Hidden reply section
             echo '<tr id="reply-section-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit type-product status-publish has-post-thumbnail hentry product_cat-posters">';
             echo '<td style="width:100%;" colspan="5">';
+            echo '<div class="ch-smaller-loader" style="display:none;"></div>';
             echo '<div class="row-actions" data-request_id="'.esc_attr( $request->id ).'">';
             echo '<span class="reply" ><a href="" aria-label="Reply">'.( empty($request->replied_at) ? esc_html__( 'Reply', CHATSTER_DOMAIN ) : esc_html__( 'Show&#47;Reply', CHATSTER_DOMAIN )  ).'</a> |</span> ';
             echo '<span class="delete"><a href="" class="submitdelete" aria-label="Delete">'.esc_html__( 'Delete', CHATSTER_DOMAIN ).'</a></span></div>';

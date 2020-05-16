@@ -11,8 +11,8 @@
   go_to_option();
 
 /**
-* Animates Option windows slide up and down
-*/
+ * Animates Option windows slide up and down
+ */
   $(".ch-option-block").on('click', function(e) {
     if ( e.target.className == 'ch-option-title' ) {
       $(this).find('.ch-option-container').slideToggle(300, "linear",function() {
@@ -22,8 +22,8 @@
   });
 
 /**
-* Asks for confirmation before resetting options.
-*/
+ * Asks for confirmation before resetting options.
+ */
   $('.submit-reset').on('click', function(e) {
     e.preventDefault();
     if ( confirm("Reset All settings?") ) {
