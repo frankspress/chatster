@@ -27,11 +27,17 @@ function display_admin_settings() {
       <div class="ch-option-block" style="border: 1px solid #CCCCCC">
         <div class="ch-option-title"><?php esc_html_e('Bot Q &amp; A', CHATSTER_DOMAIN); ?></div>
         <div id="bot-q-and-a" class="ch-option-container" style="display:none;">
+          <div id="q-and-a-container"></div>
           <form id="chatster-bot-and-a-form" action="" method="post">
           <?php ?>
-                <div class="ch-reply-btn">
-                  <?php submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-bot-q-and-a']); ?>
-                </div>
+            <div id="q-and-a-input">
+            <?php
+              do_ch_settings_section( 'chatster-menu' , 'ch_bot_qa_section'); ?>
+              <div class="ch-reply-btn" style="display:flex;">
+                <input type="submit" name="submit-settings" id="save-bot-q-and-a" class="button button-primary custom-class" value="Save Response">
+                <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
+              </div>
+            </div>
           </form>
         </div>
       </div>

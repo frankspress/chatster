@@ -12,6 +12,7 @@ require_once( CHATSTER_PATH . '/includes/activation/class.deactivation.php' );
 require_once( CHATSTER_PATH . '/includes/options/class.add-options-bot.php' );
 require_once( CHATSTER_PATH . '/includes/options/class.add-options-chat.php' );
 require_once( CHATSTER_PATH . '/includes/options/class.add-options-request.php' );
+require_once( CHATSTER_PATH . '/includes/options/class.add-options-bot-qa.php' );
 require_once( CHATSTER_PATH . '/includes/options/class.get-options.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.search-api-extender.php' );
 require_once( CHATSTER_PATH . '/includes/api/class.chat.php' );

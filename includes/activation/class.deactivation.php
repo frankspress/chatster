@@ -39,6 +39,10 @@ class DeactivationLoader {
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
       $wp_table = self::get_table_name('ticket');
       $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
+      $wp_table = self::get_table_name('source_q');
+      $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
+      $wp_table = self::get_table_name('source_a');
+      $wpdb->query("DROP TABLE IF EXISTS $wp_table ");
 
       return true;
     }

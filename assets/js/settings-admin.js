@@ -39,4 +39,47 @@
     }
   });
 
+  function build_qa_list( questions, answer ) {
+
+  }
+  function save_q_and_a( questions, answer ) {
+
+    var payload = { questions: questions, answer: answer };
+
+    $.ajax( {
+       url: chatsterDataAdmin.api_base_url + '/bot/admin/update',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+       },
+       data: payload,
+       success: function(data) {
+         console.log(data);
+         // if ( data.payload ) {
+         //   build_qa_list(data.payload);
+         //   $('#chatster_bot_qa_options_ch_bot_answer').val('');
+         //   $('#chatster_bot_qa_options_ch_bot_question').val('');
+         // }
+       },
+       error: function(error) {
+         $('#save-bot-q-and-a').attr('disabled', false);
+         $('#chatster-bot-and-a-form').find('.ch-smaller-loader').hide(100);
+       },
+
+     } ).done( function ( response ) {
+         $('#save-bot-q-and-a').attr('disabled', false);
+         $('#chatster-bot-and-a-form').find('.ch-smaller-loader').hide(100);
+     });
+  }
+  $('#chatster-bot-and-a-form').on('submit', function(e) {
+    e.preventDefault();
+    let questions_text = $('#chatster_bot_qa_options_ch_bot_question').val();
+    let questions = questions_text.match(/\S[^?]*(?:\?+|$)/g);
+    let answer = $('#chatster_bot_qa_options_ch_bot_answer').val();
+    $('#save-bot-q-and-a').attr('disabled', true);
+    $(this).find('.ch-smaller-loader').show(100);
+    save_q_and_a( questions, answer );
+  });
+console.log(chatsterDataAdmin);
+
 })(jQuery);

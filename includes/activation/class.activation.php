@@ -196,14 +196,14 @@ class ActivationLoader  {
     $wp_table_source_a = self::get_table_name('source_a');
     $charset_collate = $wpdb->get_charset_collate();
 
-    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_q' " ) != $wp_table_source_q)  {
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_a' " ) != $wp_table_source_a)  {
 
-        $sql  = " CREATE TABLE $wp_table_source_q ( " ;
+        $sql  = " CREATE TABLE $wp_table_source_a ( " ;
         $sql .= " id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , ";
-        $sql .= " question VARCHAR(350) NOT NULL , ";
+        $sql .= " answer TEXT , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
-        $sql .= " FULLTEXT ( question ), ";
+        $sql .= " FULLTEXT ( answer ), ";
         $sql .= " PRIMARY KEY (id) ) ENGINE=InnoDB " . $charset_collate ;
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -211,17 +211,17 @@ class ActivationLoader  {
         $success = $success && empty($wpdb->last_error);
     }
 
-    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_a' " ) != $wp_table_source_a)  {
+    if ($wpdb->get_var( "SHOW TABLES LIKE '$wp_table_source_q' " ) != $wp_table_source_q)  {
 
-        $sql  = " CREATE TABLE $wp_table_source_a ( " ;
+        $sql  = " CREATE TABLE $wp_table_source_q ( " ;
         $sql .= " id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , ";
-        $sql .= " question_id INT(11) UNSIGNED NOT NULL, ";
-        $sql .= " answer TEXT , ";
+        $sql .= " answer_id INT(11) UNSIGNED NOT NULL, ";
+        $sql .= " question VARCHAR(600) NOT NULL , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , ";
-        $sql .= " FULLTEXT ( answer ), ";
+        $sql .= " FULLTEXT ( question ), ";
         $sql .= " PRIMARY KEY (id) , ";
-        $sql .= " CONSTRAINT qa_id FOREIGN KEY (question_id) REFERENCES $wp_table_source_q( id )  ON DELETE CASCADE ";
+        $sql .= " CONSTRAINT qa_id FOREIGN KEY (answer_id) REFERENCES $wp_table_source_a( id ) ON DELETE CASCADE ";
         $sql .= ") ENGINE=InnoDB " . $charset_collate ;
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

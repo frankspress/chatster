@@ -15,6 +15,7 @@ class BotApi extends GlobalApi  {
     public function __construct() {
 
       $this->reply_question_route();
+      $this->update_admin_qa_route();
 
     }
 
@@ -35,8 +36,8 @@ class BotApi extends GlobalApi  {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/bot/admin/update', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'reply_question' ),
-                     'permission_callback' => array( $this, 'validate_question' )
+                     'callback' => array( $this, 'bot_qa_insert' ),
+                     'permission_callback' => array( $this, 'validate_qa_insert' )
            ));
       });
     }
@@ -68,6 +69,29 @@ class BotApi extends GlobalApi  {
       return false;
     }
 
+    public function validate_qa_insert( $request ) {
+
+      if ( $this->validate_admin($request) ) {
+          if ( is_string($request['answer']) && is_array( $request['questions']) ) {
+               if ( strlen(trim($request['answer'])) == 0 || strlen(trim($request['answer'])) > 600 ) return false;
+               $request['answer'] = htmlentities( $request['answer'], ENT_QUOTES, 'UTF-8');
+               $sanitized_questions = array();
+               foreach ( $request['questions'] as $question ) {
+                   $question = trim($question);
+                   if ( strlen($question) > 0 && strlen($question) <= 600 ) {
+                     $sanitized_questions []= htmlentities( $question, ENT_QUOTES, 'UTF-8');
+                   } else {
+                     return false;
+                   }
+               }
+               $request['questions'] = $sanitized_questions;
+               return true;
+          }
+          return false;
+      }
+    }
+
+
   /**
    * Routes Callbacks
    */
@@ -80,6 +104,12 @@ class BotApi extends GlobalApi  {
 
 
        return array( 'action'=>'bot_reply_question', 'payload'=> $answer );
+
+    }
+
+    public function bot_qa_insert( \WP_REST_Request $data ) {
+
+       return array( 'action'=>'bot_qa_insert', 'payload'=> $data['questions']  );
 
     }
 

@@ -192,6 +192,7 @@
 
 .ch-reply-btn {
   display: flex;
+  align-items: center;
 }
 
 .submit-reset {

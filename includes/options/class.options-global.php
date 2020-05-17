@@ -7,8 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class OptionsGlobal {
 
   public static $option_group = null;
-  public static $fields_maxlength = null;
+  public static $fields_maxlength = array();
   public static $success_set = null;
+
+  public static function default_values() {
+      return array();
+  }
 
   public static function get_maxlength( String $id ) {
       return array_key_exists( $id, static::$fields_maxlength) ? static::$fields_maxlength[$id] : 1000;
@@ -64,6 +68,8 @@ class OptionsGlobal {
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
   	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+  	$is_required = isset( $args['required'] ) ? 'required' : '';
   	$allowed_tags = wp_kses_allowed_html( 'post' );
 
   	$value = isset( $options[$id] ) ? wp_kses( stripslashes_deep( $options[$id] ), $allowed_tags ) : '';
@@ -73,7 +79,8 @@ class OptionsGlobal {
       <th scope="row"><?php echo $label; ?></th>
       <td>
           <textarea id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
-            rows="5" cols="53" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>"><?php echo $value; ?></textarea><br />
+            placeholder="<?php echo esc_attr($placeholder); ?>" rows="5" cols="53" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>"
+            <?php echo esc_attr($is_required); ?> ><?php echo $value; ?></textarea><br />
           <p class="description"><?php echo $description; ?></p>
       </td>
     </tr>

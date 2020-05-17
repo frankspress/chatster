@@ -6,6 +6,24 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class GlobalApi  {
 
+  public function get_admin_email() {
+    if ( current_user_can( 'manage_options' ) ) {
+      $current_user = wp_get_current_user();
+      if ( $current_user && get_current_user_id() ) {
+        return $this->admin_email = $current_user->user_email;
+      }
+    }
+    return false;
+  }
+
+  public function validate_admin( $request ) {
+    if ( $this->get_admin_email() ) {
+      $request['chatster_admin_email'] = $this->admin_email;
+      return true;
+    }
+    return false;
+  }
+
   protected function format_timezone($dateTime = false) {
     if ( $dateTime ) {
       $dt = new \DateTime("now", chatter_get_timezone() );
