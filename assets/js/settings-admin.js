@@ -80,6 +80,5 @@
     $(this).find('.ch-smaller-loader').show(100);
     save_q_and_a( questions, answer );
   });
-console.log(chatsterDataAdmin);
 
 })(jQuery);

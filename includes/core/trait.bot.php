@@ -10,6 +10,11 @@ trait BotCollection {
   use ChatsterTableBuilder;
 
   /**
+   * Static Methods
+   */
+
+
+  /**
    * Api Methods
    */
 
@@ -44,6 +49,72 @@ trait BotCollection {
       $result = $wpdb->get_results( $sql );
 
       return ! empty( $result ) ? $result : false;
+    }
+
+    protected function insert_answer( String $answer ) {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " INSERT INTO $wp_table_source_a ( answer ) VALUES ( %s ) ";
+
+      $sql = $wpdb->prepare( $sql, array($answer) );
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $wpdb->insert_id ) ? $wpdb->insert_id : false;
+    }
+
+    protected function insert_questions( Array $questions, Int $answer_id ) {
+      global $wpdb;
+      $wp_table_source_q = self::get_table_name('source_q');
+
+      $sql = " INSERT INTO $wp_table_source_q ( answer_id, question ) VALUES ";
+      $params = array();
+      $place_holders = array();
+      foreach($questions as $key => $question) {
+          array_push( $params, $answer_id, $question );
+          $place_holders []= " ( %d, %s ) ";
+      }
+
+      $sql .= implode(', ', $place_holders);
+      $sql = $wpdb->prepare( $sql, $params );
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
+    protected function delete_answer( Int $answer_id ) {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " DELETE FROM $wp_table_source_a WHERE answer_id = %d ";
+
+      $sql = $wpdb->prepare( $sql, array($answer_id) );
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
+    protected function get_all_answers() {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " SELECT * FROM $wp_table_source_a ";
+
+      $result = $wpdb->get_results( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
+    protected function get_all_questions() {
+      global $wpdb;
+      $wp_table_source_q = self::get_table_name('source_q');
+
+      $sql = " SELECT * FROM $wp_table_source_q ";
+      
+      $result = $wpdb->get_results( $sql );
+
+      return ! empty( $result ) ? $result : false;
+
     }
 
 

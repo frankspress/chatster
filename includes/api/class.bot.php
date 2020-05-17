@@ -16,6 +16,8 @@ class BotApi extends GlobalApi  {
 
       $this->reply_question_route();
       $this->update_admin_qa_route();
+      $this->delete_admin_qa_route();
+      $this->get_page_admin_qa_route();
 
     }
 
@@ -42,12 +44,22 @@ class BotApi extends GlobalApi  {
       });
     }
 
+    public function get_page_admin_qa_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/bot/admin/get-page', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'bot_qa_get_page' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
+           ));
+      });
+    }
+
     public function delete_admin_qa_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/bot/admin/delete', array(
                      'methods'  => 'POST',
-                     'callback' => array( $this, 'reply_question' ),
-                     'permission_callback' => array( $this, 'validate_question' )
+                     'callback' => array( $this, 'bot_qa_delete' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
     }
@@ -102,16 +114,47 @@ class BotApi extends GlobalApi  {
          $answer = $this->search_full_text($data['user_question']);
        }
 
-
        return array( 'action'=>'bot_reply_question', 'payload'=> $answer );
 
     }
 
     public function bot_qa_insert( \WP_REST_Request $data ) {
 
-       return array( 'action'=>'bot_qa_insert', 'payload'=> $data['questions']  );
+       $answer_id = $this->insert_answer( $data['answer'] );
+       $q = $this->insert_questions( $data['questions'], $answer_id );
+       return array( 'action'=>'bot_qa_insert', 'payload'=> array('answer_id'=> $answer_id, 'questions' => $q)  );
 
     }
+
+    public function bot_qa_delete( \WP_REST_Request $data ) {
+
+       $result = $this->delete_answer( $data['answer_id'] );
+       return array( 'action'=>'bot_qa_insert', 'payload'=> $result  );
+
+    }
+
+    public function bot_qa_get_page( \WP_REST_Request $data ) {
+
+       $answers = $this->get_all_answers();
+       $questions = $this->get_all_questions();
+
+       $result_container = [];
+       foreach ($answers as $answer) {
+           $question_container = [];
+           $qa_container = [];
+           foreach ($questions as $question) {
+               if ( $question->answer_id == $answers->id ) {
+                 $question_container []= $question;
+               }
+           }
+           $qa_container['answer'] = $answer;
+           $qa_container['questions'] = $question_container;
+           $result_container []= $qa_container;
+       }
+
+       return array( 'action'=>'bot_qa_get_page', 'payload'=> $result_container );
+    }
+
 
 }
 
