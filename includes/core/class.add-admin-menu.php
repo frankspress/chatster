@@ -57,7 +57,10 @@ class AdminMenu
                                     'hour' => esc_html('hour ago', CHATSTER_DOMAIN),
                                     'minutes' => esc_html('minutes ago', CHATSTER_DOMAIN),
                                     'minute' => esc_html('minute ago', CHATSTER_DOMAIN),
-                                    'now' => esc_html('just now', CHATSTER_DOMAIN) )
+                                    'now' => esc_html('just now', CHATSTER_DOMAIN),
+                                    'edit' => esc_html('Edit', CHATSTER_DOMAIN),
+                                    'delete' => esc_html('Delete', CHATSTER_DOMAIN)
+                                  )
             )
           );
       });

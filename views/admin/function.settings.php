@@ -30,7 +30,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           <div id="q-and-a-container">
                 <!-- Q and A Listing -->
                 <div id="q-and-a-list">
-                  <div class="q-and-a-block"></div>
+                  <div id="q-and-a-block"></div>
                   <div class="ch-small-loader"></div>
                 </div>
 
@@ -52,12 +52,13 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           </div>
           <form id="chatster-bot-and-a-form" action="" method="post">
           <?php ?>
-            <div id="q-and-a-input">
+            <div id="q-and-a-input" data-qa_edit_id="0" >
             <?php
               do_ch_settings_section( 'chatster-menu' , 'ch_bot_qa_section'); ?>
               <div class="ch-reply-btn" style="display:flex;">
                 <input type="submit" name="submit-settings" id="save-bot-q-and-a" class="button button-primary custom-class" value="Save Response">
                 <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
+                <input type="submit" style="margin-left:20px;" name="submit-settings" id="cancel-bot-q-and-a" class="button button-primary custom-class hidden" value="Cancel Edit">
               </div>
             </div>
           </form>

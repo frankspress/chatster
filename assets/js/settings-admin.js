@@ -42,37 +42,40 @@
 /**
  * Q and A Requests
  */
+  function build_qa_single( answer, questions ) {
+
+    let $question_container = $("<div>", { "class": "question-container" });
+    $.each( questions, function( key, question ) {
+       let $question = $("<div>", {id: "ch-question-single-"+ question.id, "class": "single-question", "data-question_id": question.id }).text(question.question);
+       $question_container.append($question);
+    });
+
+    let $qa_container = $("<div>", {id: "ch-qa-single-"+answer.id, "class": "single-qa", "data-answer_id": answer.id });
+    let $answer_container = $("<div>", { "class": "ch-answer" }).text(answer.answer);
+    let $edit = $("<span>", { "class": "ch-edit-answer" }).text(chatsterDataAdmin.translation.edit);
+    let $delete = $("<span>", { "class": "ch-delete-answer", "data-answer_id": answer.id  }).text(chatsterDataAdmin.translation.delete);
+    let $edit_block = $("<edit>", { "class": "ch-edit-qa", "data-answer_id": answer.id  }).append($edit).append($delete);
+    $qa_container.append($question_container);
+    $qa_container.append($answer_container);
+    $qa_container.append($edit_block);
+
+    return $qa_container;
+  }
   function build_qa_list( payload ) {
     if ( payload ) {
-       // $('#ch-load-conv-container').hide();
-       // let last_conv_id = convs[Object.keys(convs)[convs.length - 1]].id;
-       // $("#conversations-block").attr('data-last_conv_id', last_conv_id);
 
        $.each( payload, function( key, qa_data ) {
-           console.log(qa_data.answer_data);
-         $.each( qa_data.questions, function( key, question ) {
-           console.log(question);
-         });
-         // let $conversation = $("<div>", {id: "conv-"+conversation.id, "class": "single-conversation", "data-customer_id": conversation.customer_id, "data-single_conv_id": conversation.id, "data-is_connected": true });
-         // let $subject = $("<div>", { "class": "ch-subject" }).text(conversation.form_data.chat_subject);
-         // let $email = $("<div>", { "class": "ch-email" }).text(conversation.form_data.customer_email);
-         // let $customer_name = $("<div>", { "class": "ch-name" }).text(conversation.form_data.customer_name);
-         // let $info = $("<div>", { "class": "ch-created-at", "data-created_at":conversation.created_at }).text(time_ago(conversation.created_at));
-         // let $unread = $("<div>", { "class": "unread"}).hide();
-         // if ( conversation.not_read > 0 ) {
-         //   $unread.text( conversation.not_read ).show();
-         // }
-         // $conversation.append($subject).append($email).append($customer_name).append($info).append($unread);
-         // $conversation.hide();
-         // $("#conversations-block").append($conversation);
-         // $conversation.slideDown(200);
+           let answer = qa_data.answer_data;
+           let questions = qa_data.questions;
+           let $qa_container = build_qa_single( answer, questions );
+           $('#q-and-a-block').append($qa_container);
        });
 
     }
   }
-  function save_q_and_a( questions, answer ) {
+  function save_q_and_a( questions, answer, answer_id ) {
 
-    var payload = { questions: questions, answer: answer };
+    var payload = { questions: questions, answer: answer, answer_id: answer_id };
 
     $.ajax( {
        url: chatsterDataAdmin.api_base_url + '/bot/admin/update',
@@ -83,19 +86,22 @@
        data: payload,
        success: function(data) {
          console.log(data);
-         // if ( data.payload ) {
-         //   build_qa_list(data.payload);
-         //   $('#chatster_bot_qa_options_ch_bot_answer').val('');
-         //   $('#chatster_bot_qa_options_ch_bot_question').val('');
-         // }
+         if ( data.payload ) {
+           //build_qa_list(data.payload);
+           $('#chatster_bot_qa_options_ch_bot_answer').val('');
+           $('#chatster_bot_qa_options_ch_bot_question').val('');
+         }
        },
        error: function(error) {
          $('#save-bot-q-and-a').attr('disabled', false);
+         $('#cancel-bot-q-and-a').attr('disabled', false);
          $('#chatster-bot-and-a-form').find('.ch-smaller-loader').hide(100);
        },
 
      } ).done( function ( response ) {
+         $('#q-and-a-input').attr('data-qa_edit_id', 0);
          $('#save-bot-q-and-a').attr('disabled', false);
+         $('#cancel-bot-q-and-a').attr('disabled', false).hide(100);
          $('#chatster-bot-and-a-form').find('.ch-smaller-loader').hide(100);
      });
   }
@@ -104,9 +110,12 @@
     let questions_text = $('#chatster_bot_qa_options_ch_bot_question').val();
     let questions = questions_text.match(/\S[^?]*(?:\?+|$)/g);
     let answer = $('#chatster_bot_qa_options_ch_bot_answer').val();
+    let answer_id = $('#q-and-a-input').attr('data-qa_edit_id');
     $('#save-bot-q-and-a').attr('disabled', true);
+    $('#cancel-bot-q-and-a').attr('disabled', true);
     $(this).find('.ch-smaller-loader').show(100);
-    save_q_and_a( questions, answer );
+
+    save_q_and_a( questions, answer, answer_id );
   });
 
   function load_q_and_a_list(page) {
@@ -120,7 +129,9 @@
        data: {},
        success: function(data) {
          if( data.payload ) {
+           $('#q-and-a-block').empty();
            build_qa_list(data.payload);
+           $('#q-and-a-block').show(200);
          }
 
 
@@ -138,9 +149,7 @@
   $('#ch-qa-pagination a,#ch-qa-pagination span').on('click', function(e) {
       e.preventDefault(); e.stopPropagation();
       $('#ch-qa-pagination').addClass('disabled-link');
-      $('#q-and-a-list .q-and-a-block').slideUp(300, function() {
-        $(this).remove();
-      });
+      $('#q-and-a-block').hide(100);
       $('#q-and-a-list').find('.ch-small-loader').show(200);
       var page = 1;
       if ( $(this).hasClass('next') ) {
@@ -157,6 +166,33 @@
       }
       load_q_and_a_list(page);
   });
-  load_q_and_a_list(1);
+  load_q_and_a_list(current_page_qa);
+
+  $('.ch-edit-qa').live('click',function() {
+    $('#cancel-bot-q-and-a').show(100);
+
+    let answer_id = $(this).parent().attr('data-answer_id');
+    let $qa_block = $('#ch-qa-single-'+answer_id);
+    let $question_block = $qa_block.find('.single-question');
+    $('#q-and-a-input').attr('data-qa_edit_id', answer_id);
+    $qa_block.addClass('ch-qa-edited');
+    let answer = $qa_block.find('.ch-answer').text();
+    let question_join = '';
+    $question_block.each(function(index, obj) {
+      question_join += $(this).text()+' ';
+    });
+
+    $('#chatster_bot_qa_options_ch_bot_question').val(question_join);
+    $('#chatster_bot_qa_options_ch_bot_answer').val(answer);
+  });
+  $('#cancel-bot-q-and-a').on('click', function(e) {
+      e.preventDefault();
+      $('#q-and-a-input').attr('data-qa_edit_id', 0);
+      $('.single-qa').removeClass('ch-qa-edited');
+      $('#chatster_bot_qa_options_ch_bot_question').val('');
+      $('#chatster_bot_qa_options_ch_bot_answer').val('');
+      $(this).hide(100);
+
+  })
 
 })(jQuery);

@@ -102,6 +102,7 @@ class BotApi extends GlobalApi  {
                      return false;
                    }
                }
+               $request['answer_id'] = !empty($request['answer_id']) ? intval($request['answer_id']) : false;
                $request['questions'] = $sanitized_questions;
                return true;
           }

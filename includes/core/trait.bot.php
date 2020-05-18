@@ -9,7 +9,7 @@ use Chatster\Core\ChatsterTableBuilder;
 trait BotCollection {
   use ChatsterTableBuilder;
 
-  public static $per_page_qa = 1;
+  public static $per_page_qa = 3;
 
   /**
    * Static Methods
