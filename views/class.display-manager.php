@@ -13,6 +13,7 @@ require_once( CHATSTER_PATH . '/views/public/function.front-chat.php' );
 
 use Chatster\Core\ChatCollection;
 use Chatster\Core\RequestCollection;
+use Chatster\Core\BotCollection;
 
 /**
  * Shows admin pages and front chat
@@ -21,6 +22,7 @@ class DisplayManager
 {
   use ChatCollection;
   use RequestCollection;
+  use BotCollection;
 
     public static function find_admin_view() {
       if ( ! current_user_can( 'manage_options' ) ) return;
@@ -39,16 +41,17 @@ class DisplayManager
               // Options
               $unreplied_only = false;
               // Pagination
-              $per_page = 3;
               $count = self::count_all_requests( $unreplied_only );
-              $current_page = ( $cpage > 0 && $cpage <= ceil( $count / $per_page ) ) ? $cpage : 1;
-              $total_pages = ceil($count / $per_page);
+              $current_page = ( $cpage > 0 && $cpage <= ceil( $count / self::$per_page_request ) ) ? $cpage : 1;
+              $total_pages = ceil($count / self::$per_page_request);
               // Db requests query
-              $requests = self::get_all_requests( $current_page, $per_page, $order_by = 'created_at', $order, $unreplied_only );
-              display_admin_request( $requests, $total_pages, $current_page, $per_page, $count );
+              $requests = self::get_all_requests( $current_page, self::$per_page_request, $order_by = 'created_at', $order, $unreplied_only );
+              display_admin_request( $requests, $total_pages, $current_page, self::$per_page_request, $count );
               break;
           case 'settings':
-              display_admin_settings();
+              $count_qa = self::get_answer_count();
+              $total_pages_qa = ceil($count_qa / self::$per_page_qa);
+              display_admin_settings($count_qa, self::$per_page_qa, $total_pages_qa);
               break;
           default:
               /* Admin Chat */

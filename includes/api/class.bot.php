@@ -11,7 +11,6 @@ use Chatster\Core\BotCollection;
 class BotApi extends GlobalApi  {
   use BotCollection;
 
-
     public function __construct() {
 
       $this->reply_question_route();
@@ -46,9 +45,16 @@ class BotApi extends GlobalApi  {
 
     public function get_page_admin_qa_route() {
       add_action('rest_api_init', function () {
-       register_rest_route( 'chatster/v1', '/bot/admin/get-page', array(
+       register_rest_route( 'chatster/v1', '/bot/admin/(?P<page>\d+)/get-page', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'bot_qa_get_page' ),
+                     'args' => [
+                          'product_id' => [
+                              'validate_callback' => function($page) {
+                                    return intval($page) > 0 ? intval($page) : 1;
+                                  },
+                          ]
+                      ],
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -135,21 +141,26 @@ class BotApi extends GlobalApi  {
 
     public function bot_qa_get_page( \WP_REST_Request $data ) {
 
-       $answers = $this->get_all_answers();
-       $questions = $this->get_all_questions();
-
+       $count = $this->get_answer_count();
        $result_container = [];
-       foreach ($answers as $answer) {
-           $question_container = [];
-           $qa_container = [];
-           foreach ($questions as $question) {
-               if ( $question->answer_id == $answers->id ) {
-                 $question_container []= $question;
-               }
-           }
-           $qa_container['answer'] = $answer;
-           $qa_container['questions'] = $question_container;
-           $result_container []= $qa_container;
+
+       if ( $count ) {
+         $answers = $this->get_all_answers( $data['page'], $count );
+         $questions = $this->get_all_questions();
+
+         foreach ($answers as $answer) {
+             $question_container = [];
+             $qa_container = [];
+
+             foreach ($questions as $question) {
+                 if ( $question->answer_id == $answer->id ) {
+                   $question_container []= $question;
+                 }
+             }
+             $qa_container['answer_data'] = $answer;
+             $qa_container['questions'] = $question_container;
+             $result_container []= $qa_container;
+         }
        }
 
        return array( 'action'=>'bot_qa_get_page', 'payload'=> $result_container );

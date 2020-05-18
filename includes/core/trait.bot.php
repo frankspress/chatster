@@ -9,9 +9,21 @@ use Chatster\Core\ChatsterTableBuilder;
 trait BotCollection {
   use ChatsterTableBuilder;
 
+  public static $per_page_qa = 1;
+
   /**
    * Static Methods
    */
+   protected static function get_answer_count() {
+     global $wpdb;
+     $wp_table_source_a = self::get_table_name('source_a');
+
+     $sql = " SELECT COUNT(*) FROM $wp_table_source_a ";
+
+     $count = $wpdb->get_var( $sql );
+
+     return ! empty( $count ) ? intval($count) : false;
+   }
 
 
   /**
@@ -94,12 +106,15 @@ trait BotCollection {
       return ! empty( $result ) ? $result : false;
     }
 
-    protected function get_all_answers() {
+    protected function get_all_answers( Int $page, Int $count ) {
       global $wpdb;
       $wp_table_source_a = self::get_table_name('source_a');
 
-      $sql = " SELECT * FROM $wp_table_source_a ";
+      $offset = ( $page - 1 ) * self::$per_page_qa;
 
+      $sql = " SELECT * FROM $wp_table_source_a ORDER BY created_at DESC LIMIT %d, %d ";
+
+      $sql = $wpdb->prepare( $sql, array( $offset, self::$per_page_qa ) );
       $result = $wpdb->get_results( $sql );
 
       return ! empty( $result ) ? $result : false;
@@ -110,12 +125,21 @@ trait BotCollection {
       $wp_table_source_q = self::get_table_name('source_q');
 
       $sql = " SELECT * FROM $wp_table_source_q ";
-      
+
       $result = $wpdb->get_results( $sql );
 
       return ! empty( $result ) ? $result : false;
 
     }
 
+    protected function delete_all_answers() {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " DELETE FROM $wp_table_source_a WHERE id > 0 ";
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
 
 }

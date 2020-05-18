@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function display_admin_settings() {
+function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
 
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
@@ -27,7 +27,29 @@ function display_admin_settings() {
       <div class="ch-option-block" style="border: 1px solid #CCCCCC">
         <div class="ch-option-title"><?php esc_html_e('Bot Q &amp; A', CHATSTER_DOMAIN); ?></div>
         <div id="bot-q-and-a" class="ch-option-container" style="display:none;">
-          <div id="q-and-a-container"></div>
+          <div id="q-and-a-container">
+                <!-- Q and A Listing -->
+                <div id="q-and-a-list">
+                  <div class="q-and-a-block"></div>
+                  <div class="ch-small-loader"></div>
+                </div>
+
+                <?php
+                // Pagination
+                if ( $count_qa > $per_page_qa ) {
+                          echo '<div id="ch-qa-pagination" data-page_max="'.esc_attr($total_pages_qa).'">';
+                          echo paginate_links( array(
+                                        'base' => add_query_arg( 'cpage', '%#%' ),
+                                        'format' => '?page=%#%',
+                                        'show_all' => true,
+                                        'prev_text' => __('&laquo;'),
+                                        'next_text' => __('&raquo;'),
+                                        'total' => $total_pages_qa,
+                                        'current' => 1,
+                                        'type' => 'list'
+                                        ));
+                          echo '</div>'; } ?>
+          </div>
           <form id="chatster-bot-and-a-form" action="" method="post">
           <?php ?>
             <div id="q-and-a-input">

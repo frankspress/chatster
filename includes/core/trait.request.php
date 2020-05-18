@@ -9,6 +9,7 @@ use Chatster\Core\ChatsterTableBuilder;
 trait RequestCollection {
   use ChatsterTableBuilder;
 
+  public static $per_page_request = 3;
 /**
  * Static Requests
  */

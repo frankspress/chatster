@@ -28,6 +28,10 @@
   cursor: not-allowed !important;
 }
 
+.disabled-link { 
+  pointer-events: none;
+}
+
 .wrap {
 
 }
