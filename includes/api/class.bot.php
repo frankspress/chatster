@@ -163,22 +163,24 @@ class BotApi extends GlobalApi  {
        $count = $this->get_answer_count();
        $result_container = [];
 
-       if ( $count ) {
+       if ( $data['page'] <= ceil( $count / self::$per_page_qa ) ) {
          $answers = $this->get_all_answers( $data['page'], $count );
          $questions = $this->get_all_questions($answers);
 
-         foreach ($answers as $answer) {
-             $question_container = [];
-             $qa_container = [];
+         if ( $questions && $answers ) {
+           foreach ($answers as $answer) {
+               $question_container = [];
+               $qa_container = [];
 
-             foreach ($questions as $question) {
-                 if ( $question->answer_id == $answer->id ) {
-                   $question_container []= $question;
-                 }
-             }
-             $qa_container['answer_data'] = $answer;
-             $qa_container['questions'] = $question_container;
-             $result_container []= $qa_container;
+               foreach ($questions as $question) {
+                   if ( $question->answer_id == $answer->id ) {
+                     $question_container []= $question;
+                   }
+               }
+               $qa_container['answer_data'] = $answer;
+               $qa_container['questions'] = $question_container;
+               $result_container []= $qa_container;
+           }
          }
        }
 

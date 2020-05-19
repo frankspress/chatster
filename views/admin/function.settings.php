@@ -37,18 +37,18 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
                 <?php
                 // Pagination
                 if ( $count_qa > $per_page_qa ) {
-                          echo '<div id="ch-qa-pagination" data-page_max="'.esc_attr($total_pages_qa).'">';
-                          echo paginate_links( array(
-                                        'base' => add_query_arg( 'cpage', '%#%' ),
-                                        'format' => '?page=%#%',
-                                        'show_all' => true,
-                                        'prev_text' => __('&laquo;'),
-                                        'next_text' => __('&raquo;'),
-                                        'total' => $total_pages_qa,
-                                        'current' => 1,
-                                        'type' => 'list'
-                                        ));
-                          echo '</div>'; } ?>
+                      echo '<div id="ch-qa-pagination" data-page_max="'.esc_attr($total_pages_qa).'">';
+                      echo paginate_links( array(
+                                    'base' => add_query_arg( 'cpage', '%#%' ),
+                                    'format' => '?page=%#%',
+                                    'show_all' => true,
+                                    'prev_text' => __('&laquo;'),
+                                    'next_text' => __('&raquo;'),
+                                    'total' => $total_pages_qa,
+                                    'current' => 1,
+                                    'type' => 'list'
+                                    ));
+                      echo '</div>'; } ?>
           </div>
           <form id="chatster-bot-and-a-form" action="" method="post">
           <?php ?>

@@ -54,7 +54,8 @@
     let $answer_container = $("<div>", { "class": "ch-answer" }).text(answer.answer);
     let $edit = $("<span>", { "class": "ch-edit-answer" }).text(chatsterDataAdmin.translation.edit);
     let $delete = $("<span>", { "class": "ch-delete-answer", "data-answer_id": answer.id  }).text(chatsterDataAdmin.translation.delete);
-    let $edit_block = $("<edit>", { "class": "ch-edit-qa", "data-answer_id": answer.id  }).append($edit).append($delete);
+    let $loader = $('<div>',{"class": "ch-smaller-loader hidden" , "style":"margin-left:20px;"});
+    let $edit_block = $("<edit>", { "class": "ch-edit-qa", "data-answer_id": answer.id  }).append($edit).append($delete).append($loader);
     $qa_container.append($question_container);
     $qa_container.append($answer_container);
     $qa_container.append($edit_block);
@@ -148,6 +149,7 @@
   }
   function load_q_and_a_list(page) {
 
+    $('#q-and-a-list').find('.ch-small-loader').stop().show(200);
     $.ajax( {
        url: chatsterDataAdmin.api_base_url + '/bot/admin/' + page + '/get-page',
        method: 'POST',
@@ -156,14 +158,19 @@
        },
        data: {},
        success: function(data) {
-         current_page_qa = page;
-         pagination_page_refresh( page );
-         if( data.payload ) {
+
+         if( data.payload.length ) {
            $('#q-and-a-block').empty();
            build_qa_list(data.payload);
            $('#q-and-a-block').show(200);
          }
-
+         else if( page > 1 ) {
+           $($('#ch-qa-pagination .page-numbers li')[page - 1]).remove();
+           current_page_qa = 1;
+           load_q_and_a_list(current_page_qa);
+         }
+         current_page_qa = page;
+         pagination_page_refresh( page );
 
        },
        error: function(error) {
@@ -180,7 +187,6 @@
       e.preventDefault(); e.stopPropagation();
       $('#ch-qa-pagination').addClass('disabled-link');
       $('#q-and-a-block').hide(100);
-      $('#q-and-a-list').find('.ch-small-loader').show(200);
       var page = 1;
       if ( $(this).hasClass('next') ) {
 
@@ -201,6 +207,7 @@
   $('.ch-delete-answer').live('click',function() {
 
     let answer_id = $(this).attr('data-answer_id');
+    $("#ch-qa-single-"+answer_id).find('.ch-smaller-loader').show(200);
     $.ajax( {
        url: chatsterDataAdmin.api_base_url + '/bot/admin/'+ answer_id +'/delete',
        method: 'POST',
@@ -211,10 +218,14 @@
        success: function(data) {
           $("#ch-qa-single-"+answer_id).slideUp(200, function() {
             $(this).remove();
+            if ( $('.single-qa').length == 0 ) {
+              current_page_qa = 1;
+              load_q_and_a_list(current_page_qa);
+            }
           });
        },
        error: function(error) {
-
+          $("#ch-qa-single-"+answer_id).find('.ch-smaller-loader').hide(200);
        },
 
      } ).done( function ( response ) {
