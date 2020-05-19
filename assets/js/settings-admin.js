@@ -73,6 +73,17 @@
 
     }
   }
+  function update_qa( $qa_single, answer_id) {
+    $qa_single.hide();
+    let $old_element = $("#ch-qa-single-"+answer_id);
+    $old_element.attr('id','removed-'+answer_id);
+    $old_element.after($qa_single);
+    $old_element.slideUp(300, function() {
+      $old_element.remove();
+    });
+    $qa_single.slideDown(300);
+
+  }
   function save_q_and_a( questions, answer, answer_id ) {
 
     var payload = { questions: questions, answer: answer, answer_id: answer_id };
@@ -85,12 +96,16 @@
        },
        data: payload,
        success: function(data) {
-         console.log(data);
-         if ( data.payload ) {
-           //build_qa_list(data.payload);
-           $('#chatster_bot_qa_options_ch_bot_answer').val('');
-           $('#chatster_bot_qa_options_ch_bot_question').val('');
+         let $qa_single = build_qa_single(data.payload.answer_data, data.payload.questions);
+         if ( !data.is_update ) {
+           $qa_single.hide();
+           $('#q-and-a-block').prepend($qa_single);
+           $qa_single.slideDown(200);
+         } else {
+           update_qa( $qa_single, answer_id);
          }
+         $('#chatster_bot_qa_options_ch_bot_answer').val('');
+         $('#chatster_bot_qa_options_ch_bot_question').val('');
        },
        error: function(error) {
          $('#save-bot-q-and-a').attr('disabled', false);
@@ -118,6 +133,19 @@
     save_q_and_a( questions, answer, answer_id );
   });
 
+  function pagination_page_refresh(current_page) {
+    let $pages = $('#ch-qa-pagination .page-numbers li');
+    $pages.removeClass('current');
+    $.each( $pages, function( key, page_li ) {
+      if ( $(page_li).find('a, span').length ) {
+        let page_number =  $(page_li).find('a, span').text();
+        if ( page_number == current_page ) {
+          $(this).addClass('current');
+        }
+      }
+    });
+
+  }
   function load_q_and_a_list(page) {
 
     $.ajax( {
@@ -128,6 +156,8 @@
        },
        data: {},
        success: function(data) {
+         current_page_qa = page;
+         pagination_page_refresh( page );
          if( data.payload ) {
            $('#q-and-a-block').empty();
            build_qa_list(data.payload);
@@ -168,7 +198,30 @@
   });
   load_q_and_a_list(current_page_qa);
 
-  $('.ch-edit-qa').live('click',function() {
+  $('.ch-delete-answer').live('click',function() {
+
+    let answer_id = $(this).attr('data-answer_id');
+    $.ajax( {
+       url: chatsterDataAdmin.api_base_url + '/bot/admin/'+ answer_id +'/delete',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+       },
+       data: {},
+       success: function(data) {
+          $("#ch-qa-single-"+answer_id).slideUp(200, function() {
+            $(this).remove();
+          });
+       },
+       error: function(error) {
+
+       },
+
+     } ).done( function ( response ) {
+
+     });
+  });
+  $('.ch-edit-answer').live('click',function() {
     $('#cancel-bot-q-and-a').show(100);
 
     let answer_id = $(this).parent().attr('data-answer_id');

@@ -63,6 +63,18 @@ trait BotCollection {
       return ! empty( $result ) ? $result : false;
     }
 
+    protected function update_answer( String $answer, Int $answer_id ) {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " UPDATE $wp_table_source_a SET answer = %s WHERE id = %d ";
+
+      $sql = $wpdb->prepare( $sql, array( $answer, $answer_id ) );
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
     protected function insert_answer( String $answer ) {
       global $wpdb;
       $wp_table_source_a = self::get_table_name('source_a');
@@ -98,10 +110,34 @@ trait BotCollection {
       global $wpdb;
       $wp_table_source_a = self::get_table_name('source_a');
 
-      $sql = " DELETE FROM $wp_table_source_a WHERE answer_id = %d ";
+      $sql = " DELETE FROM $wp_table_source_a WHERE id = %d ";
 
       $sql = $wpdb->prepare( $sql, array($answer_id) );
       $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
+    protected function delete_all_questions( Int $answer_id ) {
+      global $wpdb;
+      $wp_table_source_q = self::get_table_name('source_q');
+
+      $sql = " DELETE FROM $wp_table_source_q WHERE answer_id = %d ";
+
+      $sql = $wpdb->prepare( $sql, array($answer_id) );
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
+    protected function get_answer( Int $answer_id ) {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " SELECT * FROM $wp_table_source_a WHERE id = %d ";
+
+      $sql = $wpdb->prepare( $sql, array($answer_id) );
+      $result = $wpdb->get_results( $sql );
 
       return ! empty( $result ) ? $result : false;
     }
@@ -120,12 +156,21 @@ trait BotCollection {
       return ! empty( $result ) ? $result : false;
     }
 
-    protected function get_all_questions() {
+    protected function get_all_questions( $answers ) {
       global $wpdb;
       $wp_table_source_q = self::get_table_name('source_q');
 
-      $sql = " SELECT * FROM $wp_table_source_q ";
+      $params = array();
+      $place_holders = array();
+      foreach($answers as $key => $answer) {
+          array_push( $params, $answer->id );
+          $place_holders []= "%d";
+      }
 
+      $sql = " SELECT * FROM $wp_table_source_q ";
+      $sql .= " WHERE answer_id IN (".implode(', ', $place_holders).") ";
+
+      $sql = $wpdb->prepare( $sql, $params );
       $result = $wpdb->get_results( $sql );
 
       return ! empty( $result ) ? $result : false;

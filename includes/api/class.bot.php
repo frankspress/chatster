@@ -51,7 +51,7 @@ class BotApi extends GlobalApi  {
                      'args' => [
                           'product_id' => [
                               'validate_callback' => function($page) {
-                                    return intval($page) > 0 ? intval($page) : 1;
+                                    return intval($page) > 0 ? intval($page) : false;
                                   },
                           ]
                       ],
@@ -62,9 +62,16 @@ class BotApi extends GlobalApi  {
 
     public function delete_admin_qa_route() {
       add_action('rest_api_init', function () {
-       register_rest_route( 'chatster/v1', '/bot/admin/delete', array(
+       register_rest_route( 'chatster/v1', '/bot/admin/(?P<answer_id>\d+)/delete', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'bot_qa_delete' ),
+                     'args' => [
+                          'product_id' => [
+                              'validate_callback' => function($answer_id) {
+                                    return intval($answer_id) > 0 ? intval($answer_id) : 1;
+                                  },
+                          ]
+                      ],
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -126,10 +133,21 @@ class BotApi extends GlobalApi  {
     }
 
     public function bot_qa_insert( \WP_REST_Request $data ) {
+       $is_update = $data['answer_id'] ? 1 : 0;
+       if ( $is_update ) {
+         $answer_id = $data['answer_id'];
+         $this->delete_all_questions( $data['answer_id'] );
+         $this->update_answer( $data['answer'], $data['answer_id'] );
+       } else {
+         $answer_id = $this->insert_answer( $data['answer'] );
+       }
+       $this->insert_questions( $data['questions'], $answer_id );
 
-       $answer_id = $this->insert_answer( $data['answer'] );
-       $q = $this->insert_questions( $data['questions'], $answer_id );
-       return array( 'action'=>'bot_qa_insert', 'payload'=> array('answer_id'=> $answer_id, 'questions' => $q)  );
+       $answer = $this->get_answer( $answer_id );
+       $questions = $this->get_all_questions( $answer );
+
+       return array( 'action'=>'bot_qa_insert', 'is_update'=> $is_update, 'payload'=> array('answer_data'=> array_shift($answer),
+                                                                                            'questions' => $questions ) );
 
     }
 
@@ -147,7 +165,7 @@ class BotApi extends GlobalApi  {
 
        if ( $count ) {
          $answers = $this->get_all_answers( $data['page'], $count );
-         $questions = $this->get_all_questions();
+         $questions = $this->get_all_questions($answers);
 
          foreach ($answers as $answer) {
              $question_container = [];
