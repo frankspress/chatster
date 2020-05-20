@@ -17,6 +17,7 @@ class BotApi extends GlobalApi  {
       $this->update_admin_qa_route();
       $this->delete_admin_qa_route();
       $this->get_page_admin_qa_route();
+      $this->reset_admin_qa_route();
 
     }
 
@@ -72,6 +73,16 @@ class BotApi extends GlobalApi  {
                                   },
                           ]
                       ],
+                     'permission_callback' => array( $this, 'validate_admin' )
+           ));
+      });
+    }
+
+    public function reset_admin_qa_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/bot/admin/reset', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'bot_qa_reset' ),
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -155,6 +166,13 @@ class BotApi extends GlobalApi  {
 
        $result = $this->delete_answer( $data['answer_id'] );
        return array( 'action'=>'bot_qa_insert', 'payload'=> $result  );
+
+    }
+
+    public function bot_qa_reset( \WP_REST_Request $data ) {
+
+       $result = $this->reset_qa_all();
+       return array( 'action'=>'bot_qa_reset', 'payload'=> $result  );
 
     }
 

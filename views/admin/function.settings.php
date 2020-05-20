@@ -18,7 +18,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
                 do_ch_settings_section( 'chatster-menu' , 'ch_bot_section'); ?>
                 <div class="ch-reply-btn">
                   <?php submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-bot']); ?>
-                  <p class="submit"><input type="submit" name="submit-default" class="button button-primary submit-reset" value="Reset Settings"></p>
+                  <p class="submit"><input type="submit" name="submit-default" class="button button-primary submit-reset" value="<?php esc_html_e('Reset Settings', CHATSTER_DOMAIN); ?>"></p>
                 </div>
           </form>
         </div>
@@ -27,11 +27,15 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
       <div class="ch-option-block" style="border: 1px solid #CCCCCC">
         <div class="ch-option-title"><?php esc_html_e('Bot Q &amp; A', CHATSTER_DOMAIN); ?></div>
         <div id="bot-q-and-a" class="ch-option-container" style="display:none;">
+          <div id="setting-error-bot_qa_message" class="notice notice-success settings-error is-dismissible hidden">
+              <p><strong><?php esc_html_e('Q&A Was Reset Successfully!', CHATSTER_DOMAIN) ?></strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+            </div>
           <div id="q-and-a-container">
                 <!-- Q and A Listing -->
                 <div id="q-and-a-list">
                   <div id="q-and-a-block"></div>
                   <div class="ch-small-loader"></div>
+                  <div id="ch-no-q-and-a" class="hidden"><?php esc_html_e("You didn't add any Q&A yet!", CHATSTER_DOMAIN ); ?></div>
                 </div>
 
                 <?php
@@ -59,7 +63,9 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
                 <input type="submit" name="submit-settings" id="save-bot-q-and-a" class="button button-primary custom-class" value="Save Response">
                 <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
                 <input type="submit" style="margin-left:20px;" name="submit-settings" id="cancel-bot-q-and-a" class="button button-primary custom-class hidden" value="Cancel Edit">
+                <input id="reset-bot-q-and-a" type="submit" name="submit-default" class="button button-primary" value="<?php esc_html_e('Reset Bot Q&A', CHATSTER_DOMAIN); ?>">
               </div>
+
             </div>
           </form>
         </div>

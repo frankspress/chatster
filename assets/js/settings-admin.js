@@ -26,7 +26,7 @@
  */
   $('.submit-reset').on('click', function(e) {
     e.preventDefault();
-    if ( confirm("Reset All settings?") ) {
+    if ( confirm(chatsterDataAdmin.translation.reset) ) {
       let $option_form = $(this).parent().parent().parent();
       let option_page = $option_form.find('input[name ="option_page"]').val();
       $('<input>').attr({ type: 'hidden',
@@ -105,6 +105,7 @@
          } else {
            update_qa( $qa_single, answer_id);
          }
+         $('#ch-no-q-and-a').hide(100);
          $('#chatster_bot_qa_options_ch_bot_answer').val('');
          $('#chatster_bot_qa_options_ch_bot_question').val('');
        },
@@ -163,11 +164,14 @@
            $('#q-and-a-block').empty();
            build_qa_list(data.payload);
            $('#q-and-a-block').show(200);
+           $('#ch-no-q-and-a').hide(100);
          }
          else if( page > 1 ) {
            $($('#ch-qa-pagination .page-numbers li')[page - 1]).remove();
            current_page_qa = 1;
            load_q_and_a_list(current_page_qa);
+         } else {
+           $('#ch-no-q-and-a').show();
          }
          current_page_qa = page;
          pagination_page_refresh( page );
@@ -259,4 +263,41 @@
 
   })
 
+  // Reset bot Q and A
+  function reset_qa_display() {
+    $('.single-qa').remove();
+    $('#setting-error-bot_qa_message').show(100).delay(5000).hide(100);
+    $('#ch-no-q-and-a').show(200);
+  }
+  function reset_qa() {
+
+    $.ajax( {
+       url: chatsterDataAdmin.api_base_url + '/bot/admin/reset',
+       method: 'POST',
+       beforeSend: function ( xhr ) {
+           xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+       },
+       data: {},
+       success: function(data) {
+
+           $('#q-and-a-block div').slideUp(100);
+           reset_qa_display();
+
+
+       },
+       error: function(error) {
+
+       },
+
+     } ).done( function ( response ) {
+
+     });
+  }
+  $('#reset-bot-q-and-a').on('click', function(e) {
+    e.preventDefault();
+    if ( confirm( chatsterDataAdmin.translation.reset ) ) {
+      reset_qa();
+    }
+  });
+  
 })(jQuery);

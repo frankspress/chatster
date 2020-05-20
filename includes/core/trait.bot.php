@@ -187,4 +187,15 @@ trait BotCollection {
       return ! empty( $result ) ? $result : false;
     }
 
+    protected function reset_qa_all() {
+      global $wpdb;
+      $wp_table_source_a = self::get_table_name('source_a');
+
+      $sql = " DELETE FROM $wp_table_source_a WHERE id > 0 ";
+
+      $result = $wpdb->query( $sql );
+
+      return ! empty( $result ) ? $result : false;
+    }
+
 }
