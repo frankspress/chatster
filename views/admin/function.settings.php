@@ -78,7 +78,9 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           <?php
               settings_errors('chatster_chat_options');
               settings_fields( 'chatster_chat_options' );
-              do_ch_settings_section( 'chatster-menu', 'ch_chat_section' ); ?>
+              do_ch_settings_section( 'chatster-menu', 'ch_chat_section' );
+              do_ch_settings_section( 'chatster-menu', 'ch_chat_admin_section' );
+              ?>
               <div class="ch-reply-btn">
                 <?php submit_button($text = null, $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'save-chat']); ?>
                 <p class="submit"><input type="submit" name="submit-default" class="button button-primary submit-reset" value="Reset Settings"></p>

@@ -22,8 +22,27 @@ class AddOptionsChat extends OptionsGlobal {
 
       return array(
           'ch_chat_header' => 'Chat or get in touch!',
-          'ch_chat_intro' => 'Contact Us'
+          'ch_chat_intro' => 'Contact Us',
+          'ch_chat_volume' => 25,
+          'ch_chat_max_conv' => 20
       );
+
+  }
+
+  public static function get_options_select($option_name) {
+
+      switch ($option_name) {
+
+          case 'ch_chat_max_conv':
+              return array(
+                  '5 Customers'=> 5,
+                  '10 Customers'=> 10,
+                  '15 Customers'=> 15,
+                  '20 Customers'=> 20,
+                  '25 Customers'=> 25
+              );
+              break;
+      }
 
   }
 
@@ -38,7 +57,13 @@ class AddOptionsChat extends OptionsGlobal {
 
         add_settings_section(
                 'ch_chat_section',
-                'Chatster Chat Settings',
+                'Front Chat Settings',
+                 array( $this, 'description' ),
+                'chatster-menu' );
+
+        add_settings_section(
+                'ch_chat_admin_section',
+                'Admin Chat Settings',
                  array( $this, 'description' ),
                 'chatster-menu' );
 
@@ -61,6 +86,26 @@ class AddOptionsChat extends OptionsGlobal {
                 ['id'=>'ch_chat_header',
                  'label'=> 'Chat header',
                  'description'=> 'Message stated at the top of the chat.'] );
+
+        add_settings_field(
+                'ch_chat_volume',
+                '',
+                 array( $this, 'range_field_callback'),
+                'chatster-menu',
+                'ch_chat_section',
+                ['id'=>'ch_chat_volume',
+                 'label'=> 'New Message Sound',
+                 'description'=> 'Chat will emit a sound when the customer receives a new message.'] );
+
+        add_settings_field(
+                'ch_chat_max_conv',
+                '',
+                 array( $this, 'option_field_callback'),
+                'chatster-menu',
+                'ch_chat_admin_section',
+                ['id'=>'ch_chat_max_conv',
+                 'label'=> 'Max number of conversations',
+                 'description'=> 'Requests received after the limit is reached will be put on hold.'] );
 
 
   }

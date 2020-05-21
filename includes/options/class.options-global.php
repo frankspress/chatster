@@ -87,6 +87,35 @@ class OptionsGlobal {
     <?php
   }
 
+  public function option_field_callback( $args ) {
+
+  	$options = get_option( static::$option_group, static::default_values()  );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+    $value = isset( $options[$id] ) ? $options[$id] : '';
+    $select_options = static::get_options_select($id);
+
+    if ( $select_options ) :?>
+
+      <tr valign="top">
+        <th scope="row"><?php echo $label; ?></th>
+         <td>
+           <select name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>" id="<?php echo static::$option_group.'_'.esc_attr($id); ?>"> <?php
+              foreach ( $select_options as $select_name => $select_value ) {
+                $selected = selected( $value == $select_value, true, false );
+                echo '<option value="'. esc_attr($select_value) .'"'. $selected .'>'. esc_html($select_name) .'</option>';
+              } ?>
+           </select><br/>
+           <p class="description"><?php echo $description; ?></p>
+         </td>
+      </tr><?php
+
+    endif;
+  }
+
   public function color_picker_field_callback( $args ) {
 
     $default_values = static::default_values();
@@ -103,6 +132,28 @@ class OptionsGlobal {
       <td>
         <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>" type="text" value="<?php echo $value; ?>" class="my-color-field"
         data-default-color="<?php echo $default_value; ?>" />
+        <p class="description"><?php echo $description; ?></p>
+      </td>
+    </tr>
+
+    <?php
+  }
+
+  public function range_field_callback( $args ) {
+
+    $default_values = static::default_values();
+  	$options = get_option( static::$option_group, $default_values );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$value = isset( $options[$id] ) ? intval($options[$id]) : 0;
+    ?>
+
+    <tr valign="top">
+      <th scope="row"><?php echo $label; ?></th>
+      <td>
+        <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>" type="range" min="0" max="50" value="<?php echo esc_attr($value); ?>">
         <p class="description"><?php echo $description; ?></p>
       </td>
     </tr>
