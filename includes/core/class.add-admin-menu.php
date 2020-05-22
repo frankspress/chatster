@@ -16,6 +16,20 @@ class AdminMenu
 
   }
 
+  protected function get_JS_translation() {
+    return [
+         'created' => esc_html('Started', CHATSTER_DOMAIN),
+         'hours_plus' => esc_html('more than one hour ago', CHATSTER_DOMAIN),
+         'hour' => esc_html('hour ago', CHATSTER_DOMAIN),
+         'minutes' => esc_html('minutes ago', CHATSTER_DOMAIN),
+         'minute' => esc_html('minute ago', CHATSTER_DOMAIN),
+         'now' => esc_html('just now', CHATSTER_DOMAIN),
+         'edit' => esc_html('Edit', CHATSTER_DOMAIN),
+         'delete' => esc_html('Delete', CHATSTER_DOMAIN),
+         'reset' => esc_html('Reset All settings?', CHATSTER_DOMAIN)
+        ];
+  }
+
   public function add_menu_page() {
 
       $menu_page = add_menu_page( 'Chatster',
@@ -26,7 +40,8 @@ class AdminMenu
       );
 
       add_action('admin_print_scripts-'.$menu_page, function() {
-
+        
+          Global $ChatsterOptions;
           $current_tab = isset( $_GET['chtab'] ) ? $_GET['chtab'] : false;
 
           wp_enqueue_style( 'wp-color-picker' );
@@ -42,6 +57,7 @@ class AdminMenu
             wp_enqueue_script( 'chatster-request-admin', CHATSTER_URL_PATH . 'assets/js/request-admin.js',  array('jquery'), 1.0, true);
           }
           if ( $current_tab == 'settings' ) {
+            wp_enqueue_style( 'chatster-css-admin-settings', CHATSTER_URL_PATH . 'assets/css/style-settings.css');
             wp_enqueue_script( 'chatster-settings-admin', CHATSTER_URL_PATH . 'assets/js/settings-admin.js',  array('jquery', 'wp-color-picker'), 1.0, true);
           }
           wp_localize_script( 'chatster-general', 'chatsterDataAdmin', array(
@@ -50,18 +66,8 @@ class AdminMenu
             'nonce' => wp_create_nonce( 'wp_rest' ),
             'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
             'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
-            'chat_sound_vol' => 0.2,
-            'translation' => array(
-                                    'created' => esc_html('Started', CHATSTER_DOMAIN),
-                                    'hours_plus' => esc_html('more than one hour ago', CHATSTER_DOMAIN),
-                                    'hour' => esc_html('hour ago', CHATSTER_DOMAIN),
-                                    'minutes' => esc_html('minutes ago', CHATSTER_DOMAIN),
-                                    'minute' => esc_html('minute ago', CHATSTER_DOMAIN),
-                                    'now' => esc_html('just now', CHATSTER_DOMAIN),
-                                    'edit' => esc_html('Edit', CHATSTER_DOMAIN),
-                                    'delete' => esc_html('Delete', CHATSTER_DOMAIN),
-                                    'reset' => esc_html('Reset All settings?', CHATSTER_DOMAIN),
-                                  )
+            'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume_admin' ))),
+            'translation' => $this->get_JS_translation()
             )
           );
       });

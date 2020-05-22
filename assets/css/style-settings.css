@@ -1,0 +1,46 @@
+
+#chatster_chat_options_ch_chat_screen_position {
+  display: flex;
+}
+
+#chatster_chat_options_ch_chat_screen_position label {
+  text-align: center;
+  display: inline-block;
+  margin-right: 25px;
+}
+
+/* Volume Range */
+#chatster_chat_options_ch_chat_volume, #chatster_chat_options_ch_chat_volume_admin {
+  margin-top: 5px;
+  -webkit-appearance: none;
+  height: 15px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+#chatster_chat_options_ch_chat_volume:hover,
+#chatster_chat_options_ch_chat_volume_admin:hover {
+  opacity: .9;
+}
+
+#chatster_chat_options_ch_chat_volume::-webkit-slider-thumb,
+#chatster_chat_options_ch_chat_volume_admin::-webkit-slider-thumb  {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #04346D;
+  cursor: pointer;
+}
+
+#chatster_chat_options_ch_chat_volume::-moz-range-thumb,
+#chatster_chat_options_ch_chat_volume_admin::-moz-range-thumb
+ {
+  width: 18px;
+  height: 15px;
+  background: #4CAF50;
+  cursor: pointer;
+}

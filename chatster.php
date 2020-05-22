@@ -34,3 +34,10 @@ define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );
  * Load Chatster
  */
 require_once( CHATSTER_PATH . '/includes/core/chatster-loader.php' );
+
+/**
+ * Adds Translation Support
+ */
+add_action( 'plugins_loaded', function() {
+    load_plugin_textdomain( CHATSTER_DOMAIN, FALSE, basename( CHATSTER_PATH ) . '/languages/' );
+});

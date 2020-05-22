@@ -27,13 +27,14 @@ class OptionsGlobal {
   	$label = isset( $args['label'] ) ? $args['label'] : '';
     $placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
   	$description = isset( $args['description'] ) ? $args['description'] : '';
+    $is_required = isset( $args['required'] ) ? 'required' : '';
   	$value = isset( $options[$id] ) ? sanitize_text_field( $options[$id] ) : ''; ?>
 
     <tr valign="top">
       <th scope="row"><?php echo $label; ?></th>
       <td>
           <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
-                 placeholder="<?php echo esc_attr($placeholder); ?>" type="text" size="50" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>" value="<?php echo esc_attr($value); ?>"><br />
+                 placeholder="<?php echo esc_attr($placeholder); ?>" <?php echo $is_required; ?> type="text" size="50" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>" value="<?php echo esc_attr($value); ?>"><br />
           <p class="description"><?php echo $description; ?></p>
       </td>
     </tr>
@@ -89,7 +90,7 @@ class OptionsGlobal {
 
   public function option_field_callback( $args ) {
 
-  	$options = get_option( static::$option_group, static::default_values()  );
+  	$options = get_option( static::$option_group, static::default_values() );
 
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
@@ -116,16 +117,46 @@ class OptionsGlobal {
     endif;
   }
 
-  public function color_picker_field_callback( $args ) {
+  public function screen_side_field_callback( $args ) {
 
-    $default_values = static::default_values();
-  	$options = get_option( static::$option_group, $default_values );
+  	$options = get_option( static::$option_group, static::default_values() );
 
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
   	$description = isset( $args['description'] ) ? $args['description'] : '';
-  	$value = isset( $options[$id] ) ? sanitize_hex_color( $options[$id] ) : '';
-  	$default_value = isset( $default_values[$id] ) ? sanitize_hex_color( $default_values[$id] ) : ''; ?>
+    $value = isset( $options[$id] ) ? $options[$id] : '';
+    ?>
+
+        <tr valign="top">
+          <th scope="row"><?php echo $label; ?></th>
+           <td>
+             <div id="<?php echo static::$option_group.'_'.esc_attr($id); ?>">
+               <label><input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+               type="radio" value="<?php echo esc_attr('left'); ?>" <?php echo checked( $value == 'left', true, false ); ?> >
+               <br/><span>Left Side of the screen</span></label><br/>
+               <label><input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+               type="radio" value="<?php echo esc_attr('right'); ?>" <?php echo checked( $value == 'right', true, false ); ?> >
+               <br/><span>Right Side of the screen</span></label><br/>
+             </div>
+             <br/>
+             <p class="description"><?php echo $description; ?></p>
+           </td>
+        </tr>
+
+      <?php
+  }
+
+  public function color_picker_field_callback( $args ) {
+
+    $default_values = static::default_values();
+  	$options = get_option( static::$option_group, static::default_values() );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$value = isset( $options[$id] ) ? sanitize_hex_color( $options[$id] ) : sanitize_hex_color( $default_values[$id] );
+  	$default_value = isset( $default_values[$id] ) ? sanitize_hex_color( $default_values[$id] ) : '';
+    ?>
 
     <tr valign="top">
       <th scope="row"><?php echo $label; ?></th>

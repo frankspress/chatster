@@ -15,7 +15,9 @@ class AddOptionsRequest extends OptionsGlobal {
 
   public static function default_values() {
       return array(
-          'ch_bot_intro' => 'Hi!! How can I help you today?',
+          'ch_response_header' => '',
+          'ch_request_alert' => false,
+          'ch_request_alert_email' => '',
       );
 
   }
@@ -24,32 +26,80 @@ class AddOptionsRequest extends OptionsGlobal {
 
     if ( ! current_user_can( 'manage_options' ) ) return;
 
-    // register_setting(
-    //         self::$option_group,
-    //         self::$option_group,
-    //         array( $this, 'validate_options') );
-    //
-    // add_settings_section(
-    //         'ch_request_section',
-    //         'Chatster Request Settings',
-    //          array( $this, 'description' ),
-    //         'chatster-menu' );
-    //
-    // add_settings_field(
-    //         'ch_bot_intro',
-    //         '',
-    //          array( $this, 'text_field_callback'),
-    //         'chatster-menu',
-    //         'ch_bot_section',
-    //         ['id'=>'ch_bot_intro',
-    //          'label'=> 'Bot introductory sentence.',
-    //          'description'=> 'Bot introductory sentece used when the chat is initially displayed. '] );
+    register_setting(
+            self::$option_group,
+            self::$option_group,
+            array( $this, 'validate_options') );
+
+    add_settings_section(
+            'ch_request_section',
+            'Chatster Request Settings',
+             array( $this, 'description' ),
+            'chatster-menu' );
+
+    add_settings_field(
+            'ch_response_header',
+            '',
+             array( $this, 'text_field_callback'),
+            'chatster-menu',
+            'ch_request_section',
+            ['id'=>'ch_response_header',
+             'label'=> 'Email Header Image',
+             'placeholder' => 'https://..',
+             'description'=> 'Your response email can display an header image.<br>
+                              Go to Media -> Library -> Add New, then copy and paste the link in this field.<br>
+                              (Aspect ratio 600 X 300 px.)']
+                            );
+
+    add_settings_field(
+            'ch_request_alert',
+            '',
+             array( $this, 'switch_field_callback'),
+            'chatster-menu',
+            'ch_request_section',
+            ['id'=>'ch_request_alert',
+             'label'=> 'Receive Email Alert',
+             'placeholder' => 'https://..',
+             'description'=> 'Receive an email when a new request is submitted.<br>
+                              (Wordpress will check for new requests every hour.)']
+                            );
+    add_settings_field(
+            'ch_request_alert_email',
+            '',
+             array( $this, 'text_field_callback'),
+            'chatster-menu',
+            'ch_request_section',
+            ['id'=>'ch_request_alert_email',
+             'label'=> 'Your Email',
+             'required'=> true,
+             'placeholder' => 'your@email.com..',
+             'description'=> 'Receive an email when a new request is submitted.<br>
+                              (Wordpress will check for new requests every hour.)']
+                            );
 
   }
 
   public function validate_options( $input ) {
     if ( ! current_user_can( 'manage_options' ) ) return;
 
+    if ( !empty($input['default_settings']) &&
+            "reset" === $input['default_settings'] ) {
+      delete_option( self::$option_group );
+      add_settings_error(
+          self::$option_group, // Setting slug
+          'success_message',
+          'Chatster Request settings have been reset!',
+          'success'
+      );
+      return false;
+    }
+
+    $err_msg = '';
+  	$options = get_option( static::$option_group , static::default_values() );
+
+    // TODO
+
+    $this->add_success_message( $err_msg );
     return $input;
   }
 

@@ -23,7 +23,11 @@ class AddOptionsChat extends OptionsGlobal {
       return array(
           'ch_chat_header' => 'Chat or get in touch!',
           'ch_chat_intro' => 'Contact Us',
+          'ch_chat_header_back_color' => '#04346D',
+          'ch_chat_header_text_color' => '#FAFAFA',
+          'ch_chat_screen_position' => 'right',
           'ch_chat_volume' => 25,
+          'ch_chat_volume_admin' => 25,
           'ch_chat_max_conv' => 20
       );
 
@@ -67,36 +71,70 @@ class AddOptionsChat extends OptionsGlobal {
                  array( $this, 'description' ),
                 'chatster-menu' );
 
-        add_settings_field(
-                'ch_chat_intro',
-                '',
-                 array( $this, 'text_field_callback'),
-                'chatster-menu',
-                'ch_chat_section',
-                ['id'=>'ch_chat_intro',
-                 'label'=> 'Chat Intro',
-                 'description'=> 'The main link that opens the chat. (Contact Us, Chat, Send a message, etc.)'] );
+        // --- ch_chat_section ---
 
         add_settings_field(
-                'ch_chat_header',
+                'ch_chat_header_back_color',
                 '',
-                 array( $this, 'text_field_callback'),
+                 array( $this, 'color_picker_field_callback'),
                 'chatster-menu',
                 'ch_chat_section',
-                ['id'=>'ch_chat_header',
-                 'label'=> 'Chat header',
+                ['id'=>'ch_chat_header_back_color',
+                 'label'=> 'Header Background Color',
                  'description'=> 'Message stated at the top of the chat.'] );
 
         add_settings_field(
-                'ch_chat_volume',
+                'ch_chat_header_text_color',
                 '',
-                 array( $this, 'range_field_callback'),
+                 array( $this, 'color_picker_field_callback'),
                 'chatster-menu',
                 'ch_chat_section',
-                ['id'=>'ch_chat_volume',
+                ['id'=>'ch_chat_header_text_color',
+                 'label'=> 'Header Text Color',
+                 'description'=> 'Message stated at the top of the chat.'] );
+
+       add_settings_field(
+               'ch_chat_intro',
+               '',
+                array( $this, 'text_field_callback'),
+               'chatster-menu',
+               'ch_chat_section',
+               ['id'=>'ch_chat_intro',
+                'label'=> 'Chat Intro',
+                'description'=> 'The main link that opens the chat. (Contact Us, Chat, Send a message, etc.)'] );
+
+       add_settings_field(
+               'ch_chat_header',
+               '',
+                array( $this, 'text_field_callback'),
+               'chatster-menu',
+               'ch_chat_section',
+               ['id'=>'ch_chat_header',
+                'label'=> 'Chat Header',
+                'description'=> 'Message stated at the top of the chat.'] );
+
+       add_settings_field(
+               'ch_chat_volume',
+               '',
+                array( $this, 'range_field_callback'),
+               'chatster-menu',
+               'ch_chat_section',
+               ['id'=>'ch_chat_volume',
+                'label'=> 'New Message Sound',
+                'description'=> 'Chat will emit a sound when the customer receives a new message.'] );
+
+        add_settings_field(
+                'ch_chat_screen_position',
+                '',
+                 array( $this, 'screen_side_field_callback'),
+                'chatster-menu',
+                'ch_chat_section',
+                ['id'=>'ch_chat_screen_position',
                  'label'=> 'New Message Sound',
                  'description'=> 'Chat will emit a sound when the customer receives a new message.'] );
 
+
+        // --- ch_chat_admin_section ---
         add_settings_field(
                 'ch_chat_max_conv',
                 '',
@@ -106,6 +144,16 @@ class AddOptionsChat extends OptionsGlobal {
                 ['id'=>'ch_chat_max_conv',
                  'label'=> 'Max number of conversations',
                  'description'=> 'Requests received after the limit is reached will be put on hold.'] );
+
+         add_settings_field(
+                 'ch_chat_volume_admin',
+                 '',
+                  array( $this, 'range_field_callback'),
+                 'chatster-menu',
+                 'ch_chat_admin_section',
+                 ['id'=>'ch_chat_volume_admin',
+                  'label'=> 'Conversation Sounds',
+                  'description'=> 'Select the volume level for the "Admin Chat" sound effects.'] );
 
 
   }

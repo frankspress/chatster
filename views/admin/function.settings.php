@@ -74,6 +74,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
       <div class="ch-option-block"  style="border: 1px solid #CCCCCC">
         <div class="ch-option-title"><?php esc_html_e('Chat Configuration', CHATSTER_DOMAIN); ?></div>
         <div id="chat-options" class="ch-option-container" style="display:none;">
+          <div id="sound"></div>
           <form id="chatster-chat-options-form" action="options.php#chat-options" method="post">
           <?php
               settings_errors('chatster_chat_options');
