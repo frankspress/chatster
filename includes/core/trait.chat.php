@@ -463,7 +463,7 @@ trait ChatCollection {
 
   }
 
-  protected function find_active_admin( $max_allowed = 10 ) {
+  protected function find_active_admin( $max_allowed = 20 ) {
     global $wpdb;
     $wp_table_presence_admin = self::get_table_name('presence_admin');
     $wp_table_conversation = self::get_table_name('conversation');

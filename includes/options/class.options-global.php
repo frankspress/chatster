@@ -169,35 +169,6 @@ class OptionsGlobal {
     endif;
   }
 
-  public function screen_side_field_callback( $args ) {
-
-  	$options = get_option( static::$option_group, static::default_values() );
-
-  	$id    = isset( $args['id'] )    ? $args['id']    : '';
-  	$label = isset( $args['label'] ) ? $args['label'] : '';
-  	$description = isset( $args['description'] ) ? $args['description'] : '';
-    $value = isset( $options[$id] ) ? $options[$id] : '';
-    ?>
-
-        <tr valign="top">
-          <th scope="row"><?php echo $label; ?></th>
-           <td>
-             <div id="<?php echo static::$option_group.'_'.esc_attr($id); ?>">
-               <label><input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
-               type="radio" value="<?php echo esc_attr('left'); ?>" <?php echo checked( $value == 'left', true, false ); ?> >
-               <br/><span>Left Side of the screen</span></label><br/>
-               <label><input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
-               type="radio" value="<?php echo esc_attr('right'); ?>" <?php echo checked( $value == 'right', true, false ); ?> >
-               <br/><span>Right Side of the screen</span></label><br/>
-             </div>
-             <br/>
-             <p class="description"><?php echo $description; ?></p>
-           </td>
-        </tr>
-
-      <?php
-  }
-
   public function color_picker_field_callback( $args ) {
 
     $default_values = static::default_values();

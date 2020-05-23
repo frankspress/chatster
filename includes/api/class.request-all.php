@@ -26,9 +26,9 @@ class RequestApiAdmin extends GlobalApi  {
 
     }
 
-    /**
-     * Routes
-     */
+  /**
+   * Routes
+   */
     public function reply_request_message_route() {
       add_action('rest_api_init', function () {
        register_rest_route( 'chatster/v1', '/request/admin/reply', array(
@@ -189,6 +189,7 @@ class RequestApiAdmin extends GlobalApi  {
 
        return array( 'action'=>'reply_request', 'payload'=> $email_status );
      }
+
 }
 
 new RequestApiAdmin();

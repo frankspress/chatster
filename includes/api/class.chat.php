@@ -196,8 +196,10 @@ class ChatApi extends GlobalApi  {
         // Check queue status
         $queue_total = $this->get_queue_number();
         if ( $queue_total == 0 || $queue_status == 0 ) {
+          global $ChatsterOptions;
+          $max_allowed = $ChatsterOptions->get_chat_option('ch_chat_max_conv');
           // Check if any admin is available and has less than n chats open
-          if ( $assigned_admin = $this->find_active_admin( $max_allowed = 10 ) ) {
+          if ( $assigned_admin = $this->find_active_admin( $max_allowed ) ) {
             if ( isset( $ticket ) ) {
               $this->delete_ticket( $ticket );
             }

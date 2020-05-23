@@ -7,7 +7,7 @@ require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
 
 use Chatster\Core\ChatCollection;
 
-class ChatApiAdmin  {
+class ChatApiAdmin extends GlobalApi  {
   use ChatCollection;
 
   private $admin_email;
@@ -19,6 +19,7 @@ class ChatApiAdmin  {
       $this->insert_msg_route();
       $this->admin_presence_route();
       $this->admin_status_route();
+      $this->disconnect_chat_route();
 
     }
 
@@ -71,6 +72,23 @@ class ChatApiAdmin  {
                      'methods'  => 'POST',
                      'callback' => array( $this, 'insert_admin_messages' ),
                      'permission_callback' => array( $this, 'validate_message' )
+           ));
+      });
+    }
+
+    public function disconnect_chat_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/admin/chat/(?P<conv_id>\d+)/disconnect', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'disconnect_conv_chat' ),
+                     'args' => [
+                          'product_id' => [
+                              'validate_callback' => function($conv_id) {
+                                    return intval($conv_id) > 0 ? intval($conv_id) : false;
+                                  },
+                          ]
+                      ],
+                     'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
     }
@@ -196,6 +214,11 @@ class ChatApiAdmin  {
         $result = $this->insert_new_message( $data['conv_id'], $this->admin_email, $data['new_message'], $data['temp_id'], $data['msg_link'], true );
         return array( 'action'=>'chat_insert', 'payload'=> $result, 'temp_id'=>$data['temp_id'] );
 
+    }
+
+    public function disconnect_conv_chat( \WP_REST_Request $data ) {
+        $disconnect = $this->disconnect_chat($data['conv_id']);
+        return array('action'=> 'diconnect', 'payload'=> $disconnect );
     }
 
 }
