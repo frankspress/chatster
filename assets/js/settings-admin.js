@@ -55,6 +55,41 @@ $('.my-color-field').wpColorPicker();
  }).trigger('change');
 
 /**
+ * Sends a test email
+ */
+ $('#chatster-test-email-form').on('submit', function(e) {
+  e.preventDefault();
+  let $submit = $('#ch-test-email');
+  let recipient = $('#chatster_request_options_ch_request_test_email').val();
+  let payload = { test_email: recipient };
+  $(this).find('.ch-smaller-loader').show();
+  $submit.attr('disabled', true);
+
+  $.ajax( {
+     url: chatsterDataAdmin.api_base_url + '/request/admin/email/test',
+     method: 'POST',
+     beforeSend: function ( xhr ) {
+         xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+     },
+     data: payload,
+     success: function(data) {
+       console.log(data.payload);
+       $('#chatster-test-email-form').find('.ch-smaller-loader').hide();
+       $('#chatster-test-email-form').find('.ch-success').show(100).delay(3000).hide(200);
+       $submit.attr('disabled', false);
+     },
+     error: function(error) {
+       $('#chatster-test-email-form').find('.ch-smaller-loader').hide();
+       $('#chatster-test-email-form').find('.ch-fail').show(100).delay(3000).hide(200);
+       $submit.attr('disabled', false);
+     },
+
+   } ).done( function ( response ) {
+
+   });
+ });
+
+/**
  * Front chat option sound on mouseup/touchend
  */
  function ch_chat_sound(volume_val){

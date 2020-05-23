@@ -31,7 +31,10 @@ class ChatPublic
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
     $bg_color = $ChatsterOptions->get_chat_option('ch_chat_header_back_color');
     $text_color = $ChatsterOptions->get_chat_option('ch_chat_header_text_color');
-    $custom_css = "#chatster-container #ch-header { background-color: ".esc_attr( $bg_color )."; color: ".esc_attr( $text_color )."; }";
+    $custom_css  = "#chatster-container #ch-header { ";
+    $custom_css .= "background-color: ".esc_attr( $bg_color )."; ";
+    $custom_css .= "color: ".esc_attr( $text_color )."; ";
+    $custom_css .= "}";
     wp_add_inline_style( 'chatster-public', $custom_css );
 
   }

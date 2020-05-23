@@ -1,12 +1,26 @@
 
-#chatster_chat_options_ch_chat_screen_position {
+.ch-inline-radio {
   display: flex;
 }
 
-#chatster_chat_options_ch_chat_screen_position label {
+.ch-inline-radio label {
   text-align: center;
   display: inline-block;
   margin-right: 25px;
+}
+
+
+.ch-inline-radio h3 {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.ch-inline-radio h4 {
+  margin-top: 15px;
+    margin-bottom: 0;
+}
+.ch-inline-radio h5 {
+  margin-top: 17px;
+    margin-bottom: 0;
 }
 
 /* Volume Range */

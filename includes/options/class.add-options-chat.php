@@ -26,6 +26,7 @@ class AddOptionsChat extends OptionsGlobal {
           'ch_chat_header_back_color' => '#04346D',
           'ch_chat_header_text_color' => '#FAFAFA',
           'ch_chat_screen_position' => 'right',
+          'ch_chat_text_size' => 'medium',
           'ch_chat_volume' => 25,
           'ch_chat_volume_admin' => 25,
           'ch_chat_max_conv' => 20
@@ -44,6 +45,27 @@ class AddOptionsChat extends OptionsGlobal {
                   '15 Customers'=> 15,
                   '20 Customers'=> 20,
                   '25 Customers'=> 25
+              );
+              break;
+      }
+
+  }
+
+  public static function get_options_radio($option_name) {
+
+      switch ($option_name) {
+
+          case 'ch_chat_text_size':
+              return array(
+                  'small'=> '<h5>'.'Small Text'.'</h5>',
+                  'medium'=> '<h4>'.'Medium Text'.'</h4>',
+                  'large'=> '<h3>'.'Large Text'.'</h3>'
+              );
+              break;
+          case 'ch_chat_screen_position':
+              return array(
+                  'left'=> 'Left Side of the screen',
+                  'right'=> 'Right Side of the screen'
               );
               break;
       }
@@ -114,25 +136,34 @@ class AddOptionsChat extends OptionsGlobal {
                 'description'=> 'Message stated at the top of the chat.'] );
 
        add_settings_field(
-               'ch_chat_volume',
+               'ch_chat_text_size',
                '',
-                array( $this, 'range_field_callback'),
+                array( $this, 'radio_field_callback'),
                'chatster-menu',
                'ch_chat_section',
-               ['id'=>'ch_chat_volume',
-                'label'=> 'New Message Sound',
-                'description'=> 'Chat will emit a sound when the customer receives a new message.'] );
+               ['id'=>'ch_chat_text_size',
+                'label'=> 'Text Size',
+                'description'=> ''] );
 
         add_settings_field(
-                'ch_chat_screen_position',
+                'ch_chat_volume',
                 '',
-                 array( $this, 'screen_side_field_callback'),
+                 array( $this, 'range_field_callback'),
                 'chatster-menu',
                 'ch_chat_section',
-                ['id'=>'ch_chat_screen_position',
+                ['id'=>'ch_chat_volume',
                  'label'=> 'New Message Sound',
                  'description'=> 'Chat will emit a sound when the customer receives a new message.'] );
 
+        add_settings_field(
+               'ch_chat_screen_position',
+               '',
+                array( $this, 'radio_field_callback'),
+               'chatster-menu',
+               'ch_chat_section',
+               ['id'=>'ch_chat_screen_position',
+                'label'=> 'New Message Sound',
+                'description'=> ''] );
 
         // --- ch_chat_admin_section ---
         add_settings_field(

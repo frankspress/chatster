@@ -21,6 +21,7 @@ class RequestApiAdmin extends GlobalApi  {
       $this->delete_request_message_route();
       $this->get_request_message_route();
       $this->insert_request_message_route();
+      $this->send_test_email_route();
       $this->pin_request_message_route();
 
     }
@@ -63,6 +64,16 @@ class RequestApiAdmin extends GlobalApi  {
        register_rest_route( 'chatster/v1', '/request/admin/pin', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'set_request_pin' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
+           ));
+      });
+    }
+
+    public function send_test_email_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/request/admin/email/test', array(
+                     'methods'  => 'POST',
+                     'callback' => array( $this, 'send_test_email' ),
                      'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
@@ -116,9 +127,9 @@ class RequestApiAdmin extends GlobalApi  {
      public function reply_received_request( \WP_REST_Request $data ) {
         $emailer = new Emailer;
         $result = false;
-        $response = $this->get_request_by_id($data['request_id']);
-        $response->reply = $data['reply_text'];
-        //$email_status = $emailer->send_reply_email($response);
+        $request = $this->get_request_by_id($data['request_id']);
+        $request->reply = $data['reply_text'];
+        //$email_status = $emailer->send_reply_email($request);
         $email_status = true;
         if ( $email_status ) {
           $this->insert_reply( $this->admin_email, $data['reply_text'], $data['request_id'] );
@@ -159,6 +170,24 @@ class RequestApiAdmin extends GlobalApi  {
 
            $result = $this->insert_request_data( $data['customer_name'], $data['customer_email'], $data['customer_subject'], $data['customer_message']);
            return array( 'action'=> 'request_form', 'payload'=> $result );
+     }
+
+     public function send_test_email( \WP_REST_Request $data ) {
+       global $current_user;
+       wp_get_current_user();
+       $emailer = new Emailer;
+       $request = new \stdClass();
+       $request->email = $data['test_email'];
+       $request->subject = __('Testing Chatster! Your email setup works! ', CHATSTER_DOMAIN);
+       $request->name = $current_user->display_name;
+       $request->reply =  __('This is a test email sent by', CHATSTER_DOMAIN ) . ' <i>Chatster for WooCommerce</i>!<br/>'.
+                          __('The plugin is working. For more testing, please read the documentation.', CHATSTER_DOMAIN) .'<br/>'.
+                          __('Test your website link here: ', CHATSTER_DOMAIN).get_site_url().
+                          '<p>'.__('Thank you.', CHATSTER_DOMAIN).'</p>';
+
+       $email_status = $emailer->send_reply_email($request);
+
+       return array( 'action'=>'reply_request', 'payload'=> $email_status );
      }
 }
 

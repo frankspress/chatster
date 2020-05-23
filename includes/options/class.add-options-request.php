@@ -15,9 +15,10 @@ class AddOptionsRequest extends OptionsGlobal {
 
   public static function default_values() {
       return array(
-          'ch_response_header' => '',
+          'ch_response_header_url' => '',
           'ch_request_alert' => false,
           'ch_request_alert_email' => '',
+          'ch_request_test_email' => '',
       );
 
   }
@@ -37,13 +38,19 @@ class AddOptionsRequest extends OptionsGlobal {
              array( $this, 'description' ),
             'chatster-menu' );
 
+    add_settings_section(
+            'ch_request_test_section',
+            'Test Functionality',
+             array( $this, 'description' ),
+            'chatster-menu' );
+
     add_settings_field(
-            'ch_response_header',
+            'ch_response_header_url',
             '',
              array( $this, 'text_field_callback'),
             'chatster-menu',
             'ch_request_section',
-            ['id'=>'ch_response_header',
+            ['id'=>'ch_response_header_url',
              'label'=> 'Email Header Image',
              'placeholder' => 'https://..',
              'description'=> 'Your response email can display an header image.<br>
@@ -66,13 +73,26 @@ class AddOptionsRequest extends OptionsGlobal {
     add_settings_field(
             'ch_request_alert_email',
             '',
-             array( $this, 'text_field_callback'),
+             array( $this, 'email_field_callback'),
             'chatster-menu',
             'ch_request_section',
             ['id'=>'ch_request_alert_email',
              'label'=> 'Your Email',
              'required'=> true,
-             'placeholder' => 'your@email.com..',
+             'placeholder' => 'Ex: your@email.com',
+             'description'=> 'Receive an email when a new request is submitted.<br>
+                              (Wordpress will check for new requests every hour.)']
+                            );
+    add_settings_field(
+            'ch_request_test_email',
+            '',
+             array( $this, 'email_field_callback'),
+            'chatster-menu',
+            'ch_request_test_section',
+            ['id'=>'ch_request_test_email',
+             'label'=> 'Enter an Email address to send test email',
+             'required'=> true,
+             'placeholder' => 'Ex: test@email.com',
              'description'=> 'Receive an email when a new request is submitted.<br>
                               (Wordpress will check for new requests every hour.)']
                             );
@@ -95,6 +115,7 @@ class AddOptionsRequest extends OptionsGlobal {
     }
 
     $err_msg = '';
+    $input['ch_request_test_email'] = '';
   	$options = get_option( static::$option_group , static::default_values() );
 
     // TODO

@@ -41,6 +41,28 @@ class OptionsGlobal {
     <?php
   }
 
+  public function email_field_callback( $args ) {
+
+  	$options = get_option( static::$option_group , static::default_values() );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+    $placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+    $is_required = isset( $args['required'] ) ? 'required' : '';
+  	$value = isset( $options[$id] ) ? sanitize_text_field( $options[$id] ) : ''; ?>
+
+    <tr valign="top">
+      <th scope="row"><?php echo $label; ?></th>
+      <td>
+          <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+                 placeholder="<?php echo esc_attr($placeholder); ?>" <?php echo $is_required; ?> type="email" size="50" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>" value="<?php echo esc_attr($value); ?>"><br />
+          <p class="description"><?php echo $description; ?></p>
+      </td>
+    </tr>
+    <?php
+  }
+
   public function switch_field_callback( $args ) {
 
   	$options = get_option( static::$option_group, static::default_values()  );
@@ -110,6 +132,36 @@ class OptionsGlobal {
                 echo '<option value="'. esc_attr($select_value) .'"'. $selected .'>'. esc_html($select_name) .'</option>';
               } ?>
            </select><br/>
+           <p class="description"><?php echo $description; ?></p>
+         </td>
+      </tr><?php
+
+    endif;
+  }
+
+  public function radio_field_callback( $args ) {
+
+  	$options = get_option( static::$option_group, static::default_values() );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+    $value = isset( $options[$id] ) ? $options[$id] : '';
+    $radio_options = static::get_options_radio($id);
+
+    if ( $radio_options ) :?>
+
+      <tr valign="top">
+        <th scope="row"><?php echo $label; ?></th>
+         <td>
+           <div id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" class="ch-inline-radio"><?php
+              foreach ( $radio_options as $radio_value => $radio_label ) : ?>
+                <label><input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+                type="radio" value="<?php echo esc_attr($radio_value); ?>" <?php echo checked( $value == $radio_value, true, false ); ?> >
+                <br/><span><?php echo $radio_label; ?></span></label><br/><?php
+              endforeach; ?>
+           </div><br/>
            <p class="description"><?php echo $description; ?></p>
          </td>
       </tr><?php

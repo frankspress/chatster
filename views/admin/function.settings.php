@@ -91,6 +91,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
       </div>
 
       <div class="ch-option-block"  style="border: 1px solid #CCCCCC">
+
         <div class="ch-option-title"><?php esc_html_e('Request&#47;Response Configuration', CHATSTER_DOMAIN); ?></div>
         <div id="request-options" class="ch-option-container" style="display:none;">
           <form id="chatster-request-options-form" action="options.php#request-options" method="post">
@@ -103,7 +104,20 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
                 <p class="submit"><input type="submit" name="submit-default" class="button button-primary submit-reset" value="Reset Settings"></p>
               </div>
           </form>
+
+          <form id="chatster-test-email-form" method="post">
+            <?php do_ch_settings_section( 'chatster-menu', 'ch_request_test_section' ); ?>
+            <div class="ch-reply-btn">
+              <?php submit_button($text = 'Send Test Email', $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'ch-test-email']); ?>
+              <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
+              <div class="ch-success hidden" style="margin-left:20px;">Sent Successfully!</div>
+              <div class="ch-fail hidden" style="margin-left:20px;">Something went wrong.</div>
+
+            </div>
+          </form>
+
         </div>
+
       </div>
 
     </div>
