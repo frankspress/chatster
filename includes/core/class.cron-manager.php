@@ -24,7 +24,9 @@ class CronManager  {
   }
 
   public function cron_remove_old_convs() {
-    $this->remove_old_convs();
+    Global $ChatsterOptions;
+    $interval = $ChatsterOptions->get_chat_option('ch_chat_remove_offline_conv_int');
+    $this->remove_old_convs($interval);
   }
 
   public function cron_update_presence() {
@@ -36,8 +38,6 @@ class CronManager  {
   public function cron_check_new_requests() {
 
   }
-
-
 
 }
 

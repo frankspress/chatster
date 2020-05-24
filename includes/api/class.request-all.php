@@ -180,10 +180,11 @@ class RequestApiAdmin extends GlobalApi  {
        $request->email = $data['test_email'];
        $request->subject = __('Testing Chatster! Your email setup works! ', CHATSTER_DOMAIN);
        $request->name = $current_user->display_name;
-       $request->reply =  __('This is a test email sent by', CHATSTER_DOMAIN ) . ' <i>Chatster for WooCommerce</i>!<br/>'.
-                          __('The plugin is working. For more testing, please read the documentation.', CHATSTER_DOMAIN) .'<br/>'.
+       $request->request = __('Mock request sent will be shown here!', CHATSTER_DOMAIN );
+       $request->reply =  __('This is a test email sent by', CHATSTER_DOMAIN ) . ' <i>Chatster for WooCommerce</i>!<br>'.
+                          __('The plugin is working. For more testing, please read the documentation.', CHATSTER_DOMAIN) .'<br>'.
                           __('Test your website link here: ', CHATSTER_DOMAIN).get_site_url().
-                          '<p>'.__('Thank you.', CHATSTER_DOMAIN).'</p>';
+                          '<br><br>'.__('Thank you.', CHATSTER_DOMAIN);
 
        $email_status = $emailer->send_reply_email($request);
 

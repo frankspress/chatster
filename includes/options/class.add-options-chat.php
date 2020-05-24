@@ -31,6 +31,7 @@ class AddOptionsChat extends OptionsGlobal {
           'ch_chat_volume_admin' => 25,
           'ch_chat_max_conv' => 20,
           'ch_chat_auto_offline' => 5,
+          'ch_chat_remove_offline_conv_int' => 5,
           'ch_chat_remove_offline_conv' => true
       );
 
@@ -53,6 +54,14 @@ class AddOptionsChat extends OptionsGlobal {
           case 'ch_chat_auto_offline':
               return array(
                   '1 '.__('Minute', CHATSTER_DOMAIN)   => 1,
+                  '3 '.__('Minutes', CHATSTER_DOMAIN)  => 3,
+                  '5 '.__('Minutes', CHATSTER_DOMAIN)  => 5,
+                  '10 '.__('Minutes', CHATSTER_DOMAIN) => 10
+              );
+              break;
+
+          case 'ch_chat_remove_offline_conv_int':
+              return array(
                   '3 '.__('Minutes', CHATSTER_DOMAIN)  => 3,
                   '5 '.__('Minutes', CHATSTER_DOMAIN)  => 5,
                   '10 '.__('Minutes', CHATSTER_DOMAIN) => 10
@@ -204,6 +213,16 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu',
                 'ch_chat_admin_section',
                 ['id'=>'ch_chat_remove_offline_conv',
+                 'label'=> 'Remove Offlined Convs',
+                 'description'=> 'Automatically removes conversations that have been disconnected from either side.'] );
+
+        add_settings_field(
+                'ch_chat_remove_offline_conv_int',
+                '',
+                 array( $this, 'option_field_callback'),
+                'chatster-menu',
+                'ch_chat_admin_section',
+                ['id'=>'ch_chat_remove_offline_conv_int',
                  'label'=> 'Remove Offlined Convs',
                  'description'=> 'Automatically removes conversations that have been disconnected from either side.'] );
 
