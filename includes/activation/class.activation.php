@@ -291,7 +291,13 @@ class ActivationLoader  {
 
   private static function create_cron_event() {
     if ( ! wp_next_scheduled( 'chatster_remove_old_convs' ) ) {
-      return wp_schedule_event( time(), 'every_three_mins', 'chatster_remove_old_convs' );
+      wp_schedule_event( time(), 'every_three_mins', 'chatster_remove_old_convs' );
+    }
+    if ( ! wp_next_scheduled( 'chatster_verify_presence' ) ) {
+      wp_schedule_event( time(), 'every_minute', 'chatster_update_presence' );
+    }
+    if ( ! wp_next_scheduled( 'chatster_check_new_requests' ) ) {
+      wp_schedule_event( time(), 'hourly', 'chatster_check_new_requests' );
     }
     return true;
   }

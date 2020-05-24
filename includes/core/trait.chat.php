@@ -503,8 +503,32 @@ trait ChatCollection {
 /**
  * Cron Jobs
  */
-  protected function remove_old_convs() {
+  protected function remove_old_convs( $interval = 6 ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_presence = self::get_table_name('presence');
 
+    $sql = " DELETE c.* FROM $wp_table_conversation as c
+    INNER JOIN $wp_table_presence as p ON c.customer_id = p.customer_id
+    WHERE c.is_connected = FALSE OR ( p.last_presence < NOW() - INTERVAL %d MINUTE ) ";
+
+    $sql = $wpdb->prepare( $sql, $interval );
+    $result = $wpdb->query($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
   }
 
+  protected function set_admin_offline( $interval = 5 ) {
+    global $wpdb;
+    $wp_table_presence_admin = self::get_table_name('presence_admin');
+
+    $sql = " UPDATE $wp_table_presence_admin SET is_active = false WHERE last_presence < NOW() - INTERVAL %d MINUTE ";
+    $sql = $wpdb->prepare( $sql, array($interval));
+
+    $result = $wpdb->query( $sql );
+    wp_reset_postdata();
+
+    return $result;
+  }
 }

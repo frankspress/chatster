@@ -70,8 +70,6 @@ class ChatPublic
 
   }
 
-
-
 }
 
 new ChatPublic();

@@ -29,7 +29,9 @@ class AddOptionsChat extends OptionsGlobal {
           'ch_chat_text_size' => 'medium',
           'ch_chat_volume' => 25,
           'ch_chat_volume_admin' => 25,
-          'ch_chat_max_conv' => 20
+          'ch_chat_max_conv' => 20,
+          'ch_chat_auto_offline' => 5,
+          'ch_chat_remove_offline_conv' => true
       );
 
   }
@@ -40,11 +42,20 @@ class AddOptionsChat extends OptionsGlobal {
 
           case 'ch_chat_max_conv':
               return array(
-                  '5 Customers'=> 5,
-                  '10 Customers'=> 10,
-                  '15 Customers'=> 15,
-                  '20 Customers'=> 20,
-                  '25 Customers'=> 25
+                  '5 '.__('Customers', CHATSTER_DOMAIN) =>  5,
+                  '10 '.__('Customers', CHATSTER_DOMAIN) => 10,
+                  '15 '.__('Customers', CHATSTER_DOMAIN) => 15,
+                  '20 '.__('Customers', CHATSTER_DOMAIN) => 20,
+                  '25 '.__('Customers', CHATSTER_DOMAIN) => 25
+              );
+              break;
+
+          case 'ch_chat_auto_offline':
+              return array(
+                  '1 '.__('Minute', CHATSTER_DOMAIN)   => 1,
+                  '3 '.__('Minutes', CHATSTER_DOMAIN)  => 3,
+                  '5 '.__('Minutes', CHATSTER_DOMAIN)  => 5,
+                  '10 '.__('Minutes', CHATSTER_DOMAIN) => 10
               );
               break;
       }
@@ -57,15 +68,15 @@ class AddOptionsChat extends OptionsGlobal {
 
           case 'ch_chat_text_size':
               return array(
-                  'small'=> '<h5>'.'Small Text'.'</h5>',
-                  'medium'=> '<h4>'.'Medium Text'.'</h4>',
-                  'large'=> '<h3>'.'Large Text'.'</h3>'
+                  'small'=> '<h5>'.__('Small Text', CHATSTER_DOMAIN).'</h5>',
+                  'medium'=> '<h4>'.__('Medium Text', CHATSTER_DOMAIN).'</h4>',
+                  'large'=> '<h3>'.__('Large Text', CHATSTER_DOMAIN).'</h3>'
               );
               break;
           case 'ch_chat_screen_position':
               return array(
-                  'left'=> 'Left Side of the screen',
-                  'right'=> 'Right Side of the screen'
+                  'left'=> __('Left Side of the screen', CHATSTER_DOMAIN),
+                  'right'=> __('Right Side of the screen', CHATSTER_DOMAIN)
               );
               break;
       }
@@ -175,6 +186,26 @@ class AddOptionsChat extends OptionsGlobal {
                 ['id'=>'ch_chat_max_conv',
                  'label'=> 'Max number of conversations',
                  'description'=> 'Requests received after the limit is reached will be put on hold.'] );
+
+        add_settings_field(
+                'ch_chat_auto_offline',
+                '',
+                 array( $this, 'option_field_callback'),
+                'chatster-menu',
+                'ch_chat_admin_section',
+                ['id'=>'ch_chat_auto_offline',
+                 'label'=> 'Automatic Offline',
+                 'description'=> 'Online chat will automatically go offline when not in use.<br/>You can choose how long before that happens.'] );
+
+        add_settings_field(
+                'ch_chat_remove_offline_conv',
+                '',
+                 array( $this, 'switch_field_callback'),
+                'chatster-menu',
+                'ch_chat_admin_section',
+                ['id'=>'ch_chat_remove_offline_conv',
+                 'label'=> 'Remove Offlined Convs',
+                 'description'=> 'Automatically removes conversations that have been disconnected from either side.'] );
 
          add_settings_field(
                  'ch_chat_volume_admin',
