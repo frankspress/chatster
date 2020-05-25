@@ -22,6 +22,7 @@ class AddOptionsBot extends OptionsGlobal {
   public static function default_values() {
 
       return array(
+          'ch_bot_name' => 'Chatster',
           'ch_bot_intro' => 'Hi!! How can I help you today?',
           'ch_bot_followup' => 'If you have any other questions please feel free to ask.',
           'ch_bot_nomatch' => 'Sorry, I couldn\'t find what you\'re looking for..
@@ -47,6 +48,16 @@ class AddOptionsBot extends OptionsGlobal {
              array( $this, 'description' ),
             'chatster-menu' );
 
+    add_settings_field(
+            'ch_bot_name',
+            '',
+             array( $this, 'text_field_callback'),
+            'chatster-menu',
+            'ch_bot_section',
+            ['id'=>'ch_bot_name',
+             'label'=> 'Bot Name',
+             'description'=> 'Give your bot your favorite name.'] );
+             
     add_settings_field(
             'ch_bot_intro',
             '',

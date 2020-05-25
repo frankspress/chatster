@@ -58,3 +58,21 @@
   background: #4CAF50;
   cursor: pointer;
 }
+
+
+/** Request Options*/
+
+#header_img_input_container {
+  display: flex;
+  align-items: center;
+}
+
+#header_img_input_container  .header_img {
+  max-width: 150px;
+  max-height: 55px;
+  margin-left: 30px;
+}
+
+#header_img_input_container  .no-image-found {
+  border: 2px solid orangered;
+}

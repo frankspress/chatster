@@ -68,8 +68,7 @@ class AddOptionsRequest extends OptionsGlobal {
             'ch_request_section',
             ['id'=>'ch_response_forward',
              'class'=> 'ch-field-switcher',
-             'label'=> 'Enable Reply Forward',
-             'placeholder' => 'https://..']
+             'label'=> 'Enable Reply Forward']
                             );
     add_settings_field(
             'ch_response_forward_email',
@@ -81,7 +80,7 @@ class AddOptionsRequest extends OptionsGlobal {
              'label'=> '',
              'class'=> 'ch-field-switchable',
              'required'=> true,
-             'placeholder' => 'Ex: your@email.com',
+             'placeholder' => 'Replies will be sent to: your@email.com',
              'description'=> 'If your WordPress website sends email from an email address you don\'t check daily, <br>
                               with this option you can redirect customer replies to an account of your choice.']
                             );
@@ -93,8 +92,7 @@ class AddOptionsRequest extends OptionsGlobal {
             'ch_request_section',
             ['id'=>'ch_request_alert',
              'class'=> 'ch-field-switcher',
-             'label'=> 'Enable Email Alert',
-             'placeholder' => 'https://..']
+             'label'=> 'Enable Email Alert']
                             );
     add_settings_field(
             'ch_request_alert_email',
@@ -106,8 +104,8 @@ class AddOptionsRequest extends OptionsGlobal {
              'class'=> 'ch-field-switchable',
              'label'=> '',
              'required'=> true,
-             'placeholder' => 'Ex: your@email.com',
-             'description'=> 'Receive an email when a new request is submitted.<br>
+             'placeholder' => 'Alerts sent to: your@email.com',
+             'description'=> 'Receive an email alert when a new request is submitted.<br>
                               (Wordpress will check for new requests every hour.)']
                             );
 
@@ -118,11 +116,12 @@ class AddOptionsRequest extends OptionsGlobal {
             'chatster-menu',
             'ch_request_test_section',
             ['id'=>'ch_request_test_email',
-             'label'=> 'Enter an Email address to send test email',
+             'label'=> 'Enter an Email Address.',
              'required'=> true,
-             'placeholder' => 'Ex: test@email.com',
-             'description'=> 'Receive an email when a new request is submitted.<br>
-                              (Wordpress will check for new requests every hour.)']
+             'placeholder' => 'Ex: your@email.com',
+             'description'=> 'You will receive a mock email to check functionalities.<br>
+                              (Depending on your server and service status it may take <br>
+                               a few minutes to receive the email. Also check your "junk folder".)']
                             );
 
   }

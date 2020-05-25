@@ -28,9 +28,10 @@ class AddOptionsChat extends OptionsGlobal {
           'ch_chat_screen_position' => 'right',
           'ch_chat_text_size' => 'medium',
           'ch_chat_volume' => 25,
+          'ch_chat_fontawesome' => true,
           'ch_chat_volume_admin' => 25,
           'ch_chat_max_conv' => 20,
-          'ch_chat_auto_offline' => 5,
+          'ch_chat_auto_offline' => 3,
           'ch_chat_remove_offline_conv_int' => 5,
           'ch_chat_remove_offline_conv' => true
       );
@@ -165,6 +166,16 @@ class AddOptionsChat extends OptionsGlobal {
                 'label'=> 'Text Size',
                 'description'=> ''] );
 
+       add_settings_field(
+               'ch_chat_fontawesome',
+               '',
+                array( $this, 'switch_field_callback'),
+               'chatster-menu',
+               'ch_chat_section',
+               ['id'=>'ch_chat_fontawesome',
+                'label'=> 'Enable Fontawesome',
+                'description'=> 'Fontawesome icons will be displayed in the front chat.'] );
+
         add_settings_field(
                 'ch_chat_volume',
                 '',
@@ -203,8 +214,18 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu',
                 'ch_chat_admin_section',
                 ['id'=>'ch_chat_auto_offline',
-                 'label'=> 'Automatic Offline',
-                 'description'=> 'Online chat will automatically go offline when not in use.<br/>You can choose how long before that happens.'] );
+                 'label'=> 'Auto Offline Admin',
+                 'description'=> 'Will automatically switch the current admin to offline mode when not in use.<br/>You can choose how long before that happens.'] );
+
+       add_settings_field(
+               'ch_chat_remove_offline_conv_int',
+               '',
+                array( $this, 'option_field_callback'),
+               'chatster-menu',
+               'ch_chat_admin_section',
+               ['id'=>'ch_chat_remove_offline_conv_int',
+                'label'=> 'Auto Disconnect Convs',
+                'description'=> 'Automatically disconnects conversations that have been inactive <br>for a selected amount of time.'] );
 
         add_settings_field(
                 'ch_chat_remove_offline_conv',
@@ -213,18 +234,8 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu',
                 'ch_chat_admin_section',
                 ['id'=>'ch_chat_remove_offline_conv',
-                 'label'=> 'Remove Offlined Convs',
-                 'description'=> 'Automatically removes conversations that have been disconnected from either side.'] );
-
-        add_settings_field(
-                'ch_chat_remove_offline_conv_int',
-                '',
-                 array( $this, 'option_field_callback'),
-                'chatster-menu',
-                'ch_chat_admin_section',
-                ['id'=>'ch_chat_remove_offline_conv_int',
-                 'label'=> 'Remove Offlined Convs',
-                 'description'=> 'Automatically removes conversations that have been disconnected from either side.'] );
+                 'label'=> 'Remove Disconnected Convs',
+                 'description'=> 'Automatically removes conversations from the chat that have been disconnected from either side.'] );
 
          add_settings_field(
                  'ch_chat_volume_admin',

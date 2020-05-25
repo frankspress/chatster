@@ -87,7 +87,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
   <div id="chatster-opener">
     <section id="ch-open-button">
-      <div><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_intro')); ?></div>
+      <div><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_intro')).' '; ?><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
     </section>
   </div>
 

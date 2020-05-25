@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-
+use Chatster\Core\Emailer;
 
 /**
  * Adds the Admin Menu
@@ -40,7 +40,7 @@ class AdminMenu
       );
 
       add_action('admin_print_scripts-'.$menu_page, function() {
-        
+
           Global $ChatsterOptions;
           $current_tab = isset( $_GET['chtab'] ) ? $_GET['chtab'] : false;
 
@@ -67,6 +67,8 @@ class AdminMenu
             'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
             'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
             'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume_admin' ))),
+            'default_header_img_url' => Emailer::DEFAULT_HEADER_IMG,
+            'remove_offline_conv' => esc_js( $ChatsterOptions->get_chat_option( 'ch_chat_remove_offline_conv' )),
             'translation' => $this->get_JS_translation()
             )
           );

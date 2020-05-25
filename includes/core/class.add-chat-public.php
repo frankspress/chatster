@@ -64,6 +64,9 @@ class ChatPublic
       'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
       'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume' )))
     ) );
+    if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
+        wp_enqueue_style( 'fontawesome', FONTAWESOME_URL, false, '4.7.0' );
+    }
     wp_enqueue_style( 'chatster-loader-pbl', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
     wp_add_inline_style( 'chatster-public', $this->get_custom_css() );

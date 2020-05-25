@@ -2,7 +2,7 @@
 "use strict";
 
 // Instantiates color-picker
-$('.my-color-field').wpColorPicker();
+  $('.my-color-field').wpColorPicker();
 
 /**
  * Automatically opens the Current Saved tab to show the options menu as it reloads
@@ -46,25 +46,57 @@ $('.my-color-field').wpColorPicker();
 /**
  * Enables/Disables Email Alert / Forward
  */
- $('#chatster_request_options_ch_request_alert').on('change', function() {
+  $('#chatster_request_options_ch_request_alert').on('change', function() {
     if ( this.checked ) {
       $('#chatster_request_options_ch_request_alert_email').prop('disabled', false).prop('required',true);
     } else {
       $('#chatster_request_options_ch_request_alert_email').removeAttr('required').prop('disabled', true);
     }
- }).trigger('change');
- $('#chatster_request_options_ch_response_forward').on('change', function() {
+  }).trigger('change');
+  $('#chatster_request_options_ch_response_forward').on('change', function() {
     if ( this.checked ) {
       $('#chatster_request_options_ch_response_forward_email').prop('disabled', false).prop('required',true);
     } else {
       $('#chatster_request_options_ch_response_forward_email').removeAttr('required').prop('disabled', true);
     }
- }).trigger('change');
+  }).trigger('change');
+
+/**
+* Preview Header Image
+*/
+  var header_img_input = $('#chatster_request_options_ch_response_header_url');
+  var header_container = $('<div>', { id: 'header_img_input_container' });
+  $(header_container).insertAfter(header_img_input);
+  $(header_img_input).appendTo(header_container);
+  function update_header_img( source ) {
+      $('.header_img').remove();
+      let $img_display = $('<img>', { class: 'header_img' });
+      $img_display.hide();
+      $img_display.on('load', function() {
+                                            $('.header_img').remove();
+                                            $(this).appendTo(header_container);
+                                            $img_display.show(400);
+                                          })
+                  .on('error', function() {
+                                            $(this).attr('src', chatsterDataAdmin.no_image_link );
+                                            $(this).addClass('no-image-found');
+                                            $img_display.show();
+                                          })
+                  .attr("src", source);
+  }
+  $('#chatster_request_options_ch_response_header_url').on('paste keyup', function() {
+    let new_source = $(this).val();
+    if ( new_source ) {
+       update_header_img( new_source );
+    } else {
+       update_header_img( chatsterDataAdmin.default_header_img_url );
+    }
+  }).trigger('paste');
 
 /**
  * Sends a test email
  */
- $('#chatster-test-email-form').on('submit', function(e) {
+  $('#chatster-test-email-form').on('submit', function(e) {
   e.preventDefault();
   let $submit = $('#ch-test-email');
   let recipient = $('#chatster_request_options_ch_request_test_email').val();
@@ -99,18 +131,18 @@ $('.my-color-field').wpColorPicker();
 /**
  * Front chat option sound on mouseup/touchend
  */
- function ch_chat_sound(volume_val){
-   var mp3Source = '<source src="' + chatsterDataAdmin.sound_file_path + '.mp3" type="audio/mpeg">';
-   var oggSource = '<source src="' + chatsterDataAdmin.sound_file_path + '.ogg" type="audio/ogg">';
-   var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataAdmin.sound_file_path +'.mp3">';
-   document.getElementById("sound").innerHTML='<audio id="ch-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource +'</audio>';
-   var chatSound = document.getElementById("ch-audio");
-   chatSound.volume = volume_val;
- }
- $('#chatster_chat_options_ch_chat_volume').on('mouseup touchend', function(e) {
-   let volume_val = ( 1 / 50 ) * parseInt($(this).val());
-   ch_chat_sound(volume_val);
-});
+  function ch_chat_sound(volume_val){
+     var mp3Source = '<source src="' + chatsterDataAdmin.sound_file_path + '.mp3" type="audio/mpeg">';
+     var oggSource = '<source src="' + chatsterDataAdmin.sound_file_path + '.ogg" type="audio/ogg">';
+     var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataAdmin.sound_file_path +'.mp3">';
+     document.getElementById("sound").innerHTML='<audio id="ch-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource +'</audio>';
+     var chatSound = document.getElementById("ch-audio");
+     chatSound.volume = volume_val;
+   }
+  $('#chatster_chat_options_ch_chat_volume').on('mouseup touchend', function(e) {
+     let volume_val = ( 1 / 50 ) * parseInt($(this).val());
+     ch_chat_sound(volume_val);
+  });
 
 /**
  * Q and A Requests

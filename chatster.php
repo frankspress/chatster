@@ -29,6 +29,7 @@ define( 'CHATSTER_KEY',  get_option( 'chatster_enc_key' ) );
 define( 'CHATSTER_FILE_PATH', __FILE__ );
 define( 'CHATSTER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );
+define( 'FONTAWESOME_URL', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
 
 /**
  * Load Chatster
