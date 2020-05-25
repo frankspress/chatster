@@ -44,13 +44,20 @@ $('.my-color-field').wpColorPicker();
   });
 
 /**
- * Enables/Disables Email Alert link
+ * Enables/Disables Email Alert / Forward
  */
  $('#chatster_request_options_ch_request_alert').on('change', function() {
     if ( this.checked ) {
       $('#chatster_request_options_ch_request_alert_email').prop('disabled', false).prop('required',true);
     } else {
       $('#chatster_request_options_ch_request_alert_email').removeAttr('required').prop('disabled', true);
+    }
+ }).trigger('change');
+ $('#chatster_request_options_ch_response_forward').on('change', function() {
+    if ( this.checked ) {
+      $('#chatster_request_options_ch_response_forward_email').prop('disabled', false).prop('required',true);
+    } else {
+      $('#chatster_request_options_ch_response_forward_email').removeAttr('required').prop('disabled', true);
     }
  }).trigger('change');
 

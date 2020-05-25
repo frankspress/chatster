@@ -155,11 +155,11 @@ trait RequestCollection {
    }
 
    // Public Insert
-   protected function insert_request_data( $name, $email, $subject, $message ) {
+   protected function insert_request_data( $name, $email, $subject, $message, $notify_entry = 0 ) {
       global $wpdb;
       $wp_table_request = self::get_table_name('request');
-      $sql = " INSERT INTO $wp_table_request ( name, email, subject, message ) VALUES( %s, %s, %s, %s ) ";
-      $parameters = array( $name, $email, $subject, $message );
+      $sql = " INSERT INTO $wp_table_request ( name, email, subject, message, notify_entry ) VALUES( %s, %s, %s, %s ,%d ) ";
+      $parameters = array( $name, $email, $subject, $message, $notify_entry );
       $sql = $wpdb->prepare( $sql, $parameters);
 
       $result = $wpdb->query( $sql );
@@ -167,5 +167,28 @@ trait RequestCollection {
 
       return ! empty( $result ) ? true : false;
    }
+
+ /**
+  * Cron methods
+  */
+  protected function get_notify_entry_request() {
+    global $wpdb;
+    $wp_table_request = self::get_table_name('request');
+
+    $sql  = " SELECT COUNT(*) FROM $wp_table_request WHERE notify_entry = true ";
+    $result = $wpdb->get_var( $sql);
+
+    return ! empty( $result ) ? $result : false;
+  }
+
+  protected function clear_all_notify_entry_request() {
+    global $wpdb;
+    $wp_table_request = self::get_table_name('request');
+
+    $sql  = " UPDATE $wp_table_request SET notify_entry = false WHERE id > 0 ";
+    $result = $wpdb->query( $sql);
+
+    return ! empty( $result ) ? $result : false;
+  }
 
 }

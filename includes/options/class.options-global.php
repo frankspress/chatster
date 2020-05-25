@@ -46,6 +46,7 @@ class OptionsGlobal {
   	$options = get_option( static::$option_group , static::default_values() );
 
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
+    $class    = isset( $args['class'] )    ? $args['class']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
     $placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
   	$description = isset( $args['description'] ) ? $args['description'] : '';
@@ -55,7 +56,7 @@ class OptionsGlobal {
     <tr valign="top">
       <th scope="row"><?php echo $label; ?></th>
       <td>
-          <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+          <input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" class="<?php echo esc_attr($class); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
                  placeholder="<?php echo esc_attr($placeholder); ?>" <?php echo $is_required; ?> type="email" size="50" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>" value="<?php echo esc_attr($value); ?>"><br />
           <p class="description"><?php echo $description; ?></p>
       </td>
@@ -67,6 +68,7 @@ class OptionsGlobal {
 
   	$options = get_option( static::$option_group, static::default_values()  );
   	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$class    = isset( $args['class'] )    ? $args['class']    : '';
   	$label = isset( $args['label'] ) ? $args['label'] : '';
     $placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
   	$description = isset( $args['description'] ) ? $args['description'] : '';
@@ -76,7 +78,7 @@ class OptionsGlobal {
       <th scope="row"><?php echo esc_html($label); ?></th>
       <td>
   			<label class="switch" style="margin-top: 6px;">
-  				<input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>" type="checkbox" <?php echo $safe_value; ?> >
+  				<input id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" class="<?php echo esc_attr($class); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>" type="checkbox" <?php echo $safe_value; ?> >
   				<span class="slider round"></span></label><br/>
         <p class="description"><?php echo $description; ?></p>
       </td>

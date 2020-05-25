@@ -159,6 +159,7 @@ class ActivationLoader  {
         $sql .= " subject VARCHAR(200) NOT NULL , ";
         $sql .= " message VARCHAR(2500) NOT NULL , ";
         $sql .= " is_flagged BOOLEAN NOT NULL DEFAULT false , ";
+        $sql .= " notify_entry BOOLEAN NOT NULL DEFAULT false , ";
         $sql .= " created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , ";
         $sql .= " PRIMARY KEY (id) ) ENGINE=InnoDB " . $charset_collate ;
 

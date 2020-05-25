@@ -16,9 +16,11 @@ class AddOptionsRequest extends OptionsGlobal {
   public static function default_values() {
       return array(
           'ch_response_header_url' => '',
+          'ch_response_forward' => false,
+          'ch_response_forward_email' => '',
           'ch_request_alert' => false,
           'ch_request_alert_email' => '',
-          'ch_request_test_email' => '',
+          'ch_request_test_email' => ''
       );
 
   }
@@ -55,9 +57,34 @@ class AddOptionsRequest extends OptionsGlobal {
              'placeholder' => 'https://..',
              'description'=> 'Your response email can display an header image.<br>
                               Go to Media -> Library -> Add New, then copy and paste the link in this field.<br>
-                              (Aspect ratio 600 X 300 px.)']
+                              (Optimal aspect ratio: 600 X 230 px.)']
                             );
 
+    add_settings_field(
+            'ch_response_forward',
+            '',
+             array( $this, 'switch_field_callback'),
+            'chatster-menu',
+            'ch_request_section',
+            ['id'=>'ch_response_forward',
+             'class'=> 'ch-field-switcher',
+             'label'=> 'Enable Reply Forward',
+             'placeholder' => 'https://..']
+                            );
+    add_settings_field(
+            'ch_response_forward_email',
+            '',
+             array( $this, 'email_field_callback'),
+            'chatster-menu',
+            'ch_request_section',
+            ['id'=>'ch_response_forward_email',
+             'label'=> '',
+             'class'=> 'ch-field-switchable',
+             'required'=> true,
+             'placeholder' => 'Ex: your@email.com',
+             'description'=> 'If your WordPress website sends email from an email address you don\'t check daily, <br>
+                              with this option you can redirect customer replies to an account of your choice.']
+                            );
     add_settings_field(
             'ch_request_alert',
             '',
@@ -65,10 +92,9 @@ class AddOptionsRequest extends OptionsGlobal {
             'chatster-menu',
             'ch_request_section',
             ['id'=>'ch_request_alert',
-             'label'=> 'Receive Email Alert',
-             'placeholder' => 'https://..',
-             'description'=> 'Receive an email when a new request is submitted.<br>
-                              (Wordpress will check for new requests every hour.)']
+             'class'=> 'ch-field-switcher',
+             'label'=> 'Enable Email Alert',
+             'placeholder' => 'https://..']
                             );
     add_settings_field(
             'ch_request_alert_email',
@@ -77,12 +103,14 @@ class AddOptionsRequest extends OptionsGlobal {
             'chatster-menu',
             'ch_request_section',
             ['id'=>'ch_request_alert_email',
-             'label'=> 'Your Email',
+             'class'=> 'ch-field-switchable',
+             'label'=> '',
              'required'=> true,
              'placeholder' => 'Ex: your@email.com',
              'description'=> 'Receive an email when a new request is submitted.<br>
                               (Wordpress will check for new requests every hour.)']
                             );
+
     add_settings_field(
             'ch_request_test_email',
             '',

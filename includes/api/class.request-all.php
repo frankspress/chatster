@@ -129,7 +129,7 @@ class RequestApiAdmin extends GlobalApi  {
         $result = false;
         $request = $this->get_request_by_id($data['request_id']);
         $request->reply = $data['reply_text'];
-        //$email_status = $emailer->send_reply_email($request);
+        $email_status = $emailer->send_reply_email($request);
         $email_status = true;
         if ( $email_status ) {
           $this->insert_reply( $this->admin_email, $data['reply_text'], $data['request_id'] );
@@ -167,20 +167,21 @@ class RequestApiAdmin extends GlobalApi  {
      }
 
      public function insert_request_form( \WP_REST_Request $data ) {
-
-           $result = $this->insert_request_data( $data['customer_name'], $data['customer_email'], $data['customer_subject'], $data['customer_message']);
-           return array( 'action'=> 'request_form', 'payload'=> $result );
+       Global $ChatsterOptions;
+       $notify_request = $ChatsterOptions->get_request_option('ch_request_alert') ? 1 : 0;
+       $result = $this->insert_request_data( $data['customer_name'], $data['customer_email'], $data['customer_subject'], $data['customer_message'], $notify_request );
+       return array( 'action'=> 'request_form', 'payload'=> $result );
      }
 
      public function send_test_email( \WP_REST_Request $data ) {
        global $current_user;
        wp_get_current_user();
-       $emailer = new Emailer;
+       $emailer = new Emailer();
        $request = new \stdClass();
        $request->email = $data['test_email'];
        $request->subject = __('Testing Chatster! Your email setup works! ', CHATSTER_DOMAIN);
        $request->name = $current_user->display_name;
-       $request->request = __('Mock request sent will be shown here!', CHATSTER_DOMAIN );
+       $request->message = __('Mock request message.. Customer original message will be shown here!', CHATSTER_DOMAIN );
        $request->reply =  __('This is a test email sent by', CHATSTER_DOMAIN ) . ' <i>Chatster for WooCommerce</i>!<br>'.
                           __('The plugin is working. For more testing, please read the documentation.', CHATSTER_DOMAIN) .'<br>'.
                           __('Test your website link here: ', CHATSTER_DOMAIN).get_site_url().
