@@ -7,9 +7,8 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
     Global $ChatsterOptions;
   ?>
    <div id="chatster-container" class="">
-    <section id="ch-header"><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_header')); ?><div class="ch-arrow"><i class="ch-down"></i></div>
+    <section id="ch-header"><span id="ch-header-text"><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_header')); ?></span><div class="ch-arrow"><i class="ch-down"></i></div>
     </section>
-    <div id="ch-indent-header"></div>
 
     <div id="ch-main-conv-container">
 
@@ -87,7 +86,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
   <div id="chatster-opener">
     <section id="ch-open-button">
-      <div><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_intro')).' '; ?><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
+      <div id="ch-open-button-block"><span><?php echo esc_html($ChatsterOptions->get_chat_option('ch_chat_intro')).' '; ?></span><i id="fa-plane-opener" class="fa fa-paper-plane" aria-hidden="true"></i></div>
     </section>
   </div>
 

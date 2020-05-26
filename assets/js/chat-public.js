@@ -439,15 +439,13 @@
 
         $.each( response, function( key, message ) {
 
-            let $message_cont = $("<div>", {id: "ch-msg-" + message.id, "class": "single-message" });
-            let $message_text = $("<div>", {"class": "ch-msg-text"});
+            let $message = $("<div>", {id: "ch-msg-" + message.id, "class": "ch-single-message ch-left" });
             if( answer_ids.indexOf(message.id) === -1) {
                 answer_ids.push(message.id);
             }
-            $message_text.text(message.answer);
-            $message_cont.append($message_text);
+            $message.text(message.answer);
 
-            $("#ch-bot-msg-container").append($message_cont);
+            $("#ch-bot-msg-container").append($message);
 
             ch_chat_sound();
         });

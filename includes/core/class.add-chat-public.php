@@ -39,7 +39,11 @@ class ChatPublic
     $custom_css  = "#chatster-container #ch-header { ";
     $custom_css .= "background-color: ".esc_attr( $bg_color )."; ";
     $custom_css .= "color: ".esc_attr( $text_color )."; ";
-    $custom_css .= "text-size: ".esc_attr( $text_color )."; ";
+    $custom_css .= "}";
+
+    $custom_css .= "#chatster-opener #ch-open-button { ";
+    $custom_css .= "background-color: ".esc_attr( $bg_color )."; ";
+    $custom_css .= "color: ".esc_attr( $text_color )."; ";
     $custom_css .= "}";
 
     // Chat Text Size
