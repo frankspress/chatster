@@ -444,7 +444,7 @@
                 answer_ids.push(message.id);
             }
             $message.text(message.answer);
-
+            $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": ""}))
             $("#ch-bot-msg-container").append($message);
 
             ch_chat_sound();

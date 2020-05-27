@@ -46,7 +46,7 @@
 }
 
 #ch-main-conv-container {
-  width: 98%;
+  width: 93%;
   margin: 0 auto;
 }
 
@@ -58,7 +58,11 @@
   right: 1%;
 }
 /** Messaging box*/
+#ch-bot-msg-container {
+  overflow-y: auto;
+}
 #ch-bot-msg-container .ch-single-message {
+  position: relative;
   margin: 10px 4px 0 4px;
   border-radius: 5px;
   text-align: left;
@@ -74,6 +78,7 @@
 #ch-bot-msg-container .ch-right {
   float: right;
   background-color: #F2F2F2;
+  overflow-y: visible;
 }
 
 #ch-bot-msg-container .ch-left {
@@ -82,9 +87,19 @@
 }
 
 .ch-right .ch-text {
-
-
   font-size: .8em;
+}
+
+#ch-bot-msg-container .ch-left .ch-admin-thumb {
+  max-height: 45px;
+  max-width: 45px;
+  border-radius: 50%;
+  position: absolute;
+  margin-left: -23px;
+  border-radius: 30px;
+  margin-top: -47px;
+  margin-bottom: 6px;
+  border: 1px solid #e3e3e3;
 }
 
 
@@ -95,12 +110,14 @@
 }
 
 #chatster-container{
-  max-width: 300px;
+  width: 380px;
+  max-width: 98%;
   bottom: -650px;
   border: .5px solid #dcdcdc;
   box-shadow: 0 6px 6px rgba(0,0,0,0.2);
   border-radius: 10px;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 #ch-chat-section, #ch-message-section, #ch-open-button {
@@ -143,11 +160,17 @@
   margin: 15px 0;
 }
 
+.ch-input input {
+  background-color: #fff;
+  border-radius: 21px;
+  border: 1px solid ;
+  padding: 11px;
+  margin: 0 auto;
+}
+
 .ch-input input, .ch-input textarea {
-  border-radius: 5px;
   outline: none;
-  border-color: #dcd7ca !important;
-  background-color: #fafafa;
+  border-color: #e3e3e3 !important;
   resize: none;
 
 }
@@ -180,7 +203,7 @@
 
 .ch-chat-box {
   overflow-y: auto;
-  height: 240px;
+  height: 300px;
   max-height: 95%;
 }
 /* width */

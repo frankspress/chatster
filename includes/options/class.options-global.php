@@ -171,6 +171,41 @@ class OptionsGlobal {
     endif;
   }
 
+  public function radio_img_field_callback( $args ) {
+
+  	$options = get_option( static::$option_group, static::default_values() );
+
+  	$id    = isset( $args['id'] )    ? $args['id']    : '';
+  	$label = isset( $args['label'] ) ? $args['label'] : '';
+  	$description = isset( $args['description'] ) ? $args['description'] : '';
+  	$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+    $value = isset( $options[$id] ) ? $options[$id] : '';
+    $radio_options = static::get_options_radio($id);
+
+    if ( $radio_options ) :?>
+
+      <tr valign="top">
+        <th scope="row"><?php echo $label; ?></th>
+         <td>
+           <div id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" class="ch-inline-radio"><?php
+              foreach ( $radio_options as $radio_value => $radio_url) : ?>
+               <div>
+                <label>
+                  <img style="max-width: 95px;" src="<?php echo esc_url( $radio_url . $radio_value . '.jpg' ); ?>"><br>
+                  <input name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
+                  type="radio" value="<?php echo esc_attr($radio_value); ?>" <?php echo checked( $value == $radio_value, true, false ); ?> >
+                </label>
+              </div>
+                <br/><?php
+              endforeach; ?>
+           </div><br/>
+           <p class="description"><?php echo $description; ?></p>
+         </td>
+      </tr><?php
+
+    endif;
+  }
+
   public function color_picker_field_callback( $args ) {
 
     $default_values = static::default_values();

@@ -29,7 +29,26 @@ class AddOptionsBot extends OptionsGlobal {
                                 Please try again',
           'ch_bot_deep_search' => true,
           'ch_bot_product_lookup' => false,
+          'ch_bot_image' => 'bot-1'
       );
+
+  }
+
+  public static function get_options_radio($option_name) {
+
+      switch ($option_name) {
+
+          case 'ch_bot_image':
+              return array(
+                  'bot-1'=>  CHATSTER_URL_PATH . 'assets/img/',
+                  'bot-2'=>  CHATSTER_URL_PATH . 'assets/img/',
+                  'bot-3'=>  CHATSTER_URL_PATH . 'assets/img/',
+                  'bot-4'=>  CHATSTER_URL_PATH . 'assets/img/',
+                  'bot-5'=>  CHATSTER_URL_PATH . 'assets/img/',
+                  'bot-6'=>  CHATSTER_URL_PATH  . 'assets/img/'
+              );
+              break;
+      }
 
   }
 
@@ -57,7 +76,17 @@ class AddOptionsBot extends OptionsGlobal {
             ['id'=>'ch_bot_name',
              'label'=> 'Bot Name',
              'description'=> 'Give your bot your favorite name.'] );
-             
+
+    add_settings_field(
+            'ch_bot_image',
+            '',
+             array( $this, 'radio_img_field_callback'),
+            'chatster-menu',
+            'ch_bot_section',
+            ['id'=>'ch_bot_image',
+             'label'=> 'Bot Image',
+             'description'=> 'Give your bot a friendly image'] );
+
     add_settings_field(
             'ch_bot_intro',
             '',
