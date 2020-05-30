@@ -187,8 +187,9 @@ class ChatApi extends GlobalApi  {
       // If conversation was already started and still active
       $current_conv = $this->get_active_conv_public( $this->customer_id );
       if ( $current_conv ) {
-        return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $current_conv->id,
-                                                                    'admin_name' => $current_conv->admin_name ) );
+        return array('action'=>'ticket_polling', 'payload'=> array(   'conv_id' => $current_conv->id,
+                                                                      'admin_name' => $current_conv->admin_name,
+                                                                      'admin_thumb_url' => esc_url( get_avatar_url( $current_conv->admin_email ) )  ));
       }
       // Ticket polling system
       $queue_status = 1;
@@ -206,7 +207,8 @@ class ChatApi extends GlobalApi  {
             // Returns the new conversation id with admin name
             $conv_id = $this->set_new_conversation( $this->customer_id, $assigned_admin->admin_email );
             return array('action'=>'ticket_polling', 'payload'=> array( 'conv_id' => $conv_id,
-                                                                        'admin_name' => ucfirst($assigned_admin->admin_name )) );
+                                                                        'admin_name' => ucfirst($assigned_admin->admin_name ),
+                                                                        'admin_thumb_url' => esc_url( get_avatar_url( $assigned_admin->admin_email ) )  ) );
           }
         }
         // Returns the poll if no ticket issued yet and shows the queue length to the user

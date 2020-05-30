@@ -85,7 +85,7 @@
       return null;
   }
   function deleteCookie(name) {
-      createCookie(name, "", -1);
+      setCookie(name, "", -1);
   }
 
   /**
@@ -159,6 +159,7 @@
         let $message = $("<div>", {id: "ch-msg-"+temp_id, "class": "ch-single-message ch-right", "data-author_id": "self" });
         $message.text(message);
         $("#ch-msg-container").append($message);
+        prev_author_admin = false;
         insert_messages(message, temp_id);
       }
     }
@@ -186,10 +187,13 @@
        },
        data: payload,
        success: function(data) {
-         $('#ch-queue-info div').hide();
+         $('.ch-queue-info div').hide();
          $('#ch-chat-disconnected').slideDown(300);
-         $('#ch-indent-header').css('background-color','#FAFAFA');
-         $('#ch-main-conv-container').css('background-color','#FAFAFA');
+         // $('#ch-indent-header').css('background-color','#FAFAFA');
+         // $('#ch-main-conv-container').css('background-color','#FAFAFA');
+         $("#ch-end-chat, #ch-chat-msg").hide(200);
+         $(".ch-cancel-btn").show(200);
+         $('#chatster-container').css('background-color','#FAFAFA');
          $("#ch-msg-container").find('.ch-small-loader').hide();
          $('#ch-reply-public').attr('disabled',true);
        },
@@ -208,6 +212,7 @@
   /**
    * Accessory functions to build the conversation list and current convs
    */
+  var prev_author_admin = false;
   function esc_json(str) {
      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -244,7 +249,7 @@
             $( "#ch-msg-" + message.temp_id ).attr("id", "ch-msg-" + message.id );
           } else {
 
-            let is_self = message.is_author == "1" ? "ch-single-message ch-right" : "single-message";
+            let is_self = message.is_author == "1" ? "ch-single-message ch-right" : "ch-single-message ch-left";
             let $message_cont = $("<div>", {id: "ch-msg-" + message.id, "class": is_self });
             let $message_text = $("<div>", {"class": "ch-msg-text"});
             let $message_links = $("<div>", {"class": "ch-link-cont"});
@@ -253,6 +258,13 @@
             $message_links.html(msg_link_template(message.product_ids));
             $message_cont.append($message_text);
             $message_cont.append($message_links);
+
+            if ( message.is_author != "1" && !prev_author_admin ) {
+              let admin_thumb_url = $("#ch-msg-container").attr('data-admin_thumb_url');
+              $message_cont.prepend($("<img>", {"class": "ch-admin-thumb", "src": admin_thumb_url}));
+            }
+
+            prev_author_admin = message.is_author == "1" ? false : true;
 
             $("#ch-msg-container").append($message_cont);
             if ( current_msg_id ) {
@@ -323,6 +335,8 @@
          },
          data: payload,
          success: function(data) {
+           $("#ch-end-chat, #ch-chat-msg").show(0);
+           $(".ch-cancel-btn").hide(0);
            $('#ch-chat-form').slideUp(300);
            $('#ch-chat-section').slideDown(300);
            long_poll_ticketing();
@@ -348,11 +362,12 @@
         },
         success: function(data) {
           if ( data.payload.conv_id !== undefined ) {
-
+              deleteCookie('ch_ticketing_started');
               $("#ch-msg-container").attr('data-conv_id', parseInt(data.payload.conv_id));
+              $("#ch-msg-container").attr('data-admin_thumb_url', data.payload.admin_thumb_url);
               $("#ch-reply-public").attr('disabled', false);
               $("#ch-msg-container").find('.ch-small-loader').hide();
-              $("#ch-queue-info div").hide();
+              $(".ch-queue-info div").hide();
               $('#ch-assigned-admin').find('span').text(data.payload.admin_name);
               $('#ch-assigned-admin').slideDown(300);
 
@@ -421,7 +436,9 @@
       send_request_form();
   });
   $(".ch-cancel-btn").on('click', function() {
+    $('#chatster-container').css('background-color','#FFF');
     $("#ch-chat-select").slideDown(200);
+    $("#ch-chat-section").slideUp(200);
     $('#ch-request-form').slideUp(200);
     $('#ch-chat-form').slideUp(200);
   });
@@ -443,8 +460,8 @@
             if( answer_ids.indexOf(message.id) === -1) {
                 answer_ids.push(message.id);
             }
-            $message.text(message.answer);
-            $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": ""}))
+            $message.html(message.answer);
+            $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
             $("#ch-bot-msg-container").append($message);
 
             ch_chat_sound();

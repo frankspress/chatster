@@ -13,10 +13,12 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
     <div id="ch-main-conv-container">
 
       <section id="ch-chat-section" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>" data-is_conv_active="<?php echo $current_conv ? '1' : '0'; ?>">
-        <div id="ch-msg-container" class="ch-chat-box" data-last_msg_id="" data-conv_id="<?php echo !empty($current_conv) ? esc_attr($current_conv->id) : ''; ?>">
+        <div id="ch-msg-container" class="ch-chat-box" data-last_msg_id="" data-conv_id="<?php echo !empty($current_conv) ? esc_attr($current_conv->id) : ''; ?>"
+          data-admin_thumb_url="<?php echo !empty($current_conv) ? esc_url( get_avatar_url( $current_conv->admin_email ) ) : ''; ?>">
+          <div class="ch-spacer" style="height:38px;"></div>
           <div class="ch-small-loader" ></div>
         </div>
-        <div id="ch-queue-info">
+        <div class="ch-queue-info">
             <div id="ch-inqueue" class="hidden"><?php echo esc_html__('Customers already waiting: ', CHATSTER_DOMAIN ) ?><span></span></div>
             <div id="ch-inqueue-end" class="hidden"><?php echo esc_html__('An admin will be here shortly..', CHATSTER_DOMAIN ) ?><span></span></div>
             <div id="ch-admin-info" class="hidden"><?php echo esc_html__('You are beign helped by ', CHATSTER_DOMAIN ) ?><span></span></div>
@@ -27,8 +29,12 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         <div class="ch-input">
           <input type="text" id="ch-reply-public" value="" placeholder="Your message here.." maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
         </div>
-        <div id="ch-chat-msg" class="ch-send-btn"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div>
-        <div id="ch-end-chat" class="ch-end-btn"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
+        <div id="ch-chat-select-container">
+          <div id="ch-end-chat" class="ch-end-btn ch-button-global"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
+          <div id="ch-chat-msg" class="ch-send-btn ch-button-global"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div>
+          <div class="ch-cancel-btn ch-button-global hidden"><?php echo esc_html__( 'Back', CHATSTER_DOMAIN ); ?></div>
+        </div>
+
       </section>
 
       <section id="ch-request-form" class="hidden">
@@ -65,16 +71,17 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
       <section id="ch-chat-select" class="<?php echo $current_conv ? 'hidden' : '';  ?>">
 
-        <div id="ch-bot-msg-container" class="ch-chat-box"></div>
-
+        <div id="ch-bot-msg-container" class="ch-chat-box">
+           <div class="ch-spacer" style="height:38px;"></div>
+        </div>
+        <div class="ch-queue-info"><?php echo esc_html__( 'Our Bot ', CHATSTER_DOMAIN ).$ChatsterOptions->get_bot_option('ch_bot_name').' '.esc_html__( 'is here to help you.', CHATSTER_DOMAIN ); ?></div>
         <div class="loading-dots invisible"></div>
-
         <div class="ch-input">
           <input type="text" id="ch-reply-bot" value="" placeholder="Your message here.." maxlength="799"  >
         </div>
         <div id="ch-select-container">
-            <div id="ch-btn-chat" class="<?php echo ! $chat_available ? 'ch-unavailable' : ''; ?>">Chat</div>
-            <div id="ch-btn-request"><?php echo esc_html__( 'Send us message', CHATSTER_DOMAIN ); ?></div>
+            <div id="ch-btn-chat" <?php echo ! $chat_available ? 'title="'.esc_html__( 'Chat unavailable at the moment.', CHATSTER_DOMAIN ).'"' : ''; ?> class="ch-button-global<?php echo ! $chat_available ? ' ch-unavailable' : ''; ?>"><?php echo esc_html__( 'Live Chat', CHATSTER_DOMAIN ); ?></div>
+            <div id="ch-btn-request" class="ch-button-global"><?php echo esc_html__( 'Message Us', CHATSTER_DOMAIN ); ?></div>
         </div>
       </section>
 

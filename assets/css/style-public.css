@@ -46,7 +46,7 @@
 }
 
 #ch-main-conv-container {
-  width: 93%;
+  width: 98%;
   margin: 0 auto;
 }
 
@@ -61,27 +61,30 @@
 #ch-bot-msg-container {
   overflow-y: auto;
 }
-#ch-bot-msg-container .ch-single-message {
+#ch-bot-msg-container .ch-single-message,
+#ch-msg-container .ch-single-message {
   position: relative;
-  margin: 10px 4px 0 4px;
+  margin: 10px 12px 0 12px;
   border-radius: 5px;
   text-align: left;
   padding: 10px;
   clear: both;
   min-width: 30%;
   max-width: 80%;
-  white-space: pre-wrap;
+  /* white-space: pre-wrap; */
   border: 1px solid #e3e3e3;
   font-size: 13px;
   line-height: 18px;
 }
-#ch-bot-msg-container .ch-right {
+#ch-bot-msg-container .ch-right,
+#ch-msg-container .ch-right {
   float: right;
   background-color: #F2F2F2;
   overflow-y: visible;
 }
 
-#ch-bot-msg-container .ch-left {
+#ch-bot-msg-container .ch-left,
+#ch-msg-container .ch-left {
   float: left;
   background-color: #FFF;
 }
@@ -90,23 +93,51 @@
   font-size: .8em;
 }
 
+#ch-msg-container .ch-left .ch-admin-thumb,
 #ch-bot-msg-container .ch-left .ch-admin-thumb {
-  max-height: 45px;
-  max-width: 45px;
+  max-height: 41px;
+  max-width: 41px;
   border-radius: 50%;
   position: absolute;
   margin-left: -23px;
   border-radius: 30px;
-  margin-top: -47px;
+  margin-top: -43px;
   margin-bottom: 6px;
   border: 1px solid #e3e3e3;
 }
 
+/** Buttons chat/request */
+.ch-button-global {
+  background-color: #04346D; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  border-radius: 21px;
+}
 
+.ch-button-global:hover {
+  box-shadow: 0 1px 3px 1px rgba(0,0,0,.4),0 3px 3px 0 rgba(0,0,0,0.19);
+}
+.ch-unavailable {
+    background: #dddddd;
+    cursor: not-allowed;
+}
+.ch-unavailable:hover {
+  box-shadow: 0 1px 1px 1px rgba(0,0,0,.1),0 3px 3px 0 rgba(0,0,0,0.1) !important;
+}
 
+#ch-chat-select-container,
 #ch-select-container {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 #chatster-container{
@@ -182,6 +213,20 @@
 .ch-align-left {
   text-align: left;
 }
+
+
+/* Live Chat */
+.ch-queue-info {
+  font-size: 14px;
+  text-align: center;
+  font-style: italic;
+  margin-top: 13px;
+}
+
+.loading-dots {
+  margin-bottom: -15px;
+}
+
 
 /*
  * Arrow down
