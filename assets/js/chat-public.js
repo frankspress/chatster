@@ -118,7 +118,6 @@
         });
    }
 
-
   /**
    * Inserts current messages into the conversation
    */
@@ -278,15 +277,17 @@
   /**
    * Retrieves messages for the open conversation
    */
+  var lp_ajax = false;
   function long_poll_msg() {
     let conv_id = $("#ch-msg-container").attr('data-conv_id');
     if ( conv_id ) {
+      $("#ch-msg-container").find('.ch-small-loader').hide();
       let ch_last_msg = $("#ch-msg-container").attr('data-last_msg_id');
       ch_last_msg = ch_last_msg ? ch_last_msg : 0;
       var payload = { last_msg_id: ch_last_msg, conv_id: conv_id };
 
       if ( presence_set ) {
-        $.ajax( {
+        lp_ajax = $.ajax( {
             url: chatsterDataPublic.api_base_url + '/chat/poll',
             method: 'POST',
             beforeSend: function ( xhr ) {
@@ -302,7 +303,9 @@
 
             },
             error: function(error) {
-               setTimeout( long_poll_msg, 500 );
+               if ( $("#ch-msg-container").attr('data-conv_id') != 'false' ) {
+                 setTimeout( long_poll_msg, 500 );
+               }
             },
 
           } ).done( function ( response ) {
@@ -436,11 +439,18 @@
       send_request_form();
   });
   $(".ch-cancel-btn").on('click', function() {
+    $("#ch-msg-container").attr('data-conv_id', false);
+    $("#ch-msg-container").attr('data-last_msg_id', false);
     $('#chatster-container').css('background-color','#FFF');
+    $('#ch-msg-container').find('.ch-single-message').remove();
+    $("#ch-msg-container").find('.ch-small-loader').show();
     $("#ch-chat-select").slideDown(200);
     $("#ch-chat-section").slideUp(200);
     $('#ch-request-form').slideUp(200);
     $('#ch-chat-form').slideUp(200);
+    if (lp_ajax) {
+        lp_ajax.abort();
+    }
   });
 
   /**
@@ -461,11 +471,36 @@
                 answer_ids.push(message.id);
             }
             $message.html(message.answer);
-            $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
+            if ( !prev_author_admin ) {
+                $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
+            }
+            $message.hide();
             $("#ch-bot-msg-container").append($message);
-
-            ch_chat_sound();
+            $message.show(100);
+            prev_author_admin = true;
         });
+     }
+  }
+  function build_bot_static_response(response) {
+
+    if ( response ) {
+
+        $.each( response, function( key, message ) {
+            let $message = $("<div>", {"class": "ch-single-message ch-left static-response" });
+            $message.html(message);
+            if ( !prev_author_admin ) {
+                $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
+            }
+            $message.hide();
+            $("#ch-bot-msg-container").append($message);
+            $message.show(100);
+            if ( $('#ch-chat-select').is(':visible')) {
+              ch_chat_sound();
+            }
+            prev_author_admin = true;
+        });
+
+
      }
   }
   function submit_question( question ) {
@@ -481,8 +516,15 @@
        },
        data: payload,
        success: function(data) {
+         let response = [];
          if ( data.payload ) {
            build_bot_response(data.payload);
+           response.push(chatsterDataPublic.chat_static_string.bot_followup);
+           build_bot_static_response(response);
+           scrollTopBotChat();
+         } else {
+           response.push(chatsterDataPublic.chat_static_string.bot_nomatch);
+           build_bot_static_response(response);
            scrollTopBotChat();
          }
        },
@@ -505,20 +547,19 @@
         let $message = $("<div>", { "class": "ch-single-message ch-right", "data-author_id": "self" });
         $message.text(message);
         $("#ch-bot-msg-container").append($message);
+        prev_author_admin = false;
         submit_question(message);
       }
     }
   });
-  // $("#ch-reply-bot").on('click', function() {
-  //   var press = jQuery.Event("keypress");
-  //   press.ctrlKey = false;
-  //   press.which = 13;
-  //   press.keyCode = 13;
-  //   $("#ch-reply-bot").trigger(press);
-  // });
   $('#chatster-opener').one('click', function(e) {
-
-
+    $('.loading-dots').removeClass('invisible');
+    let x = setTimeout( function() {
+                          $('.loading-dots').addClass('invisible');
+                          let response = [];
+                          response.push(chatsterDataPublic.chat_static_string.bot_intro);
+                          build_bot_static_response(response);
+                        }, 800);
   });
 
 })(jQuery);

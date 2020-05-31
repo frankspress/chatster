@@ -67,7 +67,11 @@ class ChatPublic
       'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
       'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
       'bot_img_path' => CHATSTER_URL_PATH . 'assets/img/' . esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_image' )). '.jpg',
-      'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume' )))
+      'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume' ))),
+      'chat_static_string' => [ 'bot_intro'=> $ChatsterOptions->get_bot_option( 'ch_bot_intro' ),
+                                'bot_followup'=> $ChatsterOptions->get_bot_option( 'ch_bot_followup' ),
+                                'bot_nomatch'=> $ChatsterOptions->get_bot_option( 'ch_bot_nomatch' )
+                              ]
     ) );
     if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
         wp_enqueue_style( 'fontawesome', FONTAWESOME_URL, false, '4.7.0' );
