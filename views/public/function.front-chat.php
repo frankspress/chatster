@@ -39,6 +39,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
       <section id="ch-request-form" class="hidden">
         <form id="ch-send-request-form">
+          <div class="ch-queue-info"><?php echo esc_html__( 'Please fill out this form to get in touch!', CHATSTER_DOMAIN ); ?></div>
           <div class="ch-input">
             <input type="text" id="ch-customer-name" value="" placeholder="Your name" info="name" required>
           </div>
@@ -48,13 +49,21 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
           <div class="ch-input">
             <textarea id="ch-customer-message" placeholder="Type here your message.." type="text" required></textarea>
           </div>
-            <input id="ch-send-request" class="ch-send-btn" type="submit" value="<?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?>">
-            <div id="ch-send-request" class="ch-cancel-btn"><?php echo esc_html__( 'Cancel', CHATSTER_DOMAIN ); ?></div>
+
+          <div class="ch-inline-selector">
+            <div class="ch-cancel-btn ch-button-global"><?php echo esc_html__( 'Back', CHATSTER_DOMAIN ); ?></div>
+                      <div class="ch-confirm-sent hidden" style="color: green;">Sent <i class="fa fa-check" aria-hidden="true" style="color: green;"></i></div>
+                      <div class="ch-smaller-loader hidden"></div>
+                      <div class="ch-error-sent hidden" style="color: red;">Try Again</div>
+            <input id="ch-send-request" class="ch-send-btn ch-button-global" type="submit" value="<?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?>">
+          </div>
+
         </form>
       </section>
 
       <section id="ch-chat-form" class="hidden">
         <form id="ch-start-chat-form">
+          <div class="ch-queue-info"><?php echo esc_html__( 'Start Chatting now!', CHATSTER_DOMAIN ); ?></div>
           <div class="ch-input">
             <input type="text" id="ch-chat-name" value="" placeholder="Your name" info="name" required >
           </div>
@@ -64,8 +73,13 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
           <div class="ch-input">
             <textarea id="ch-chat-subject" placeholder="Type here your question.." type="text" required ></textarea>
           </div>
-            <input id="ch-start-chatting" class="ch-send-btn" type="submit" value="<?php echo esc_html__( 'Start Chatting', CHATSTER_DOMAIN ); ?>">
-            <div id="ch-send-request" class="ch-cancel-btn"><?php echo esc_html__( 'Cancel', CHATSTER_DOMAIN ); ?></div>
+
+          <div class="ch-inline-selector">
+            <div id="ch-send-request" class="ch-cancel-btn ch-button-global"><?php echo esc_html__( 'Cancel', CHATSTER_DOMAIN ); ?></div>
+            <div class="ch-smaller-loader hidden"></div>
+            <input id="ch-start-chatting" class="ch-send-btn ch-button-global" type="submit" value="<?php echo esc_html__( 'Start Chatting', CHATSTER_DOMAIN ); ?>">
+          </div>
+
         </form>
       </section>
 

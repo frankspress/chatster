@@ -107,7 +107,8 @@
 }
 
 /** Buttons chat/request */
-.ch-button-global {
+.ch-button-global,
+.ch-inline-selector input[type="submit"] {
   background-color: #04346D; /* Green */
   border: none;
   color: white;
@@ -122,6 +123,10 @@
   border-radius: 21px;
 }
 
+.ch-inline-selector input[type="submit"]:focus {
+  outline: none;
+}
+
 .ch-button-global:hover {
   box-shadow: 0 1px 3px 1px rgba(0,0,0,.4),0 3px 3px 0 rgba(0,0,0,0.19);
 }
@@ -134,9 +139,11 @@
 }
 
 #ch-chat-select-container,
-#ch-select-container {
+#ch-select-container,
+.ch-inline-selector {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 5px;
 }
 
@@ -214,6 +221,16 @@
   text-align: left;
 }
 
+
+#ch-send-request-form,
+#ch-start-chat-form {
+  padding: 18px 15px;
+}
+
+#ch-send-request-form .ch-input,
+#ch-start-chat-form  .ch-input {
+  margin: 21px 0;
+}
 
 /* Live Chat */
 .ch-queue-info {

@@ -98,6 +98,9 @@
      let r_message =  $('#ch-customer-message').val();
      var payload = { customer_name: r_name, customer_email: r_email, customer_message: r_message };
 
+     $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').show(100);
+     $('#ch-send-request').attr('disabled',true);
+
       $.ajax( {
 
           url: chatsterDataPublic.api_base_url + '/request/public/insert',
@@ -107,10 +110,24 @@
           },
           data: payload,
           success: function(data) {
+              $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
+
+                $('#ch-send-request').attr('disabled',false);
+                $('#ch-send-request-form .ch-confirm-sent').show(200).delay(4000).hide(100);
+                $('#ch-customer-name').val('');
+                $('#ch-customer-email').val('');
+                $('#ch-customer-message').val('');
+
+              });
 
           },
           error: function(error) {
+              $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
 
+                $('#ch-send-request').attr('disabled',false);
+                $('#ch-send-request-form .ch-error-sent').show(200).delay(2000).hide(100);
+
+              });
           },
 
         } ).done( function ( response ) {
@@ -328,7 +345,8 @@
     let c_email =  $('#ch-chat-email').val();
     let c_subject =  $('#ch-chat-subject').val();
     var payload = { customer_name: c_name, customer_email: c_email, chat_subject: c_subject };
-
+    $('#ch-start-chat-form .ch-inline-selector').find('.ch-smaller-loader').show(100);
+    $('#ch-start-chatting').attr('disabled',true);
      $.ajax( {
 
          url: chatsterDataPublic.api_base_url + '/chat/chat-form',
@@ -338,6 +356,8 @@
          },
          data: payload,
          success: function(data) {
+           $('#ch-start-chat-form .ch-inline-selector').find('.ch-smaller-loader').hide();
+           $('#ch-start-chatting').attr('disabled',false);
            $("#ch-end-chat, #ch-chat-msg").show(0);
            $(".ch-cancel-btn").hide(0);
            $('#ch-chat-form').slideUp(300);

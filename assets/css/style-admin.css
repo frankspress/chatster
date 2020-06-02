@@ -28,12 +28,13 @@
   cursor: not-allowed !important;
 }
 
-.disabled-link { 
+.disabled-link {
   pointer-events: none;
 }
 
 .wrap {
-
+  background-color: #fff;
+  padding: 18px;
 }
 
 /**
@@ -50,12 +51,12 @@
    min-height: 500px;
    max-width: 400px;
    background-color: #fff;
-   border: 2px solid #D2D5DA;
+
 
  }
 
  #ch-reply-block {
-   width: 60%;
+   width: 100%;
  }
 
  #ch-reply, #ch-reply:focus {
@@ -70,6 +71,7 @@
 
  #ch-message-board {
    height: 100%;
+   margin-left: 30px;
    background-color: #fff;
  }
 
@@ -87,18 +89,85 @@
  }
 
  .single-conversation {
-   border: 1px solid gray;
+   position: relative;
    padding: 10px;
    cursor: pointer;
+   border-radius: 15px;
+    box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
+    margin-bottom: 5px;
+ }
+ .single-conversation:hover {
+   background-color: rgba(0, 132, 255, .2);
  }
 
  .single-message-local .ch-msg-text {
    white-space: pre-wrap;
  }
 
+#conversations-block .selected {
+  background-color: #f1f0f0;
+}
  .unread {
-   background-color: #f05f70;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(233, 39, 26);
  }
+
+
+ .ch-name {
+  font-weight: 600;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+ }
+
+ .ch-subject {
+   font-size: 1.1em;
+   margin-bottom: 5px;
+ }
+
+ .ch-email {
+   font-style: italic;
+   margin-left: 3px;
+ }
+
+ .ch-created-at {
+   text-align: right;
+ }
+
+ #conversations-block .disconnected {
+   opacity: .5;
+ }
+
+/** Conversation messages */
+
+#ch-message-board .single-message {
+  position: relative;
+  margin: 10px 12px 0 12px;
+  border-radius: 5px;
+  text-align: left;
+  padding: 10px;
+  clear: both;
+  min-width: 45%;
+  max-width: 60%;
+  /* white-space: pre-wrap; */
+  border: 1px solid #e3e3e3;
+  font-size: 13px;
+  line-height: 18px;
+  float: left;
+  background-color: #FFF;
+}
+
+#ch-message-board .self {
+  float: right;
+  background-color: #F2F2F2;
+  overflow-y: visible;
+}
+
+
 /** Toggle Switch **/
 
   .onoffswitch {

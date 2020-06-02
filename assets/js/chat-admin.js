@@ -94,7 +94,7 @@
         let temp_id = (new Date()).getTime().toString();
         temp_id = parseInt(temp_id.slice(4, temp_id.length));
         // Create elements
-        let $message_cont = $("<div>", {id: "message-"+temp_id, "class": "single-message-local self", "data-author_id": "self" });
+        let $message_cont = $("<div>", {id: "message-"+temp_id, "class": "single-message self", "data-author_id": "self" });
         let $message_text = $("<div>", {"class": "ch-msg-text"});
         let $message_links = $("<div>", {"class": "ch-link-cont"});
         // Populate elements
@@ -179,7 +179,7 @@
          if ( conversation.not_read > 0 ) {
            $unread.text( conversation.not_read ).show();
          }
-         $conversation.append($subject).append($email).append($customer_name).append($info).append($unread);
+         $conversation.append($customer_name).append($subject).append($email).append($info).append($unread);
          $conversation.hide();
          $("#conversations-block").append($conversation);
          $conversation.slideDown(200);

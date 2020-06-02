@@ -46,13 +46,15 @@ function display_admin_chat( $admin_status ) {
        <div id="ch-attachments">
        </div>
 
+       <div class="ch-input-link">
+         <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
+       </div>
+       
        <div class="ch-input">
          <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="1" maxlength="799"></textarea>
        </div>
 
-       <div class="ch-input-link">
-         <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
-       </div>
+
        <!-- Loads autocomplete.js -->
        <script src="https://cdn.jsdelivr.net/autocomplete.js/0.37.1/autocomplete.jquery.min.js"></script>
 
