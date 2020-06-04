@@ -42,21 +42,27 @@
  */
 
  #ch-conversation-container {
-   margin-top: 50px;
+   border: 1.5px solid #FAFAFA;
+   border-left: none;
+   border-right: none;
+   margin-top: 20px;
+   margin-bottom: 40px;
    display: flex;
  }
 
  #conversations-block {
+   overflow: auto;
    width: 40%;
-   min-height: 500px;
+   height: 400px;
    max-width: 400px;
    background-color: #fff;
-
-
+   margin-right: 10px;
  }
 
  #ch-reply-block {
    width: 100%;
+   height: 400px;
+   overflow: auto;
  }
 
  #ch-reply, #ch-reply:focus {
@@ -89,12 +95,14 @@
  }
 
  .single-conversation {
+   border: .5px solid #e3e3e3;
    position: relative;
    padding: 10px;
    cursor: pointer;
    border-radius: 15px;
-    box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
-    margin-bottom: 5px;
+   box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
+   margin-bottom: 6px;
+   margin-right: 10px;
  }
  .single-conversation:hover {
    background-color: rgba(0, 132, 255, .2);
@@ -165,6 +173,30 @@
   float: right;
   background-color: #F2F2F2;
   overflow-y: visible;
+}
+
+/** Fancy scrollbar */
+
+/* width */
+.ch-fancy-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.ch-fancy-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 30px;
+}
+
+/* Handle */
+.ch-fancy-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 30px;
+}
+
+/* Handle on hover */
+.ch-fancy-scroll::-webkit-scrollbar-thumb:hover {
+  /* background: #333; */
 }
 
 

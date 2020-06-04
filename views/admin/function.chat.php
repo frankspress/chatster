@@ -17,7 +17,7 @@ function display_admin_chat( $admin_status ) {
 
       <div id="ch-conversation-container">
 
-            <div id="conversations-block" data-last_conv_id="">
+            <div id="conversations-block" data-last_conv_id="" class="ch-fancy-scroll">
               <div id="ch-load-conv-container">
                 <div id="ch-empty-conv-msg"> Your conversations will be shown here.. </div>
                 <div id="ch-roller-container" class="hidden">
@@ -27,7 +27,7 @@ function display_admin_chat( $admin_status ) {
 
             </div>
 
-            <div id="ch-reply-block">
+            <div id="ch-reply-block" class="ch-fancy-scroll">
                 <div id="ch-message-board" data-conv_id=""  data-last_msg_id="" data-customer_id="">
                 </div>
             </div>
@@ -35,7 +35,7 @@ function display_admin_chat( $admin_status ) {
        </div>
 
           <div id="ch-queue-counter">
-            <div class="ch-singular hidden">
+            <div class="ch-singular ">
               <?php echo sprintf(esc_html__("There is %s customer waiting in line", CHATSTER_DOMAIN), '<span></span>'); ?>
             </div>
             <div class="ch-plural hidden">
@@ -49,7 +49,7 @@ function display_admin_chat( $admin_status ) {
        <div class="ch-input-link">
          <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
        </div>
-       
+
        <div class="ch-input">
          <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="1" maxlength="799"></textarea>
        </div>
