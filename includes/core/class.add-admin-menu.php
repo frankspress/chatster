@@ -26,7 +26,8 @@ class AdminMenu
          'now' => esc_html('just now', CHATSTER_DOMAIN),
          'edit' => esc_html('Edit', CHATSTER_DOMAIN),
          'delete' => esc_html('Delete', CHATSTER_DOMAIN),
-         'reset' => esc_html('Reset All settings?', CHATSTER_DOMAIN)
+         'reset' => esc_html('Reset All settings?', CHATSTER_DOMAIN),
+         'disconnect' => esc_html('Disconnect', CHATSTER_DOMAIN)
         ];
   }
 

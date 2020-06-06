@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function display_admin_chat( $admin_status ) {
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
-    <div class="wrap">
+    <div class="wrap" style="display: none;">
 
       <div class="onoffswitch">
           <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="chatster-chat-switch" <?php echo $admin_status ? 'checked' : ''; ?>>
@@ -31,6 +31,8 @@ function display_admin_chat( $admin_status ) {
                 <div id="ch-message-board" data-conv_id=""  data-last_msg_id="" data-customer_id="">
                 </div>
                 <div id="ch-no-message-overlay"><?php esc_html_e( 'Current conversation will be shown here.' , CHATSTER_DOMAIN ); ?></div>
+                <div id="ch-loading-conversation" class="hidden"><div class="ch-smaller-loader"></div></div>
+
             </div>
 
        </div>
@@ -52,6 +54,7 @@ function display_admin_chat( $admin_status ) {
        </div>
 
        <div class="ch-input-link">
+         <img class="paper-clip" title="<?php esc_html_e( 'Attach a link to a page or product.', CHATSTER_DOMAIN ); ?>" src="<?php echo esc_url( CHATSTER_URL_PATH . 'assets/img/paper-clip.jpg' );?>">
          <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
        </div>
 

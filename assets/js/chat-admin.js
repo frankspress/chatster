@@ -27,6 +27,15 @@
   presence_admin();
 
   /**
+   * Disconnects the chats
+   */
+  $('.ch-disconnect').live('click', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+  });
+
+  /**
    * Inserts current messages into the conversation
    */
   function insert_messages( new_message, temp_id ) {
@@ -105,6 +114,8 @@
         $message_cont.append($message_links);
         // Append Message Block
         $("#ch-message-board").append($message_cont);
+        // Scroll up
+        scrollTopAdminChat();
         // Insert Message - Ajax Call
         insert_messages(message, temp_id);
       }
@@ -176,10 +187,11 @@
          let $customer_name = $("<div>", { "class": "ch-name" }).text(conversation.form_data.customer_name);
          let $info = $("<div>", { "class": "ch-created-at", "data-created_at":conversation.created_at }).text(time_ago(conversation.created_at));
          let $unread = $("<div>", { "class": "unread"}).hide();
+         let $disconnect = $("<div>", { "class": "ch-disconnect"}).text(chatsterDataAdmin.translation.disconnect);
          if ( conversation.not_read > 0 ) {
            $unread.text( conversation.not_read ).show();
          }
-         $conversation.append($customer_name).append($subject).append($email).append($info).append($unread);
+         $conversation.append($customer_name).append($subject).append($email).append($info).append($unread).append($disconnect);
          $conversation.hide();
          $("#conversations-block").append($conversation);
          $conversation.slideDown(200);
@@ -242,6 +254,9 @@
     return '';
   }
   $('.single-conversation').live('click',function() {
+    $('#ch-reply').attr('disabled', false).removeClass('disabled');
+    $('#ch-no-message-overlay').hide();
+    $('#ch-loading-conversation').css('display', 'flex');
     $('.single-conversation').removeClass('selected');
     $(this).addClass('selected');
     $(this).find('.unread').hide(100);
@@ -306,6 +321,9 @@
   /**
    * Retrieves messages for the current conversation
    */
+  function scrollTopAdminChat() {
+   $("#ch-reply-block").animate({ scrollTop: $('#ch-reply-block').prop("scrollHeight")}, 400);
+  }
   function get_messages() {
 
     let ch_current_conv = $('#ch-message-board').attr('data-conv_id');
@@ -328,7 +346,8 @@
             if ( $('#chatster-chat-switch').prop("checked") ) {
               build_current_conv(data.payload.current_conv, ch_current_conv);
             }
-
+            $('#ch-loading-conversation').css('display', 'none');
+            scrollTopAdminChat();
         },
         error: function(error) {
           //  $('#ch-roller-container').addClass('hidden');
@@ -435,4 +454,8 @@
       long_poll();
   }
 
+
+  $(document).ready(function(){
+      $('.wrap').show(500);
+  });
 })(jQuery);

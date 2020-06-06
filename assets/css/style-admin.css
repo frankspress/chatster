@@ -35,6 +35,18 @@
 .wrap {
   background-color: #fff;
   padding: 18px;
+  margin-top: 0;
+  box-shadow: 2px 3px 8px -4px rgba(0, 5, 4, .89);
+}
+.nav-tab-wrapper {
+  border-bottom: none;
+}
+.nav-tab-wrapper a {
+  font-size: 1em;
+  padding: 10px;
+}
+.nav-tab-active {
+  background-color: #FFF;
 }
 
 /**
@@ -67,6 +79,17 @@
    height: 400px;
    overflow: auto;
    overflow-x: hidden;
+ }
+
+ #ch-loading-conversation {
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   top: 0%;
+   left: 0%;
+   display: none;
+   justify-content: center;
+   align-items: center;
  }
 
  #ch-no-message-overlay {
@@ -168,6 +191,22 @@
  .ch-created-at {
    text-align: right;
  }
+ .ch-disconnect {
+   position: absolute;
+   bottom: 2px;
+   font-size: .8em;
+   padding: 1px;
+   -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none;
+ }
+
+  .ch-disconnect:hover {
+    color: #0073aa;
+  }
 
  #conversations-block .disconnected {
    opacity: .5;
@@ -203,9 +242,15 @@
 /** inputs */
 
 .ch-input-link {
+  display: flex;
+  align-items: center;
   margin: 20px auto;
   width: 100%;
   max-width: 900px;
+}
+.ch-input-link .paper-clip {
+ max-width: 35px;
+ margin-right: 11px;
 }
 
 .ch-product-auto {
