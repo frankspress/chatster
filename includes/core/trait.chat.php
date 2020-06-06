@@ -68,7 +68,7 @@ trait ChatCollection {
         foreach ($link_ids as $id) {
 
           $excerpt = get_the_excerpt( $id );
-          $excerpt = strlen($excerpt) > 35 ? trim(substr($excerpt, 0, 35))." ..." : $excerpt;
+          $excerpt = strlen($excerpt) > 180 ? trim(substr($excerpt, 0, 180))." ..." : $excerpt;
 
           if ( $product = wc_get_product($id) ) {
 

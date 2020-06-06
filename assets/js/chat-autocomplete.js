@@ -65,7 +65,8 @@
   }
   function ch_product_suggestion( post ) {
     let excerpt = post._embedded.self[0].excerpt.rendered ? post._embedded.self[0].excerpt.rendered : '';
-    let in_stock = post._embedded.self[0].ch_status ? 'In Stock' : 'Out of Stock';
+    let is_stock_class = post._embedded.self[0].ch_status ? 'in-stock' : 'out-of-stock';
+    let in_stock_word = is_stock_class == 'in-stock' ? 'In Stock' : 'Out of Stock';
     let prod_type = post._embedded.self[0].ch_variation;
     let thumbnail = post._embedded.self[0].ch_thumbnail ? post._embedded.self[0].ch_thumbnail : chatsterDataAdmin.no_image_link;
     let template;
@@ -76,7 +77,7 @@
     template += ' </div>';
     template += ' <div class="ch-auto-descr">';
     template +=     '<div class="ch-auto-title">' + post.title + '</div>';
-    template +=     '<div class="ch-auto-status">' + in_stock + '</div>';
+    template +=     '<div class="ch-auto-status '+is_stock_class+'">' + in_stock_word + '</div>';
     template +=     '<div class="ch-auto-variation">Product type: ' + prod_type.charAt(0).toUpperCase() + prod_type.slice(1) + '</div>';
     template +=     '<div class="ch-auto-excerpt">' + excerpt + '</div>';
     template += ' </div>';
@@ -98,17 +99,17 @@
     template +=    '<img src="' + thumbnail + '" alt="product or page" height="62" width="62">';
     template += ' </div>';
     template += ' <div class="ch-auto-descr">';
-    template +=     '<div class="ch-auto-title">' + post.title + '</div>';
+    template +=     '<div class="ch-auto-title"><a href="' + post.url + '"  target="_blank">' + post.title + '</a></div>';
     template +=     '<div class="ch-auto-excerpt">' + excerpt + '</div>';
     template += ' </div>';
-    template += ' <div class="ch-auto-exlink"><a href="' + post.url + '"  target="_blank">Open</a></div>';
     template += ' <div class="ch-auto-delete"><a href="' + post.url + '"  target="_blank">X</a></div>';
     template += '</div>';
     return template;
   }
   function ch_product_selected( post ) {
     let excerpt = post._embedded.self[0].excerpt.rendered ? post._embedded.self[0].excerpt.rendered : '';
-    let in_stock = post._embedded.self[0].ch_status ? 'In Stock' : 'Out of Stock';
+    let is_stock_class = post._embedded.self[0].ch_status ? 'in-stock' : 'out-of-stock';
+    let in_stock_word = is_stock_class == 'in-stock' ? 'In Stock' : 'Out of Stock';
     let prod_type = post._embedded.self[0].ch_variation;
     let thumbnail = post._embedded.self[0].ch_thumbnail ? post._embedded.self[0].ch_thumbnail : chatsterDataAdmin.no_image_link;
     let template;
@@ -118,12 +119,11 @@
     template +=    '<img src="' + thumbnail + '" alt="product or page" height="62" width="62">';
     template += ' </div>';
     template += ' <div class="ch-auto-descr">';
-    template +=     '<div class="ch-auto-title">' + post.title + '</div>';
-    template +=     '<div class="ch-auto-status">' + in_stock + '</div>';
+    template +=     '<div class="ch-auto-title"><a href="' + post.url + '"  target="_blank">' + post.title + '</a></div>';
+    template +=     '<div class="ch-auto-status '+is_stock_class+'">' + in_stock_word + '</div>';
     template +=     '<div class="ch-auto-variation">Product type: ' + prod_type.charAt(0).toUpperCase() + prod_type.slice(1) + '</div>';
     template +=     '<div class="ch-auto-excerpt">' + excerpt + '</div>';
     template += ' </div>';
-    template += ' <div class="ch-auto-exlink"><a href="' + post.url + '"  target="_blank">Open</a></div>';
     template += ' <div class="ch-auto-delete"><a href="' + post.url + '"  target="_blank">X</a></div>';
     template += '</div>';
     return template;

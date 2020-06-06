@@ -232,10 +232,9 @@
         template +=    '<img src="' + thumbnail + '" alt="product or page" height="32" width="32">';
         template += ' </div>';
         template += ' <div class="ch-link-descr">';
-        template +=     '<div class="ch-link-title">' + attachment.title + '</div>';
+        template +=     '<div class="ch-link-title"><a href="' + attachment.link + '"  target="_blank">'+ attachment.title + '</a></div>';
         template +=     '<div class="ch-link-excerpt">' + attachment.excerpt + '</div>';
         template += ' </div>';
-        template += ' <div class="ch-link-exlink"><a href="' + attachment.link + '"  target="_blank">Open</a></div>';
         template += '</div>';
       });
       return template;

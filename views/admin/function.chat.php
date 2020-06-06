@@ -30,12 +30,13 @@ function display_admin_chat( $admin_status ) {
             <div id="ch-reply-block" class="ch-fancy-scroll">
                 <div id="ch-message-board" data-conv_id=""  data-last_msg_id="" data-customer_id="">
                 </div>
+                <div id="ch-no-message-overlay"><?php esc_html_e( 'Current conversation will be shown here.' , CHATSTER_DOMAIN ); ?></div>
             </div>
 
        </div>
 
           <div id="ch-queue-counter">
-            <div class="ch-singular ">
+            <div class="ch-singular hidden">
               <?php echo sprintf(esc_html__("There is %s customer waiting in line", CHATSTER_DOMAIN), '<span></span>'); ?>
             </div>
             <div class="ch-plural hidden">
@@ -46,13 +47,15 @@ function display_admin_chat( $admin_status ) {
        <div id="ch-attachments">
        </div>
 
+       <div class="ch-input">
+         <textarea id="ch-reply" class="disabled" placeholder="Type here your message.." type="text" rows="1" maxlength="799" disabled></textarea>
+       </div>
+
        <div class="ch-input-link">
          <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
        </div>
 
-       <div class="ch-input">
-         <textarea id="ch-reply" placeholder="Type here your message.." type="text" rows="1" maxlength="799"></textarea>
-       </div>
+
 
 
        <!-- Loads autocomplete.js -->

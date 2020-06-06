@@ -42,7 +42,7 @@
  */
 
  #ch-conversation-container {
-   border: 1.5px solid #FAFAFA;
+   border: 2px solid #FAFAFA;
    border-left: none;
    border-right: none;
    margin-top: 20px;
@@ -57,13 +57,36 @@
    max-width: 400px;
    background-color: #fff;
    margin-right: 10px;
+   padding-top: 8px;
+   box-shadow: inset 0 8px 8px -11px #696868, inset 0 -8px 8px -13px #696868;
  }
 
  #ch-reply-block {
+   position: relative;
    width: 100%;
    height: 400px;
    overflow: auto;
+   overflow-x: hidden;
  }
+
+ #ch-no-message-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0%;
+  left: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 2em;
+  font-weight: 700;
+  color: #fff;
+  background-color: #f9f9f9;
+  text-shadow: 1px 1px 1px grey, 0 0 1px grey, 0 0 1px grey, 0 0 1px grey;
+  padding-right: 30px;
+  margin-left: 0;
+}
 
  #ch-reply, #ch-reply:focus {
    border-radius: 35px;
@@ -173,6 +196,102 @@
   float: right;
   background-color: #F2F2F2;
   overflow-y: visible;
+}
+
+
+
+/** inputs */
+
+.ch-input-link {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 900px;
+}
+
+.ch-product-auto {
+  display: flex;
+  background-color: #FAFAFA;
+  width: 100% !important;
+}
+
+#ch-reply-link {
+  padding: 6px 8px;
+}
+
+textarea.disabled {
+  background-color: #FAFAFA;
+}
+
+#ch-attachments .ch-product-auto {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  padding: 8px;
+  background-color: #FAFAFA;
+  margin: 15px;
+  margin-left: 0;
+  position: relative;
+  box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
+}
+
+#ch-attachments {
+  display: flex;
+  flex-wrap: wrap;
+}
+.aa-dropdown-menu {
+  margin-bottom: 30px;
+}
+
+.in-stock {
+  color: green;
+  font-weight: 600;
+}
+.out-of-stock {
+  color: red;
+  font-weight: 600;
+}
+
+.ch-auto-img {
+  margin-right: 15px;
+}
+
+.ch-auto-title {
+  font-weight: 600;
+}
+
+.ch-auto-delete {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+}
+
+.ch-auto-excerpt {
+  margin-top: 5px;
+}
+
+.ch-auto-delete a {
+  text-decoration: none;
+}
+
+.ch-auto-excerpt p {
+  margin: 0px !important;
+  border: 0px !important;
+  padding: 0px !important;
+}
+
+.ch-link-chat{
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.ch-link-img {
+  margin-right: 10px;
+}
+
+.ch-link-title {
+  font-weight: 600;
 }
 
 /** Fancy scrollbar */
