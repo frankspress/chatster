@@ -235,13 +235,14 @@ class ChatApi extends GlobalApi  {
     public function long_poll_db( \WP_REST_Request $data ) {
         for ($x = 0; $x <= 10; $x++) {
             $new_messages = $this->get_latest_messages_public( $this->customer_id, $data['conv_id'], $data['last_msg_id'] );
-            if ( $new_messages ) {
+            $is_connected = $this->get_active_conv_public( $this->customer_id );
+            if ( $new_messages || !$is_connected ) {
               $this->set_message_read( $this->customer_id, $data['conv_id'], $data['last_msg_id'] );
               break;
             };
             usleep(700000);
         }
-        return array('action'=>'polling', 'payload'=> $new_messages );
+        return array('action'=>'polling', 'payload'=> $new_messages, 'status'=> $is_connected );
     }
 
     public function disconnect_chat_db( \WP_REST_Request $data ) {

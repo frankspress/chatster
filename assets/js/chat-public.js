@@ -191,6 +191,17 @@
   /**
    * Ends current conversation
    */
+  function disconnect_style() {
+    $('.ch-queue-info div').hide();
+    $('#ch-chat-disconnected').slideDown(300);
+    // $('#ch-indent-header').css('background-color','#FAFAFA');
+    // $('#ch-main-conv-container').css('background-color','#FAFAFA');
+    $("#ch-end-chat, #ch-chat-msg").hide(200);
+    $(".ch-cancel-btn").show(200);
+    $('#chatster-container').css('background-color','#FAFAFA');
+    $("#ch-msg-container").find('.ch-small-loader').hide();
+    $('#ch-reply-public').attr('disabled',true);
+  }
   function disconnect_chat() {
 
    var payload = {};
@@ -203,15 +214,7 @@
        },
        data: payload,
        success: function(data) {
-         $('.ch-queue-info div').hide();
-         $('#ch-chat-disconnected').slideDown(300);
-         // $('#ch-indent-header').css('background-color','#FAFAFA');
-         // $('#ch-main-conv-container').css('background-color','#FAFAFA');
-         $("#ch-end-chat, #ch-chat-msg").hide(200);
-         $(".ch-cancel-btn").show(200);
-         $('#chatster-container').css('background-color','#FAFAFA');
-         $("#ch-msg-container").find('.ch-small-loader').hide();
-         $('#ch-reply-public').attr('disabled',true);
+         disconnect_style();
        },
        error: function(error) {
 
@@ -312,6 +315,10 @@
             },
             data: payload,
             success: function(data) {
+              if ( data.status == 'false' || data.status == 0 ) {
+                disconnect_style();
+                return;
+              }
               if ( data.payload ) {
                 build_current_conv(data.payload);
                 scrollTopChat();

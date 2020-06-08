@@ -29,10 +29,65 @@
   /**
    * Disconnects the chats
    */
+  function disable_chat_style() {
+    $('#ch-reply-block, #ch-message-board, #ch-conversation-container').css('background-color','#FAFAFA');
+    $('#ch-reply').attr('disabled', 'true').addClass('disabled');
+  }
+  function remove_disconnected( conv_id ) {
+    let $conversation = $('#conv-' + conv_id);
+    if ( parseInt($('#ch-message-board').attr('data-conv_id')) == conv_id ) {
+      $('#ch-message-board').find('.single-message').remove();
+      $('#ch-no-message-overlay').show(100);
+    }
+    $conversation.slideUp(200, function() { $(this).remove();});
+    if ( parseInt($('.single-conversation').length) - 1 == 0 ) {
+      $('#ch-load-conv-container').show(200);
+    }
+  }
+  function disable_disconnected( conv_id, $disconnect_link ) {
+    let $conversation = $('#conv-' + conv_id);
+    if ( parseInt($('#ch-message-board').attr('data-conv_id')) == conv_id ) {
+      disable_chat_style();
+    }
+    $conversation.addClass('disconnected');
+    $($disconnect_link).text(chatsterDataAdmin.translation.delete);
+  }
   $('.ch-disconnect').live('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
 
+    let $disconnect_link = $(this);
+    let $conversation = $(this).parent();
+    let conv_id = parseInt( $conversation.attr('data-single_conv_id') );
+
+    if ($conversation.hasClass('disconnected')) {
+      remove_disconnected( conv_id, $conversation );
+      return;
+    }
+
+    $.ajax( {
+        url: chatsterDataAdmin.api_base_url + '/admin/chat/'+ conv_id +'/disconnect',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataAdmin.nonce );
+        },
+        data: {},
+        success: function(data) {
+
+          if ( chatsterDataAdmin.remove_offline_conv == 'on') {
+            remove_disconnected( conv_id );
+          } else {
+            disable_disconnected( conv_id, $disconnect_link );
+          }
+
+        },
+        error: function(error) {
+
+        },
+
+      } ).done( function ( response ) {
+
+      });
   });
 
   /**
@@ -254,6 +309,7 @@
     return '';
   }
   $('.single-conversation').live('click',function() {
+    $('#ch-reply-block, #ch-message-board, #ch-conversation-container').css('background-color','#FFF');
     $('#ch-reply').attr('disabled', false).removeClass('disabled');
     $('#ch-no-message-overlay').hide();
     $('#ch-loading-conversation').css('display', 'flex');
@@ -266,7 +322,12 @@
     $('#ch-message-board').attr('data-conv_id', current_conv_id);
     $('#ch-message-board').attr('data-curr_customer_id', current_customer_id);
     $("#ch-message-board").attr('data-last_msg_id', 0);
+
     get_messages();
+
+    if ( $(this).hasClass('disconnected') ) {
+      disable_chat_style();
+    }
 
   });
   // Updates Timestamps on conversations
@@ -284,8 +345,20 @@
   function update_disconnected( disconnected ) {
    if ( disconnected ) {
        $.each( disconnected, function( key, conversation ) {
-         $('#conv-'+conversation.id).attr( 'data-is_connected', false );
-         $('#conv-'+conversation.id).addClass('disconnected');
+
+         if ( chatsterDataAdmin.remove_offline_conv == 'on' &&
+                parseInt($('#ch-message-board').attr('data-conv_id')) !== parseInt(conversation.id) ) {
+                  remove_disconnected( conversation.id );
+         } else {
+                 $('#conv-'+conversation.id).attr( 'data-is_connected', false );
+                 $('#conv-'+conversation.id).addClass('disconnected');
+                 $('#conv-'+conversation.id).find('.ch-disconnect').text(chatsterDataAdmin.translation.delete);
+                 if ( parseInt($('#ch-message-board').attr('data-conv_id')) === parseInt(conversation.id) ) {
+                    let disconnect_link = $('#conv-'+conversation.id).find('.ch-disconnect');
+                    disable_disconnected( conversation.id, disconnect_link );
+                 }
+         }
+
        });
    }
   }
@@ -454,8 +527,11 @@
       long_poll();
   }
 
-
+ /**
+  * Display the backend chat after loading
+  */
   $(document).ready(function(){
       $('.wrap').show(500);
   });
+
 })(jQuery);

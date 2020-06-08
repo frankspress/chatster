@@ -373,7 +373,7 @@ trait ChatCollection {
 
     $sql = $wpdb->prepare( $sql, $conv_id );
 
-    $result = $wpdb->get_results($sql);
+    $result = $wpdb->query($sql);
     wp_reset_postdata();
 
     return ! empty( $result ) ? $result : false;
