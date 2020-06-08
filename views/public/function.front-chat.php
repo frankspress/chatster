@@ -47,6 +47,9 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
             <input type="email" id="ch-customer-email" value="" placeholder="Your email" info="email" required>
           </div>
           <div class="ch-input">
+            <input type="text" id="ch-customer-subject" value="" placeholder="Subject" info="subject" required >
+          </div>
+          <div class="ch-input">
             <textarea id="ch-customer-message" placeholder="Type here your message.." type="text" required></textarea>
           </div>
 

@@ -95,8 +95,9 @@
 
      let r_name = $('#ch-customer-name').val();
      let r_email =  $('#ch-customer-email').val();
+     let r_subject =  $('#ch-customer-subject').val();
      let r_message =  $('#ch-customer-message').val();
-     var payload = { customer_name: r_name, customer_email: r_email, customer_message: r_message };
+     var payload = { customer_name: r_name, customer_email: r_email, customer_subject: r_subject, customer_message: r_message };
 
      $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').show(100);
      $('#ch-send-request').attr('disabled',true);

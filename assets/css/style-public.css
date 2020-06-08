@@ -106,6 +106,29 @@
   border: 1px solid #e3e3e3;
 }
 
+#ch-msg-container .ch-link-chat {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+#ch-msg-container .ch-link-chat img {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+#ch-msg-container .ch-link-title{
+  font-weight: 600;
+}
+#ch-msg-container .ch-link-descr{
+  max-width: 80%;
+}
+
+#ch-msg-container .ch-link-exlink {
+  width: 100%;
+  text-align: right;
+  margin-top: 5px;
+}
+
 /** Buttons chat/request */
 .ch-button-global,
 .ch-inline-selector input[type="submit"] {
