@@ -18,6 +18,15 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
         </table>
         <?php if ( !$requests ) return; ?>
 
+      <!-- Hides replied requests by default -->
+      <div class="switch-container">
+      <label class="switch">
+        <input type="checkbox" checked="">
+        <span class="slider round slider-groupby"></span>
+      </label>
+      <span> &nbsp; Hide Replied Requests</span>
+      </div>
+
       <!-- Table Header -->
       <table id="ch-request-list" class="wp-list-table widefat fixed striped posts">
         <thead>
@@ -47,15 +56,18 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             $dt = new DateTime("now", chatter_get_timezone() );
             $dt->setTimestamp(strtotime($request->created_at));
             echo '<td style="width:15%;"><div><span title="'.esc_attr( $dt->format('F d, Y h:i A') ) .'">'. esc_html( $dt->format('F d, Y h:i A') ) . '</span></div></td>';
-            echo '<td style="width:20%;"><div>';
+            echo '<td style="width:20%;">';
             // Request Replied DateTime ( if replied )
             if ( $request->replied_at ) {
+              echo '<div class="ch-replied-at">';
               $dt = new DateTime("now", chatter_get_timezone() );
               $dt->setTimestamp(strtotime($request->replied_at));
               echo '<div title="'.esc_attr( $dt->format('F d, Y h:i A') ) .'">'. esc_html( $dt->format('F d, Y h:i A') ) . '</div>';
               echo '<div title="'. esc_html( $request->last_replied_by ) .'">'. esc_html__('By: ', CHATSTER_DOMAIN ). esc_html( $request->last_replied_by ) . '</div>';
+              echo '</div></td>';
+            } else {
+              echo '<div></div></td>';
             }
-            echo '</div></td>';
             // Request is flagged
             $unflagged = !$request->is_flagged ? 'unflagged' : 'flagged';
             $flag_url = CHATSTER_URL_PATH . 'assets/img/red-pin.png';
@@ -73,7 +85,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             echo '<span class="reply" ><a href="" aria-label="Reply">'.( empty($request->replied_at) ? esc_html__( 'Reply', CHATSTER_DOMAIN ) : esc_html__( 'Show&#47;Reply', CHATSTER_DOMAIN )  ).'</a> |</span> ';
             echo '<span class="delete"><a href="" class="submitdelete" aria-label="Delete">'.esc_html__( 'Delete', CHATSTER_DOMAIN ).'</a></span></div>';
             echo '<div class="reply-container hidden">';
-            echo '<div class="reply-message">'.esc_html( $request->message ).'</div>';
+            echo '<div class="reply-message"><span class="reply-message-intro">'.esc_html( $request->name ).' '.esc_html__( 'asks', CHATSTER_DOMAIN).': </span><br>'.esc_html( $request->message ).'</div>';
             echo !empty($request->replied_at) ? ch_small_loader() : '';
             echo '<div class="reply-all-container"></div>
                     <div class="ch-reply-input">

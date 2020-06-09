@@ -12,11 +12,12 @@
     let $reply_info = $("<div>", { "class": "ch-reply-info" });
     let $reply_text = $("<div>", {"class": "ch-reply-text"});
 
-    $reply_info =  '<span>'+ esc_json(message_obj.admin_name ? message_obj.admin_name : '') +'</span>';
-    $reply_info += '<span>('+ esc_json(message_obj.admin_email)+')</span>';
+    $reply_info =  '<span class="replier-admin-intro">'+esc_json(chatsterDataAdmin.translation.admin)+': '+
+    '</span><span>'+esc_json(message_obj.admin_name ? message_obj.admin_name : '') +'</span>';
+    $reply_info += '<span>('+ esc_json(message_obj.admin_email)+')</span>&vert; ';
     $reply_info += '<span>'+ esc_json(message_obj.replied_at)+'</span>';
 
-    $reply_text.text(message_obj.message);
+    $reply_text.html(message_obj.message);
     $reply.append($reply_info).append($reply_text);
     return $reply;
   }

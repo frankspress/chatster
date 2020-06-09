@@ -540,14 +540,56 @@ input:checked + .slider:before {
 
 /** Request style */
 
+#the-list .ch-replied-at{
+  background: #c6e1c6;
+  color: #5b841b;
+  padding: 8px 10px;
+  border-radius: 2px;
+}
+
 #ch-request-list .reply-message {
-  border: 1px solid lightseagreen;
+  border: 2px solid lightgray;
   padding: 20px 20px;
   font-size: 1.2em;
   font-weight: 600;
   background-color: #FFF;
   margin-bottom: 25px;
+  box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
+  line-height: 28px;
 }
+#ch-request-list .reply-message .reply-message-intro {
+  font-size: .9em;
+  font-weight: 400;
+}
+
+.reply-container .reply-all-container{
+  padding: 20px 10px;
+}
+
+.ch-single-reply {
+  margin-bottom: 20px;
+  background-color: #FFF;
+  padding: 15px;
+  box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
+}
+
+.ch-single-reply span {
+  margin-right: 5px;
+}
+
+.ch-reply-text {
+  font-weight: 600;
+  font-size: 1.1em;
+  margin-top: 12px;
+  text-indent: 5px;
+}
+
+.replier-admin-intro {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+/* Pagination */
 
 .ch-pagination ul{
   display: flex;
