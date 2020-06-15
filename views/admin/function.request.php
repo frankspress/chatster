@@ -24,7 +24,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
         <input type="checkbox" checked="">
         <span class="slider round slider-groupby"></span>
       </label>
-      <span> &nbsp; Hide Replied Requests</span>
+      <span> &nbsp; <?php echo esc_html__('Hide Replied Requests', CHATSTER_DOMAIN); ?></span>
       </div>
 
       <!-- Table Header -->

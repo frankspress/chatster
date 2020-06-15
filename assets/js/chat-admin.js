@@ -27,6 +27,26 @@
   presence_admin();
 
   /**
+   * User Utility fn
+   */
+  function ch_chat_sound(){
+    var mp3Source = '<source src="' + chatsterDataAdmin.chat_sound_file_path + '.mp3" type="audio/mpeg">';
+    var oggSource = '<source src="' + chatsterDataAdmin.chat_sound_file_path + '.ogg" type="audio/ogg">';
+    var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataAdmin.chat_sound_file_path +'.mp3">';
+    document.getElementById("chat-sound").innerHTML='<audio id="ch-chat-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource +'</audio>';
+    var chatSound = document.getElementById("ch-chat-audio");
+    chatSound.volume = chatsterDataAdmin.chat_sound_vol;
+  }
+  function ch_conv_sound(){
+    var mp3Source = '<source src="' + chatsterDataAdmin.conv_sound_file_path + '.mp3" type="audio/mpeg">';
+    var oggSource = '<source src="' + chatsterDataAdmin.conv_sound_file_path + '.ogg" type="audio/ogg">';
+    var embedSource = '<embed hidden="true" autostart="true" loop="false" src="' + chatsterDataAdmin.conv_sound_file_path +'.mp3">';
+    document.getElementById("conv-sound").innerHTML='<audio id="ch-conv-audio" autoplay="autoplay">' + mp3Source + oggSource + embedSource +'</audio>';
+    var chatSound = document.getElementById("ch-conv-audio");
+    chatSound.volume = chatsterDataAdmin.chat_sound_vol;
+  }
+
+  /**
    * Disconnects the chats
    */
   function disable_chat_style() {
@@ -251,10 +271,8 @@
          $("#conversations-block").append($conversation);
          $conversation.slideDown(200);
        });
-
+ch_conv_sound();
     }
-
-
 
   }
   function build_current_conv(current_conv, conv_id) {
@@ -281,6 +299,7 @@
             $message_cont.append($message_text);
             $message_cont.append($message_links);
             $("#ch-message-board").append($message_cont);
+            if ( message.is_author != "1" ) ch_chat_sound();
           }
         });
       }

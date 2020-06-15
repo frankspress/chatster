@@ -58,11 +58,12 @@ function display_admin_chat( $admin_status ) {
          <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
        </div>
 
-
-
+       <!-- Sounds -->
+       <div id="chat-sound"></div>
+       <div id="conv-sound"></div>
 
        <!-- Loads autocomplete.js -->
-       <script src="https://cdn.jsdelivr.net/autocomplete.js/0.37.1/autocomplete.jquery.min.js"></script>
+       <script src="<?php echo esc_url( CHATSTER_AUTOCOMPLETE ); ?>"></script>
 
     </div>
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Chatster
  * Plugin URI: https://frankspress.com/
- * Description: Allows real time chat and get in touch interaction with BOT helper.
+ * Description: Allows real time chat and get in touch interaction with custom BOT helper.
  * Author: Frank Pagano
  * Author URI: https://frankspress.com
  * Text Domain: chatster
@@ -29,7 +29,8 @@ define( 'CHATSTER_KEY',  get_option( 'chatster_enc_key' ) );
 define( 'CHATSTER_FILE_PATH', __FILE__ );
 define( 'CHATSTER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );
-define( 'FONTAWESOME_URL', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
+define( 'CHATSTER_FONTAWESOME_URL', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
+define( 'CHATSTER_AUTOCOMPLETE', 'https://cdn.jsdelivr.net/autocomplete.js/0.37.1/autocomplete.jquery.min.js' );
 
 /**
  * Load Chatster

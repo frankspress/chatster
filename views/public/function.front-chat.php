@@ -24,7 +24,9 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
             <div id="ch-admin-info" class="hidden"><?php echo esc_html__('You are beign helped by ', CHATSTER_DOMAIN ) ?><span></span></div>
             <div id="ch-chat-unavailbale" class="hidden"><?php echo esc_html__('Sorry, we are currently unavailable.. ', CHATSTER_DOMAIN) ?><span></span></div>
             <div id="ch-chat-disconnected" class="hidden"><?php echo esc_html__('You are now disconnected..', CHATSTER_DOMAIN) ?><span></span></div>
-            <div id="ch-assigned-admin" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>"><?php echo esc_html__('You are chatting with ', CHATSTER_DOMAIN) ?><span><?php echo !empty($current_conv) ? esc_html(ucfirst($current_conv->admin_name)) : ''; ?></span></div>
+            <div id="ch-assigned-admin" class="<?php echo ! $current_conv ? 'hidden' : '';  ?>"><?php echo esc_html__('You are chatting with ', CHATSTER_DOMAIN) ?>
+              <span><?php echo !empty($current_conv) ? esc_html(ucfirst($current_conv->admin_name)) : ''; ?></span>
+            </div>
         </div>
         <div class="ch-input">
           <input type="text" id="ch-reply-public" value="" placeholder="Your message here.." maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
