@@ -8,7 +8,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
 
     <div id="ch-options-main-container">
 
-      <div class="ch-option-block" style="border: 1px solid #CCCCCC">
+      <div class="ch-option-block">
         <div class="ch-option-title"><?php esc_html_e('Bot Setup', CHATSTER_DOMAIN); ?></div>
         <div id="bot-options" class="ch-option-container" style="display:none;">
           <form id="chatster-bot-options-form" action="options.php#bot-options" method="post">
@@ -24,7 +24,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
         </div>
       </div>
 
-      <div class="ch-option-block" style="border: 1px solid #CCCCCC">
+      <div class="ch-option-block">
         <div class="ch-option-title"><?php esc_html_e('Bot Q &amp; A', CHATSTER_DOMAIN); ?></div>
         <div id="bot-q-and-a" class="ch-option-container" style="display:none;">
           <div id="setting-error-bot_qa_message" class="notice notice-success settings-error is-dismissible hidden">
@@ -71,7 +71,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
         </div>
       </div>
 
-      <div class="ch-option-block"  style="border: 1px solid #CCCCCC">
+      <div class="ch-option-block">
         <div class="ch-option-title"><?php esc_html_e('Chat Configuration', CHATSTER_DOMAIN); ?></div>
         <div id="chat-options" class="ch-option-container" style="display:none;">
           <div id="sound"></div>
@@ -90,7 +90,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
         </div>
       </div>
 
-      <div class="ch-option-block"  style="border: 1px solid #CCCCCC">
+      <div class="ch-option-block">
 
         <div class="ch-option-title"><?php esc_html_e('Request&#47;Response Configuration', CHATSTER_DOMAIN); ?></div>
         <div id="request-options" class="ch-option-container" style="display:none;">

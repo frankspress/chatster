@@ -10,6 +10,7 @@
   function go_to_option() {
    let open_option = window.location.hash.substr(1);
    $("#"+open_option).delay(200).slideDown(300);
+   $("#"+open_option).parent().find('.ch-option-title').animate({width:"100%"},200);
    history.pushState("", document.title, window.location.pathname + window.location.search);
   }
   go_to_option();
@@ -17,13 +18,26 @@
 /**
  * Animates Option windows slide up and down
  */
-  $(".ch-option-block").on('click', function(e) {
+  $('.ch-option-title').on('click', function(e) {
+    if ( $(this).css('width') == '500px' && $(this).parent().find('.ch-option-container').css('display') == 'none') {
+       $(this).animate({width:"100%"},200);
+    } else {
+       $(this).animate({width:"500px"},200);
+    }
     if ( e.target.className == 'ch-option-title' ) {
-      $(this).find('.ch-option-container').slideToggle(300, "linear",function() {
+      $(this).parent().find('.ch-option-container').slideToggle(300, "linear",function() {
 
       });
     }
   });
+
+  // $('.ch-option-title').toggle(function() {
+  //   // $(this).css({"max-width":"100%"});
+  //    $(this).animate({width:"100%"},200);
+  //  }, function() {
+  //   $(this).animate({width:"500px"},200);
+  //  });
+
 
 /**
  * Asks for confirmation before resetting options.
