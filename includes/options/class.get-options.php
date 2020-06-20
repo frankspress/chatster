@@ -16,10 +16,10 @@ class GetOptions {
   private static $request_options;
 
   public function __construct() {
-    self::$bot_options = get_option( AddOptionsBot::$option_group, AddOptionsBot::default_values() );
-    self::$bot_qa_options = get_option( AddOptionsBotQA::$option_group, AddOptionsBotQA::default_values() );
-    self::$chat_options = get_option( AddOptionsChat::$option_group, AddOptionsChat::default_values() );
-    self::$request_options = get_option( AddOptionsRequest::$option_group, AddOptionsRequest::default_values() );
+    self::$bot_options = get_option( AddOptionsBot::$option_group, AddOptionsBot::default_values() ) + AddOptionsBot::default_values();
+    self::$bot_qa_options = get_option( AddOptionsBotQA::$option_group, AddOptionsBotQA::default_values() ) + AddOptionsBotQA::default_values();
+    self::$chat_options = get_option( AddOptionsChat::$option_group, AddOptionsChat::default_values() ) + AddOptionsChat::default_values();
+    self::$request_options = get_option( AddOptionsRequest::$option_group, AddOptionsRequest::default_values() ) + AddOptionsRequest::default_values();
   }
 
   public function get_bot_option( String $option_name ) {

@@ -15,6 +15,11 @@ class ChatPublic
                                         'medium'=> 100,
                                         'large'=> 120
                                       ];
+  private static $width_percent = [
+                                        'small'=> 98,
+                                        'medium'=> 100,
+                                        'large'=> 106
+                                      ];
 
   function __construct() {
       add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_front_js' ) , 30 );
@@ -30,27 +35,58 @@ class ChatPublic
     return $value;
   }
 
+  private function calc_width( $value, $size ) {
+    if ( !empty(self::$width_percent[$size]) ) {
+      $percent = self::$width_percent[$size];
+      $new_size = ( $value  * $percent ) / 100;
+      return strval(number_format($new_size, 2, '.', '') + 0);
+    }
+    return $value;
+  }
+
   private function get_custom_css() {
     global $ChatsterOptions;
 
     // Chat Header Color
     $bg_color = $ChatsterOptions->get_chat_option('ch_chat_header_back_color');
     $text_color = $ChatsterOptions->get_chat_option('ch_chat_header_text_color');
-    $custom_css  = "#chatster-container #ch-header { ";
+    $custom_css  = "#chatster-container #ch-header, .ch-button-global:not(.ch-unavailable) { ";
     $custom_css .= "background-color: ".esc_attr( $bg_color )."; ";
     $custom_css .= "color: ".esc_attr( $text_color )."; ";
     $custom_css .= "}";
 
-    $custom_css .= "#chatster-opener #ch-open-button { ";
-    $custom_css .= "background-color: ".esc_attr( $bg_color )."; ";
-    $custom_css .= "color: ".esc_attr( $text_color )."; ";
+    $custom_css .= "#chatster-opener #ch-open-button, .ch-button-global:not(.ch-unavailable) { ";
+    $custom_css .= "background-color: ".esc_attr( $bg_color )." !important; ";
+    $custom_css .= "color: ".esc_attr( $text_color )." !important; ";
     $custom_css .= "}";
 
-    // Chat Text Size
+    // Chat Text Size ( proportinally calculated )
     $txt_size = $ChatsterOptions->get_chat_option('ch_chat_text_size');
-    $header_size = $this->calc_font('1', $txt_size);
+    $header_size = $this->calc_font('1.2', $txt_size);
+    $opening_btn_size = $this->calc_font('1.2', $txt_size);
+    $global_btn_size = $this->calc_font('1.12', $txt_size);
+    $context_size = $this->calc_font('1', $txt_size);
+
     $custom_css .= "#chatster-container #ch-header { ";
     $custom_css .= " font-size: ".esc_attr( $header_size )."em; ";
+    $custom_css .= "}";
+
+    $custom_css .= "#ch-open-button-block { ";
+    $custom_css .= " font-size: ".esc_attr( $opening_btn_size )."em; ";
+    $custom_css .= "}";
+
+    $custom_css .= ".ch-single-message, .ch-queue-info, #ch-reply-bot, .ch-input input, .ch-input textarea { ";
+    $custom_css .= " font-size: ".esc_attr( $context_size )."em !important; ";
+    $custom_css .= "}";
+
+    $custom_css .= ".ch-button-global { ";
+    $custom_css .= " font-size: ".esc_attr( $global_btn_size )."em !important; ";
+    $custom_css .= "}";
+
+    // Chat Window width based on txt_size
+    $chat_width = $this->calc_width('380', $txt_size);
+    $custom_css .= "#chatster-container{ ";
+    $custom_css .= " width: ".esc_attr( $chat_width )."px !important; ";
     $custom_css .= "}";
 
     return $custom_css;

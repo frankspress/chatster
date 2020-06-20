@@ -178,7 +178,7 @@
     let $edit = $("<span>", { "class": "ch-edit-answer" }).text(chatsterDataAdmin.translation.edit);
     let $delete = $("<span>", { "class": "ch-delete-answer", "data-answer_id": answer.id  }).text(chatsterDataAdmin.translation.delete);
     let $loader = $('<div>',{"class": "ch-smaller-loader hidden" , "style":"margin-left:20px;"});
-    let $edit_block = $("<edit>", { "class": "ch-edit-qa", "data-answer_id": answer.id  }).append($edit).append($delete).append($loader);
+    let $edit_block = $("<edit>", { "class": "ch-edit-qa", "data-answer_id": answer.id  }).append($delete).append($edit).append($loader);
     $qa_container.append($question_container);
     $qa_container.append($answer_container);
     $qa_container.append($edit_block);
@@ -361,7 +361,7 @@
   });
   $('.ch-edit-answer').live('click',function() {
     $('#cancel-bot-q-and-a').show(100);
-
+    $('.single-qa').removeClass('ch-qa-edited');
     let answer_id = $(this).parent().attr('data-answer_id');
     let $qa_block = $('#ch-qa-single-'+answer_id);
     let $question_block = $qa_block.find('.single-question');
