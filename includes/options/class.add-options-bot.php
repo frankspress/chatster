@@ -12,7 +12,8 @@ class AddOptionsBot extends OptionsGlobal {
   public static $fields_maxlength = [
                                       'ch_bot_nomatch' => 350,
                                       'ch_bot_followup' => 350,
-                                      'ch_bot_intro' => 350
+                                      'ch_bot_intro' => 350,
+                                      'ch_bot_name' => 10
                                     ];
 
   public function __construct() {
@@ -158,7 +159,16 @@ class AddOptionsBot extends OptionsGlobal {
     }
 
     $err_msg = '';
-  	$options = get_option( static::$option_group , static::default_values() );
+  	$options = get_option( static::$option_group , static::default_values() ) + static::default_values();
+
+    foreach (array( 'ch_bot_name' ) as $value) {
+      if ( isset($input[$value]) ) {
+        if ( !is_string($input[$value]) || strlen($input[$value]) > self::get_maxlength($value) ) {
+          $input[$value] = isset($options[$value]) ? $options[$value] : '';
+          $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
+        }
+      }
+    }
 
     foreach (array( 'ch_bot_intro', 'ch_bot_followup','ch_bot_nomatch' ) as $value) {
       if ( isset($input[$value]) ) {
@@ -174,6 +184,20 @@ class AddOptionsBot extends OptionsGlobal {
         $input[$value] = rest_sanitize_boolean( $input[$value] );
       } else {
         $input[$value] = null;
+      }
+    }
+
+    foreach (array( 'ch_bot_image' ) as $value) {
+      if ( isset($input[$value]) ) {
+        $current_input = $input[$value];
+        $input[$value] = $options[$value];
+        $attr_array = array_keys(self::get_options_radio($value));
+        if ( in_array( $current_input, $attr_array ) ) {
+          $array_key = array_search($current_input, $attr_array);
+          if ( $array_key ) {
+            $input[$value] = $attr_array[$array_key];
+          }
+        }
       }
     }
 

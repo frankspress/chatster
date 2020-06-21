@@ -266,7 +266,7 @@ class AddOptionsChat extends OptionsGlobal {
     }
 
     $err_msg = '';
-  	$options = get_option( static::$option_group , static::default_values() );
+  	$options = get_option( static::$option_group , static::default_values() ) + static::default_values();
 
     foreach (array( 'ch_chat_intro', 'ch_chat_header' ) as $value) {
       if ( isset($input[$value]) ) {
@@ -274,6 +274,63 @@ class AddOptionsChat extends OptionsGlobal {
           $input[$value] = isset($options[$value]) ? $options[$value] : '';
           $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
         }
+      }
+    }
+
+    foreach (array( 'ch_chat_header_back_color', 'ch_chat_header_text_color' ) as $value) {
+     if ( isset($input[$value])) {
+       $input[$value] = sanitize_hex_color( $input[$value] );
+       if ( empty($input[$value]) ) {
+         $input[$value] = false;
+         $err_msg .= __('Wrong Hex color <br>', CHATSTER_DOMAIN);
+       }
+     }
+    }
+
+    foreach (array( 'ch_chat_volume', 'ch_chat_volume_admin' ) as $value) {
+      if ( isset($input[$value]) ) {
+        $intval = intval($input[$value]);
+        if ( $intval >= 0 && $intval <= 50 ) {
+          $input[$value] = $intval;
+        } else {
+          $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
+        }
+      }
+    }
+
+    foreach (array( 'ch_chat_screen_position', 'ch_chat_text_size' ) as $value) {
+      if ( isset($input[$value]) ) {
+        $current_input = $input[$value];
+        $input[$value] = $options[$value];
+        $attr_array = array_keys(self::get_options_radio($value));
+        if ( in_array( $current_input, $attr_array ) ) {
+          $array_key = array_search($current_input, $attr_array);
+          if ( $array_key ) {
+            $input[$value] = $attr_array[$array_key];
+          }
+        }
+      }
+    }
+
+    foreach (array( 'ch_chat_max_conv', 'ch_chat_auto_offline', 'ch_chat_remove_offline_conv_int' ) as $value) {
+      if ( isset($input[$value]) ) {
+        $current_input = $input[$value];
+        $input[$value] = $options[$value];
+        $attr_array = array_keys(self::get_options_select($value));
+        if ( in_array( $current_input, $attr_array ) ) {
+          $array_key = array_search($current_input, $attr_array);
+          if ( $array_key ) {
+            $input[$value] = $attr_array[$array_key];
+          }
+        }
+      }
+    }
+
+    foreach( array( 'ch_chat_fontawesome', 'ch_chat_remove_offline_conv') as $value ) {
+      if ( !empty($input[$value]) &&  $input[$value] == 'on' ) {
+        $input[$value] = true;
+      } else {
+        $input[$value] = false;
       }
     }
 

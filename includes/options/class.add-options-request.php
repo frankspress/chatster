@@ -143,9 +143,31 @@ class AddOptionsRequest extends OptionsGlobal {
 
     $err_msg = '';
     $input['ch_request_test_email'] = '';
-  	$options = get_option( static::$option_group , static::default_values() );
+  	$options = get_option( static::$option_group , static::default_values() ) + static::default_values();
 
-    // TODO
+    if ( isset($input['ch_response_header_url']) && is_string($input['ch_response_header_url']) ) {
+
+      $input['ch_response_header_url'] = esc_url_raw($input['ch_response_header_url']);
+
+    } else {
+      $input['ch_response_header_url'] = $options['ch_response_header_url'];
+      $err_msg .= __('Wrong URL submitted <br>', CHATSTER_DOMAIN);
+    }
+
+    foreach( array( 'ch_response_forward', 'ch_request_alert') as $value ) {
+      $field_name = $value . '_email';
+      if ( !empty($input[$value]) &&  $input[$value] == 'on' &&
+          !empty($input[$field_name]) && is_email($input[$field_name]) ) {
+        $input[$value] = true;
+        $input[$field_name] = is_email($input[$field_name]);
+      } else {
+        $input[$value] = false;
+        $input[$field_name] =  $options[$field_name];
+      }
+    }
+
+    // Test Email is a Mock option
+    $input['ch_request_test_email'] = '';
 
     $this->add_success_message( $err_msg );
     return $input;
