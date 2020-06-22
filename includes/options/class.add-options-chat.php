@@ -302,10 +302,11 @@ class AddOptionsChat extends OptionsGlobal {
       if ( isset($input[$value]) ) {
         $current_input = $input[$value];
         $input[$value] = $options[$value];
+
         $attr_array = array_keys(self::get_options_radio($value));
         if ( in_array( $current_input, $attr_array ) ) {
           $array_key = array_search($current_input, $attr_array);
-          if ( $array_key ) {
+          if ( $array_key !== false ) {
             $input[$value] = $attr_array[$array_key];
           }
         }
@@ -314,12 +315,12 @@ class AddOptionsChat extends OptionsGlobal {
 
     foreach (array( 'ch_chat_max_conv', 'ch_chat_auto_offline', 'ch_chat_remove_offline_conv_int' ) as $value) {
       if ( isset($input[$value]) ) {
-        $current_input = $input[$value];
+        $current_input = intval($input[$value]);
         $input[$value] = $options[$value];
-        $attr_array = array_keys(self::get_options_select($value));
+        $attr_array = array_values(self::get_options_select($value));
         if ( in_array( $current_input, $attr_array ) ) {
           $array_key = array_search($current_input, $attr_array);
-          if ( $array_key ) {
+          if ( $array_key !== false ) {
             $input[$value] = $attr_array[$array_key];
           }
         }

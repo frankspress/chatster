@@ -8,7 +8,9 @@
 
 /** Opener Section*/
 #chatster-opener{
+  display: flex;
   bottom: 2%;
+  right: -380px;
 }
 
 #chatster-opener section {
@@ -55,8 +57,12 @@
   overflow-wrap: break-word;
   background-color: #fff;
   z-index: 100;
-  right: 1%;
 }
+
+#chatster-container {
+    z-index: 1000;
+}
+
  #chatster-opener {
   background-color: transparent;
  }

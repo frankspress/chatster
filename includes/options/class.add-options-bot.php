@@ -194,7 +194,7 @@ class AddOptionsBot extends OptionsGlobal {
         $attr_array = array_keys(self::get_options_radio($value));
         if ( in_array( $current_input, $attr_array ) ) {
           $array_key = array_search($current_input, $attr_array);
-          if ( $array_key ) {
+          if ( $array_key !== false ) {
             $input[$value] = $attr_array[$array_key];
           }
         }

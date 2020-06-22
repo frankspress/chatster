@@ -27,7 +27,7 @@
   }
   setInterval(presence, 10000);
   presence();
-
+console.log(chatsterDataPublic.chat_position );
   /**
    * User Utility fn
    */
@@ -42,25 +42,59 @@
   function scrollTopChat() {
     $("#ch-msg-container").animate({ scrollTop: $('#ch-msg-container').prop("scrollHeight")}, 400);
   }
+  function instantiate_chat_pos() {
+    if ( chatsterDataPublic.chat_position == 'left' ) {
+      $('#chatster-container').css({left:'1%'});
+      $('#chatster-opener').css({left: '-300px'});
+      let button_width = parseInt( $('#ch-open-button').css('width') , 10) + 45;
+      $('#chatster-opener').css({width:button_width+'px'});
+      $('#chatster-opener').animate({
+        left: '2%'
+      });
+    } else {
+      $('#chatster-container').css({right:'1%'});
+      $('#chatster-opener').css({right: '-300px'});
+      $('#chatster-opener').animate({
+        right: '2%'
+      });
+    }
+
+
+  }
   function ch_open_chat() {
-    $('#chatster-opener').animate({
-      right: '-10%'
-    });
+    if ( chatsterDataPublic.chat_position == 'left' ) {
+      $('#chatster-opener').animate({
+        left: '-350px'
+      });
+    } else {
+      $('#chatster-opener').animate({
+        right: '-350px'
+      });
+    }
     $('#chatster-container').animate({
       bottom: '15px'
     });
+
   }
   function ch_close_chat() {
-    $('#chatster-opener').animate({
-      right: '2%'
-    });
+
+    if ( chatsterDataPublic.chat_position == 'left' ) {
+      $('#chatster-opener').animate({
+        left: '2%'
+      });
+    } else {
+      $('#chatster-opener').animate({
+        right: '2%'
+      });
+    }
+
     $('#chatster-container').animate({
       bottom: '-650px'
     });
   }
   $('#chatster-opener').on('click', ch_open_chat );
   $('.ch-arrow').on('click', ch_close_chat);
-
+  instantiate_chat_pos();
   /**
    * Simplified Cookie fn
    */
@@ -89,52 +123,52 @@
   }
 
   /**
-   * Sends request form
-   */
-   function send_request_form() {
+  * Sends request form
+  */
+  function send_request_form() {
 
-     let r_name = $('#ch-customer-name').val();
-     let r_email =  $('#ch-customer-email').val();
-     let r_subject =  $('#ch-customer-subject').val();
-     let r_message =  $('#ch-customer-message').val();
-     var payload = { customer_name: r_name, customer_email: r_email, customer_subject: r_subject, customer_message: r_message };
+   let r_name = $('#ch-customer-name').val();
+   let r_email =  $('#ch-customer-email').val();
+   let r_subject =  $('#ch-customer-subject').val();
+   let r_message =  $('#ch-customer-message').val();
+   var payload = { customer_name: r_name, customer_email: r_email, customer_subject: r_subject, customer_message: r_message };
 
-     $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').show(100);
-     $('#ch-send-request').attr('disabled',true);
+   $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').show(100);
+   $('#ch-send-request').attr('disabled',true);
 
-      $.ajax( {
+    $.ajax( {
 
-          url: chatsterDataPublic.api_base_url + '/request/public/insert',
-          method: 'POST',
-          beforeSend: function ( xhr ) {
-              xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
-          },
-          data: payload,
-          success: function(data) {
-              $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
+        url: chatsterDataPublic.api_base_url + '/request/public/insert',
+        method: 'POST',
+        beforeSend: function ( xhr ) {
+            xhr.setRequestHeader( 'X-WP-Nonce', chatsterDataPublic.nonce );
+        },
+        data: payload,
+        success: function(data) {
+            $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
 
-                $('#ch-send-request').attr('disabled',false);
-                $('#ch-send-request-form .ch-confirm-sent').show(200).delay(4000).hide(100);
-                $('#ch-customer-name').val('');
-                $('#ch-customer-email').val('');
-                $('#ch-customer-message').val('');
+              $('#ch-send-request').attr('disabled',false);
+              $('#ch-send-request-form .ch-confirm-sent').show(200).delay(4000).hide(100);
+              $('#ch-customer-name').val('');
+              $('#ch-customer-email').val('');
+              $('#ch-customer-message').val('');
 
-              });
+            });
 
-          },
-          error: function(error) {
-              $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
+        },
+        error: function(error) {
+            $('#ch-send-request-form .ch-inline-selector').find('.ch-smaller-loader').hide(200, function() {
 
-                $('#ch-send-request').attr('disabled',false);
-                $('#ch-send-request-form .ch-error-sent').show(200).delay(2000).hide(100);
+              $('#ch-send-request').attr('disabled',false);
+              $('#ch-send-request-form .ch-error-sent').show(200).delay(2000).hide(100);
 
-              });
-          },
+            });
+        },
 
-        } ).done( function ( response ) {
+      } ).done( function ( response ) {
 
-        });
-   }
+      });
+  }
 
   /**
    * Inserts current messages into the conversation

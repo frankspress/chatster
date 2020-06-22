@@ -102,6 +102,7 @@ class ChatPublic
       'nonce' => wp_create_nonce( 'wp_rest' ),
       'no_image_link' => CHATSTER_URL_PATH . 'assets/img/no-image.jpg',
       'sound_file_path' => CHATSTER_URL_PATH . 'assets/sound/when',
+      'chat_position' => $ChatsterOptions->get_chat_option('ch_chat_screen_position'),
       'bot_img_path' => CHATSTER_URL_PATH . 'assets/img/' . esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_image' )). '.jpg',
       'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume' ))),
       'chat_static_string' => [ 'bot_intro'=> $ChatsterOptions->get_bot_option( 'ch_bot_intro' ),
