@@ -52,7 +52,7 @@ class Emailer
 
       return wp_mail(
               esc_attr( $request->email ),
-              esc_attr( 'RE: ' . ucfirst($request->subject) ),
+              __( 'RE:', CHATSTER_DOMAIN ) . ' ' . esc_attr( ucfirst($request->subject) ),
               $this->build_template( 'REPLY_TEMPLATE', $request->reply, $request->name, $request->message ),
               $headers,
               $attachments = array()

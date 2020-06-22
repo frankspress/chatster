@@ -132,16 +132,22 @@ class ChatApi extends GlobalApi  {
     }
 
     public function validate_message( $request ) {
+
       if ( $this->validate_customer( $request ) ) {
-        if ( isset( $request['new_message'] ) &&
-                 strlen($request['new_message']) <= 799 &&
-                      isset( $request['temp_id'] ) ) {
 
-          $request['new_message'] = nl2br( htmlentities( $request['new_message'], ENT_QUOTES, 'UTF-8'));
-          return true;
+          $request['new_message'] = $this->validate_request_msg( $request['new_message'], 799);
+          $request['temp_id'] = $this->validate_int_id( $request['temp_id'] );
+          // conv_id is checked against the table before insert -
+          // Inserts by user that is not present in the conversation will not be allowed
+          $request['conv_id'] = $this->validate_int_id( $request['conv_id'] );
 
-        }
+          if ( $request['new_message'] &&
+                  $request['temp_id'] &&
+                     $request['conv_id'] ) {
+                       return true;
+          }
       }
+
       return false;
     }
 

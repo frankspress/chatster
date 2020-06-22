@@ -59,11 +59,29 @@ class GlobalApi  {
     return false;
   }
 
-  public function validate_request_msg( $message = '') {
-    if ( !empty($message) && strlen( $message ) <= 1500 ) {
+  public function validate_request_msg( $message = '', $length = 1500 ) {
+    if ( !empty($message) && strlen( $message ) <= $length ) {
       return nl2br( htmlentities( $message, ENT_QUOTES, 'UTF-8'));
     }
     return false;
   }
+
+  public function validate_text_length( $message, $length) {
+    if ( !empty($message) ) {
+      $message = trim($message);
+      if (strlen($message) > 0 && strlen($message) <= $length ) {
+        return $message;
+      }
+    }
+    return false;
+  }
+
+  public function validate_int_id( $id ) {
+    if ( !empty($id) ) {
+        return intval($id) > 0 ? intval($id) : false;
+    }
+    return false;
+  }
+
 
 }

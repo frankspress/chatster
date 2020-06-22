@@ -34,7 +34,7 @@ class RequestApiAdmin extends GlobalApi  {
        register_rest_route( 'chatster/v1', '/request/admin/reply', array(
                      'methods'  => 'POST',
                      'callback' => array( $this, 'reply_received_request' ),
-                     'permission_callback' => array( $this, 'validate_admin' )
+                     'permission_callback' => array( $this, 'validate_reply_request' )
            ));
       });
     }
@@ -112,13 +112,38 @@ class RequestApiAdmin extends GlobalApi  {
      }
 
      public function validate_customer_request_form( $request ) {
-
+           $fields = array( 'customer_name', 'customer_email', 'customer_subject', 'customer_message' );
            $request['customer_name'] = isset($request['customer_name']) ? $this->validate_name( $request['customer_name'] ) : false;
            $request['customer_email'] = isset($request['customer_email']) ? $this->validate_email($request['customer_email']) : false;
            $request['customer_subject'] = isset($request['customer_subject']) ? $this->validate_subject($request['customer_subject']) : false;
            $request['customer_message'] = isset($request['customer_message']) ? $this->validate_request_msg($request['customer_message']) : false;
+
+           foreach ($fields as $key => $field ) {
+               if ( empty( $request[$field] ) ) {
+                 return false;
+               }
+           }
+
            return true;
 
+     }
+
+     public function validate_reply_request( $request ) {
+
+       if (  $this->validate_admin( $request ) ) {
+
+           if ( ! $request['reply_text'] =  $this->validate_text_length($request['reply_text'], 1500 ) ) {
+             return false;
+           }
+
+           if ( ! $request['request_id'] =  $this->validate_int_id($request['request_id'] ) ) {
+             return false;
+           }
+
+           return true;
+
+       }
+       return false;
      }
 
      /**
