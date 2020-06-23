@@ -123,7 +123,7 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu',
                 'ch_chat_section',
                 ['id'=>'ch_chat_header_back_color',
-                 'label'=> 'Header Background Color',
+                 'label'=> 'Header/Button Background',
                  'description'=> 'Message stated at the top of the chat.'] );
 
         add_settings_field(
@@ -133,7 +133,7 @@ class AddOptionsChat extends OptionsGlobal {
                 'chatster-menu',
                 'ch_chat_section',
                 ['id'=>'ch_chat_header_text_color',
-                 'label'=> 'Header Text Color',
+                 'label'=> 'Contrast Text Color',
                  'description'=> 'Message stated at the top of the chat.'] );
 
        add_settings_field(
@@ -193,7 +193,7 @@ class AddOptionsChat extends OptionsGlobal {
                'chatster-menu',
                'ch_chat_section',
                ['id'=>'ch_chat_screen_position',
-                'label'=> 'New Message Sound',
+                'label'=> 'Position',
                 'description'=> ''] );
 
         // --- ch_chat_admin_section ---

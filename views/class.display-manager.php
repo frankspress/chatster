@@ -32,21 +32,20 @@ class DisplayManager
       $tab = !empty($_GET['chtab']) ? $_GET['chtab'] : '';
       $cpage = !empty($_GET['cpage']) ? filter_var($_GET['cpage'], FILTER_VALIDATE_INT ) : 1;
       $order = isset($_GET['order']) && in_array(Strtoupper($_GET['order']), $order) ? $order[array_search(Strtoupper($_GET['order']), $order)] : 'DESC';
+      $unreplied_only = isset($_GET['unreplied']) && $_GET['unreplied'] == true ? true : false;
 
       $current_admin = wp_get_current_user();
       display_admin_header( $tab );
 
       switch ( $tab ) {
           case 'request':
-              // Options
-              $unreplied_only = false;
               // Pagination
               $count = self::count_all_requests( $unreplied_only );
               $current_page = ( $cpage > 0 && $cpage <= ceil( $count / self::$per_page_request ) ) ? $cpage : 1;
               $total_pages = ceil($count / self::$per_page_request);
               // Db requests query
               $requests = self::get_all_requests( $current_page, self::$per_page_request, $order_by = 'created_at', $order, $unreplied_only );
-              display_admin_request( $requests, $total_pages, $current_page, self::$per_page_request, $count );
+              display_admin_request( $requests, $total_pages, $current_page, self::$per_page_request, $count, $unreplied_only );
               break;
           case 'settings':
               $count_qa = self::get_answer_count();

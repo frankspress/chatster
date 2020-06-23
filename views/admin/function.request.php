@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function display_admin_request( $requests, $total_pages, $current_page, $per_page, $count ) {
+function display_admin_request( $requests, $total_pages, $current_page, $per_page, $count, $unreplied_only ) {
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
       <div class="wrap"><?php
@@ -18,13 +18,13 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
         </table>
         <?php if ( !$requests ) return; ?>
 
-      <!-- Hides replied requests by default -->
-      <div class="switch-container">
+      <!-- Show replied requests by default -->
+      <div id="show-replied" class="switch-container">
       <label class="switch">
-        <input type="checkbox" checked="">
+        <input type="checkbox" <?php echo $unreplied_only ? '' : 'checked'; ?>>
         <span class="slider round slider-groupby"></span>
       </label>
-      <span> &nbsp; <?php echo esc_html__('Hide Replied Requests', CHATSTER_DOMAIN); ?></span>
+      <span> &nbsp; <?php echo esc_html__('Show Replied Requests', CHATSTER_DOMAIN); ?></span>
       </div>
 
       <!-- Table Header -->

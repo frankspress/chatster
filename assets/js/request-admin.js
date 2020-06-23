@@ -216,5 +216,18 @@
     delete_request(request_id);
   });
 
+ /**
+  * Slide Select Show Replied/Unreplied
+  */
+  $('#show-replied').on('click', function(e) {
+    e.stopPropagation();
+    setTimeout( function() {
+      if ( $('.switch').find('input').attr('checked') == 'checked' ) {
+         window.location.href = chatsterDataAdmin.go_to_show_unreplied;
+      } else {
+         window.location.href = chatsterDataAdmin.go_to_hide_unreplied;
+      }
+    }, 410);
+  });
 
 })(jQuery);
