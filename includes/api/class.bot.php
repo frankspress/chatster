@@ -134,10 +134,10 @@ class BotApi extends GlobalApi  {
    */
     public function reply_question( \WP_REST_Request $data ) {
 
-       $answer = $this->search_full_text($data['user_question'], $data['answer_ids']);
-       if ( ! $answer ) {
-         $answer = $this->search_full_text($data['user_question']);
-       }
+       Global $ChatsterOptions;
+       $deep_search = rest_sanitize_boolean($ChatsterOptions->get_bot_option( 'ch_bot_deep_search' ));
+
+       $answer = $this->search_full_text($data['user_question'], $deep_search );
 
        return array( 'action'=>'bot_reply_question', 'payload'=> $answer );
 

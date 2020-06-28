@@ -30,18 +30,36 @@ trait BotCollection {
    * Api Methods
    */
 
-    protected function search_full_text( $question, $excluded_ids = array(), $search_expanded = false, $answer_limit = 1 ) {
+    protected function search_full_text( $question, $deep_search = false, $search_expanded = false, $answer_limit = 1, $excluded_ids = array() ) {
       global $wpdb;
       $wp_table_source_q = self::get_table_name('source_q');
       $wp_table_source_a = self::get_table_name('source_a');
       $search_type = $search_expanded ? " WITH QUERY EXPANSION " : " IN NATURAL LANGUAGE MODE ";
 
-      $params = array( $question );
+      $params = array( $question, $question );
 
-      $sql = " SELECT a.id, a.answer FROM $wp_table_source_q as q
-               INNER JOIN $wp_table_source_a as a ON a.id = q.answer_id
-               WHERE MATCH (q.question)
-               AGAINST ( %s $search_type ) ";
+      if ( $deep_search ) {
+
+          $sql = " SELECT DISTINCT t_search.*, ( t_search.question_score + t_search.answer_score ) as global_score FROM
+                          ( SELECT  a.id , a.answer, q.question,
+                                    SUM( MATCH (q.question) AGAINST ( %s $search_type ) ) as question_score,
+                                    SUM( MATCH (a.answer) AGAINST ( %s $search_type ) ) as answer_score
+                            FROM $wp_table_source_q as q
+                            INNER JOIN $wp_table_source_a as a ON a.id = q.answer_id
+                            GROUP BY a.id
+                            ORDER BY question_score DESC, answer_score DESC ) AS t_search
+                    HAVING global_score > 0 ";
+
+      } else {
+
+           $sql = " SELECT DISTINCT a.id , a.answer, q.question, SUM( MATCH (q.question) AGAINST ( %s $search_type ) ) as question_score
+                    FROM $wp_table_source_q as q
+                    INNER JOIN $wp_table_source_a as a ON a.id = q.answer_id
+                    WHERE MATCH (q.question) AGAINST ( %s $search_type )
+                    GROUP by a.id
+                    ORDER BY question_score DESC ";
+
+      }
 
       if ( !empty($excluded_ids) ) {
         $sql_values = array();

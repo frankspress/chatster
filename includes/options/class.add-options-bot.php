@@ -26,8 +26,8 @@ class AddOptionsBot extends OptionsGlobal {
           'ch_bot_name' => 'Chatster',
           'ch_bot_intro' => 'Hi!! How can I help you today?',
           'ch_bot_followup' => 'If you have any other questions please feel free to ask.',
-          'ch_bot_nomatch' => 'Sorry, I couldn\'t find what you\'re looking for..
-                                Please try again',
+          'ch_bot_nomatch' => "Sorry, I couldn't find what you're looking for..
+                                Please try again",
           'ch_bot_deep_search' => true,
           'ch_bot_product_lookup' => false,
           'ch_bot_image' => 'bot-1'
@@ -46,7 +46,7 @@ class AddOptionsBot extends OptionsGlobal {
                   'bot-3'=>  CHATSTER_URL_PATH . 'assets/img/',
                   'bot-4'=>  CHATSTER_URL_PATH . 'assets/img/',
                   'bot-5'=>  CHATSTER_URL_PATH . 'assets/img/',
-                  'bot-6'=>  CHATSTER_URL_PATH  . 'assets/img/'
+                  'bot-6'=>  CHATSTER_URL_PATH . 'assets/img/'
               );
               break;
       }

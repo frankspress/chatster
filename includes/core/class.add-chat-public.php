@@ -105,9 +105,9 @@ class ChatPublic
       'chat_position' => esc_js( $ChatsterOptions->get_chat_option('ch_chat_screen_position') ),
       'bot_img_path' => CHATSTER_URL_PATH . 'assets/img/' . esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_image' )). '.jpg',
       'chat_sound_vol' => (( 1 / 50 ) * intval($ChatsterOptions->get_chat_option( 'ch_chat_volume' ))),
-      'chat_static_string' => [ 'bot_intro'=> esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_intro' )),
-                                'bot_followup'=> esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_followup' )),
-                                'bot_nomatch'=> esc_js( $ChatsterOptions->get_bot_option( 'ch_bot_nomatch' ))
+      'chat_static_string' => [ 'bot_intro'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_intro' ))),
+                                'bot_followup'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_followup' ))),
+                                'bot_nomatch'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_nomatch' )))
                               ]
     ) );
     if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
