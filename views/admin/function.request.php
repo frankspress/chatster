@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function display_admin_request( $requests, $total_pages, $current_page, $per_page, $count, $unreplied_only ) {
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
-      <div class="wrap"><?php
+      <div class="wrap" style="display: none;"><?php
 
       /**
        * If No Results

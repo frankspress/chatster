@@ -230,4 +230,11 @@
     }, 410);
   });
 
+  /**
+   * Display the backend chat after loading
+   */
+   $(document).ready(function(){
+       $('.wrap').show(500);
+   });
+
 })(jQuery);

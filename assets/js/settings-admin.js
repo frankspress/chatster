@@ -423,4 +423,11 @@
     }
   });
 
+  /**
+   * Display the backend chat after loading
+   */
+   $(document).ready(function(){
+       $('#ch-options-main-container').show(500);
+   });
+
 })(jQuery);

@@ -40,13 +40,15 @@
 }
 .nav-tab-wrapper {
   border-bottom: none;
+  padding-top: 2px !important;
 }
 .nav-tab-wrapper a {
   font-size: 1em;
   padding: 10px;
 }
-.nav-tab-active {
+.nav-tab-active, .nav-tab-active:hover {
   background-color: #FFF;
+  border-bottom: #fff;
 }
 
 /**
@@ -376,7 +378,7 @@ textarea.disabled {
   }
   .onoffswitch-label {
       display: block; overflow: hidden; cursor: pointer;
-      border: 2px solid #999999; border-radius: 20px;
+      border: 1px solid #999999; border-radius: 20px;
   }
   .onoffswitch-inner {
       display: block; width: 200%; margin-left: -100%;
@@ -390,7 +392,7 @@ textarea.disabled {
   .onoffswitch-inner:before {
       content: "ONLINE";
       padding-left: 10px;
-      background-color: #34C290; color: #FFFFFF;
+      background-color: #0F7D11; color: #FFFFFF;
   }
   .onoffswitch-inner:after {
       content: "OFFLINE";
@@ -403,7 +405,7 @@ textarea.disabled {
       background: #FFFFFF;
       position: absolute; top: 0; bottom: 0;
       right: 73px;
-      border: 2px solid #999999; border-radius: 20px;
+      border: 1px solid #999999; border-radius: 20px;
       transition: all 0.3s ease-in 0s;
   }
   .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
