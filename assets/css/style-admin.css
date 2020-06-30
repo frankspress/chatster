@@ -40,7 +40,7 @@
 }
 .nav-tab-wrapper {
   border-bottom: none;
-  padding-top: 2px !important;
+  padding-top: 5px !important;
 }
 .nav-tab-wrapper a {
   font-size: 1em;
@@ -342,6 +342,16 @@ textarea.disabled {
   font-weight: 600;
 }
 
+
+#ch-queue-counter .ch-singular,
+#ch-queue-counter .ch-plural {
+    text-align: center;
+    color: orange;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
 /** Fancy scrollbar */
 
 /* width */
@@ -370,7 +380,7 @@ textarea.disabled {
 /** Toggle Switch **/
 
   .onoffswitch {
-      position: relative; width: 107px;
+      position: relative; width: 90px;
       -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
   }
   .onoffswitch-checkbox {
@@ -383,6 +393,7 @@ textarea.disabled {
   .onoffswitch-inner {
       display: block; width: 200%; margin-left: -100%;
       transition: margin 0.3s ease-in 0s;
+      font-style: italic;
   }
   .onoffswitch-inner:before, .onoffswitch-inner:after {
       display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
@@ -390,12 +401,12 @@ textarea.disabled {
       box-sizing: border-box;
   }
   .onoffswitch-inner:before {
-      content: "ONLINE";
+      content: "Online";
       padding-left: 10px;
       background-color: #0F7D11; color: #FFFFFF;
   }
   .onoffswitch-inner:after {
-      content: "OFFLINE";
+      content: "Offline";
       padding-right: 10px;
       background-color: #EEEEEE; color: #999999;
       text-align: right;
@@ -404,7 +415,7 @@ textarea.disabled {
       display: block; width: 18px; margin: 6px;
       background: #FFFFFF;
       position: absolute; top: 0; bottom: 0;
-      right: 73px;
+      right: 59px;
       border: 1px solid #999999; border-radius: 20px;
       transition: all 0.3s ease-in 0s;
   }

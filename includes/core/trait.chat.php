@@ -503,16 +503,33 @@ trait ChatCollection {
 /**
  * Cron Jobs
  */
-  protected function remove_old_convs( $interval = 6 ) {
+  protected function remove_old_convs( $interval = 60 ) {
     global $wpdb;
     $wp_table_conversation = self::get_table_name('conversation');
     $wp_table_presence = self::get_table_name('presence');
 
     $sql = " DELETE c.* FROM $wp_table_conversation as c
     INNER JOIN $wp_table_presence as p ON c.customer_id = p.customer_id
-    WHERE c.is_connected = FALSE OR ( p.last_presence < NOW() - INTERVAL %d MINUTE ) ";
+    WHERE c.is_connected = FALSE ";
 
     $sql = $wpdb->prepare( $sql, $interval );
+    $result = $wpdb->query($sql);
+    wp_reset_postdata();
+
+    return ! empty( $result ) ? $result : false;
+  }
+
+  protected function disconnect_old_convs( $interval = 60 ) {
+    global $wpdb;
+    $wp_table_conversation = self::get_table_name('conversation');
+    $wp_table_presence = self::get_table_name('presence');
+
+    $sql = " UPDATE $wp_table_conversation as c
+    INNER JOIN $wp_table_presence as p ON c.customer_id = p.customer_id
+    SET c.is_connected = FALSE
+    WHERE ( p.last_presence < NOW() - INTERVAL %d MINUTE ) OR ( c.updated_at < NOW() - INTERVAL %d MINUTE ) ";
+
+    $sql = $wpdb->prepare( $sql, array( $interval, $interval) );
     $result = $wpdb->query($sql);
     wp_reset_postdata();
 
@@ -523,7 +540,7 @@ trait ChatCollection {
     global $wpdb;
     $wp_table_presence_admin = self::get_table_name('presence_admin');
 
-    $sql = " UPDATE $wp_table_presence_admin SET is_active = false WHERE last_presence < NOW() - INTERVAL %d MINUTE ";
+    $sql = " UPDATE $wp_table_presence_admin SET is_active = false WHERE ( last_presence < NOW() - INTERVAL %d MINUTE )  ";
     $sql = $wpdb->prepare( $sql, array($interval));
 
     $result = $wpdb->query( $sql );
@@ -531,4 +548,5 @@ trait ChatCollection {
 
     return $result;
   }
+
 }

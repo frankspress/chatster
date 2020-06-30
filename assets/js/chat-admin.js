@@ -13,7 +13,11 @@
         },
         data: {},
         success: function(data) {
-          //console.log(data);
+          let $status_switch = $('#chatster-chat-switch');
+          let new_status = data.payload.status == 1 ? true : false;
+          if ( new_status != $status_switch.is(':checked') ) {
+              $('#chatster-chat-switch').prop( "checked", new_status );
+          }
         },
         error: function(error) {
 
@@ -94,7 +98,7 @@
         data: {},
         success: function(data) {
 
-          if ( chatsterDataAdmin.remove_offline_conv == 'on') {
+          if ( chatsterDataAdmin.remove_offline_conv == 1 ) {
             remove_disconnected( conv_id );
           } else {
             disable_disconnected( conv_id, $disconnect_link );
@@ -365,7 +369,7 @@ ch_conv_sound();
    if ( disconnected ) {
        $.each( disconnected, function( key, conversation ) {
 
-         if ( chatsterDataAdmin.remove_offline_conv == 'on' &&
+         if ( chatsterDataAdmin.remove_offline_conv == 1 &&
                 parseInt($('#ch-message-board').attr('data-conv_id')) !== parseInt(conversation.id) ) {
                   remove_disconnected( conversation.id );
          } else {

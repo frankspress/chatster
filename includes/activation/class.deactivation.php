@@ -49,7 +49,13 @@ class DeactivationLoader {
 
     private static function remove_cron_event() {
       $timestamp = wp_next_scheduled( 'chatster_remove_old_convs' );
-      return wp_unschedule_event( $timestamp, 'chatster_remove_old_convs' );
+      wp_unschedule_event( $timestamp, 'chatster_remove_old_convs' );
+
+      $timestamp = wp_next_scheduled( 'chatster_update_presence' );
+      wp_unschedule_event( $timestamp, 'chatster_update_presence' );
+
+      $timestamp = wp_next_scheduled( 'chatster_check_new_requests' );
+      wp_unschedule_event( $timestamp, 'chatster_check_new_requests' );
     }
 
     private static function remove_key_options() {

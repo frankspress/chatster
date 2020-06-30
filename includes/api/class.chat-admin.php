@@ -166,7 +166,9 @@ class ChatApiAdmin extends GlobalApi  {
      */
     public function set_presence_admin( \WP_REST_Request $data ) {
         $this->insert_presence_admin( $this->admin_email );
-        return array('action'=> 'presence');
+        $status = self::get_admin_status( $this->admin_email );
+        return array('action'=> 'presence', 'payload'=> array( 'status' => $status ) );
+
     }
 
     public function set_admin_status( \WP_REST_Request $data ) {

@@ -9,7 +9,7 @@ use Chatster\Core\Emailer;
 use Chatster\Core\ChatCollection;
 use Chatster\Core\RequestCollection;
 
-class CronManager  {
+class CronManager {
   use ChatCollection;
   use RequestCollection;
 
@@ -21,6 +21,7 @@ class CronManager  {
   }
 
   public function add_intervals($schedules) {
+
     if(!isset($schedules["every_three_mins"])){
       $schedules["every_three_mins"] = array(
           'interval' => 3*60,
@@ -31,13 +32,14 @@ class CronManager  {
 
   public function cron_remove_old_convs() {
     Global $ChatsterOptions;
-    $interval = $ChatsterOptions->get_chat_option('ch_chat_remove_offline_conv_int');
-    $this->remove_old_convs($interval);
+    $interval = intval( $ChatsterOptions->get_chat_option('ch_chat_remove_offline_conv_int') );
+    $this->remove_old_convs();
+    $this->disconnect_old_convs($interval);
   }
 
   public function cron_update_presence() {
     Global $ChatsterOptions;
-    $interval = $ChatsterOptions->get_chat_option('ch_chat_auto_offline');
+    $interval = intval( $ChatsterOptions->get_chat_option('ch_chat_auto_offline') );
     $this->set_admin_offline($interval);
   }
 
@@ -66,3 +68,5 @@ class CronManager  {
   }
 
 }
+
+new CronManager();

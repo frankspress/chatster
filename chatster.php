@@ -19,10 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * If WooCommerce is active it sets a constant.
  */
-if ( in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
-  define( 'CHATSTER_WOO_STATUS', TRUE );
+if ( ! in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
+  return;
 }
 
+define( 'CHATSTER_WOO_STATUS', TRUE );
 define( 'CHATSTER_VERSION', '1.0.0' );
 define( 'CHATSTER_DOMAIN', 'chatster' );
 define( 'CHATSTER_KEY',  get_option( 'chatster_enc_key' ) );
@@ -36,10 +37,3 @@ define( 'CHATSTER_AUTOCOMPLETE', 'https://cdn.jsdelivr.net/autocomplete.js/0.37.
  * Load Chatster
  */
 require_once( CHATSTER_PATH . '/includes/core/chatster-loader.php' );
-
-/**
- * Adds Translation Support
- */
-add_action( 'plugins_loaded', function() {
-    load_plugin_textdomain( CHATSTER_DOMAIN, FALSE, basename( CHATSTER_PATH ) . '/languages/' );
-});
