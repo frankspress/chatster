@@ -220,7 +220,6 @@ class ChatApiAdmin extends GlobalApi  {
 
     public function disconnect_conv_chat( \WP_REST_Request $data ) {
         $disconnect = $this->disconnect_chat($data['conv_id']);
-        //$disconnect = true;
         return array('action'=> 'disconnect', 'payload'=> $disconnect );
     }
 

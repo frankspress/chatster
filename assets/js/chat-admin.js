@@ -4,8 +4,10 @@
    * It sends a presence ping to the database
    */
   function presence_admin() {
-    $.ajax( {
 
+    let current_status = $('#chatster-chat-switch').is(':checked');
+
+    $.ajax( {
         url: chatsterDataAdmin.api_base_url + '/chat/presence/admin',
         method: 'POST',
         beforeSend: function ( xhr ) {
@@ -13,9 +15,9 @@
         },
         data: {},
         success: function(data) {
-          let $status_switch = $('#chatster-chat-switch');
-          let new_status = data.payload.status == 1 ? true : false;
-          if ( new_status != $status_switch.is(':checked') ) {
+
+          let new_status = data.payload.status == true ? true : false;
+          if ( new_status != current_status ) {
               $('#chatster-chat-switch').prop( "checked", new_status );
           }
         },
@@ -540,8 +542,10 @@ ch_conv_sound();
   $('#chatster-chat-switch').change(function() {
        if( this.checked ) {
           $('#ch-roller-container').removeClass('hidden');
+          $('.active-convs-link').removeClass('hidden');
           change_admin_status(true);
        } else {
+          $('.active-convs-link').addClass('hidden');
           change_admin_status(false);
        }
    });

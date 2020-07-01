@@ -23,7 +23,7 @@ trait ChatCollection {
     $is_active = $wpdb->get_var( $sql );
     wp_reset_postdata();
 
-    return $is_active;
+    return $is_active ? true : false;
   }
 
   protected static function get_current_customer_conv( $customer_id ) {

@@ -1,19 +1,23 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
+require_once( CHATSTER_PATH . '/includes/core/class.emailer.php' );
 
 use Chatster\Core\Emailer;
+use Chatster\Core\ChatCollection;
 
 /**
  * Adds the Admin Menu
  */
 class AdminMenu
 {
+  use ChatCollection;
 
   function __construct() {
       add_action( 'admin_menu', array( $this, 'add_menu_page' ), 20);
       add_action( 'admin_menu', array( $this, 'change_menu_order' ), 99);
-
+      add_action( 'admin_enqueue_scripts', array( $this, 'add_global_style_admin' ), 99);
   }
 
   protected function get_JS_translation() {
@@ -81,9 +85,13 @@ class AdminMenu
   }
 
   public function get_menu_title_link() {
+    $is_hidden = 'hidden';
+    $current_admin = wp_get_current_user();
+    if ( self::get_admin_status( $current_admin->user_email ) ) {
+      $is_hidden = '';
+    }
     $title  = '<span id="chatster-menu-link">'. __( 'Chatster', CHATSTER_DOMAIN ).'</span>&nbsp;';
-    // TODO
-    // $title .= '<span class="active-convs-link">'.'</span>';
+    $title .= '<span class="active-convs-link '. $is_hidden .'">'. esc_html__( 'Online', CHATSTER_DOMAIN ) .'</span>';
     return $title;
   }
 
@@ -106,6 +114,10 @@ class AdminMenu
           $x++;
       }
     }
+  }
+
+  public function add_global_style_admin() {
+    wp_enqueue_style( 'chatster-css-admin-global', CHATSTER_URL_PATH . 'assets/css/style-admin-global.css');
   }
 
 }
