@@ -19,6 +19,7 @@ class ChatApiAdmin extends GlobalApi  {
       $this->insert_msg_route();
       $this->admin_presence_route();
       $this->admin_status_route();
+      $this->get_status_route();
       $this->disconnect_chat_route();
 
     }
@@ -42,6 +43,15 @@ class ChatApiAdmin extends GlobalApi  {
                      'methods'  => 'POST',
                      'callback' => array( $this, 'set_admin_status' ),
                      'permission_callback' => array( $this, 'validate_status' )
+           ));
+      });
+    }
+    public function get_status_route() {
+      add_action('rest_api_init', function () {
+       register_rest_route( 'chatster/v1', '/chat/status/admin', array(
+                     'methods'  => 'GET',
+                     'callback' => array( $this, 'get_chat_status' ),
+                     'permission_callback' => array( $this, 'validate_admin' )
            ));
       });
     }
@@ -174,6 +184,11 @@ class ChatApiAdmin extends GlobalApi  {
     public function set_admin_status( \WP_REST_Request $data ) {
         $this->change_admin_status( $this->admin_email, $data['is_active'] );
         return array('action'=> $data['is_active']);
+    }
+
+    public function get_chat_status( \WP_REST_Request $data ) {
+        $chat_status = self::get_admin_status( $this->admin_email );
+        return array('action'=> 'get_chat_status', 'payload'=> array( 'is_active'=> $chat_status ) );
     }
 
     public function get_admin_polling( \WP_REST_Request $data ) {

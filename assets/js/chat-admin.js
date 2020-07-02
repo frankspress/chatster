@@ -19,6 +19,11 @@
           let new_status = data.payload.status == true ? true : false;
           if ( new_status != current_status ) {
               $('#chatster-chat-switch').prop( "checked", new_status );
+              if ( new_status ) {
+                $('.active-convs-link').removeClass('hidden');
+              } else {
+                  $('.active-convs-link').addClass('hidden');
+              }
           }
         },
         error: function(error) {

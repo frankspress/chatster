@@ -117,7 +117,23 @@ class AdminMenu
   }
 
   public function add_global_style_admin() {
+
     wp_enqueue_style( 'chatster-css-admin-global', CHATSTER_URL_PATH . 'assets/css/style-admin-global.css');
+
+    $current_page = get_current_screen();
+    if ( ( isset($current_page->id) && stripos($current_page->id, 'chatster') == false ) ||
+          ( isset($_GET['page']) && $_GET['page'] != 'chatster-menu' ) ) {
+
+            wp_enqueue_script( 'chatster-global', CHATSTER_URL_PATH . 'assets/js/global-admin.js',  array('jquery'), 1.0, true);
+            wp_localize_script( 'chatster-global', 'chatsterDataAdmin', array(
+              'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
+              'wp_api_base_url' => esc_url_raw( get_rest_url() ),
+              'nonce' => wp_create_nonce( 'wp_rest' )
+              )
+            );
+
+          }
+
   }
 
 }
