@@ -139,6 +139,7 @@ class ChatApiAdmin extends GlobalApi  {
          $request['current_conv'] = isset( $request['current_conv'] ) ? intval($request['current_conv']) : false;
          $request['last_message'] = isset( $request['last_message'] ) ? intval($request['last_message']) : 0;
          $request['temp_id'] = isset( $request['temp_id'] ) ? intval($request['temp_id']) : 0;
+         $request['first_load'] = isset( $request['first_load'] ) ? filter_var($request['first_load'], FILTER_VALIDATE_BOOLEAN) : false;
 
          return true;
        }
@@ -183,7 +184,8 @@ class ChatApiAdmin extends GlobalApi  {
 
     public function set_admin_status( \WP_REST_Request $data ) {
         $this->change_admin_status( $this->admin_email, $data['is_active'] );
-        return array('action'=> $data['is_active']);
+        $chat_status = self::get_admin_status( $this->admin_email );
+        return array('action'=>'set_status', 'payload'=> array( 'is_active'=> $chat_status ) );
     }
 
     public function get_chat_status( \WP_REST_Request $data ) {
@@ -205,7 +207,7 @@ class ChatApiAdmin extends GlobalApi  {
             if ( !empty($data['conv_ids']) && is_array($data['conv_ids']) ) {
               $disconnected = $this->get_disconnected_convs( $this->admin_email, $data['conv_ids'] );
             }
-            if ( $convs || $messages || $disconnected ) break;
+            if ( $convs || $messages || $disconnected || $data['first_load']) break;
             usleep(700000);
         }
 

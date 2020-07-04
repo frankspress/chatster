@@ -15,15 +15,16 @@
         },
         data: {},
         success: function(data) {
-
-          let new_status = data.payload.status == true ? true : false;
-          if ( new_status != current_status ) {
-              $('#chatster-chat-switch').prop( "checked", new_status );
-              if ( new_status ) {
-                $('.active-convs-link').removeClass('hidden');
-              } else {
-                  $('.active-convs-link').addClass('hidden');
-              }
+          if ( ! chat_switch_debounce ) {
+            let new_status = data.payload.status == true ? true : false;
+            if ( new_status != current_status ) {
+                $('#chatster-chat-switch').prop( "checked", new_status );
+                if ( new_status ) {
+                  $('.active-convs-link').removeClass('hidden');
+                } else {
+                    $('.active-convs-link').addClass('hidden');
+                }
+            }
           }
         },
         error: function(error) {
@@ -70,10 +71,14 @@
       $('#ch-message-board').find('.single-message').remove();
       $('#ch-no-message-overlay').show(100);
     }
-    $conversation.slideUp(200, function() { $(this).remove();});
+    $conversation.slideUp(200, function() {
+      $(this).remove();
+    });
     if ( parseInt($('.single-conversation').length) - 1 == 0 ) {
       $('#ch-load-conv-container').show(200);
+
     }
+
   }
   function disable_disconnected( conv_id, $disconnect_link ) {
     let $conversation = $('#conv-' + conv_id);
@@ -90,7 +95,7 @@
     let $disconnect_link = $(this);
     let $conversation = $(this).parent();
     let conv_id = parseInt( $conversation.attr('data-single_conv_id') );
-
+      console.log(conv_id);
     if ($conversation.hasClass('disconnected')) {
       remove_disconnected( conv_id, $conversation );
       return;
@@ -282,7 +287,7 @@
          $("#conversations-block").append($conversation);
          $conversation.slideDown(200);
        });
-ch_conv_sound();
+       ch_conv_sound();
     }
 
   }
@@ -465,7 +470,8 @@ ch_conv_sound();
    * Long poll with self relaunching technique
    */
   var LongPollRun = false;
-  function long_poll() {
+  var lp_ajax = false;
+  function long_poll( first_load = false ) {
     if ( LongPollRun === false ) {
 
       LongPollRun = true;
@@ -480,9 +486,9 @@ ch_conv_sound();
           return;
         }).get();
       ch_conv_list = ch_conv_list ? ch_conv_list : 0;
-      var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg, conv_ids: ch_conv_list };
+      var payload = { last_conv: ch_last_conv, current_conv: ch_current_conv, last_message: ch_last_msg, conv_ids: ch_conv_list, first_load: first_load };
 
-      $.ajax( {
+      lp_ajax = $.ajax( {
           url: chatsterDataAdmin.api_base_url + '/chat/polling/admin',
           method: 'POST',
           beforeSend: function ( xhr ) {
@@ -521,6 +527,21 @@ ch_conv_sound();
   /**
    * Changes "Live chat" status and calls a long_poll
    */
+  var chat_switch_debounce = false;
+  function resets_chat() {
+    if (lp_ajax) {
+        lp_ajax.abort();
+        lp_ajax = false;
+    }
+    $('#conversations-block').attr('data-last_conv_id', 0);
+    $('.single-conversation').slideUp(100, function() {
+        $('#conversations-block').find('.single-conversation').remove();
+        $('#ch-load-conv-container').show(200);
+    });
+    $('#ch-message-board').find('.single-message').remove();
+    $('#ch-no-message-overlay').show(100);
+    disable_chat_style();
+  }
   function change_admin_status( admin_status ) {
     $.ajax( {
 
@@ -531,32 +552,43 @@ ch_conv_sound();
         },
         data: { is_active: admin_status },
         success: function(data) {
-          if ( admin_status) {
-              long_poll();
+          chat_switch_debounce = false;
+          if ( data.payload.is_active == true ) {
+              long_poll( true );
+          } else {
+              resets_chat();
           }
         },
         error: function(error) {
               $('#ch-roller-container').addClass('hidden');
               $('#chatster-chat-switch').prop("checked", ! admin_status);
+              chat_switch_debounce = false;
         },
 
       } ).done( function ( response ) {
 
       });
   }
-  $('#chatster-chat-switch').change(function() {
-       if( this.checked ) {
-          $('#ch-roller-container').removeClass('hidden');
-          $('.active-convs-link').removeClass('hidden');
-          change_admin_status(true);
-       } else {
-          $('.active-convs-link').addClass('hidden');
-          change_admin_status(false);
-       }
+  $('#chatster-chat-switch').change(function(e) {
+
+      if ( chat_switch_debounce ) {
+         $('#chatster-chat-switch').prop("checked", ! this.checked );
+         return;
+      }
+
+      chat_switch_debounce = true;
+
+      if( this.checked ) {
+        $('#ch-roller-container').removeClass('hidden');
+        $('.active-convs-link').removeClass('hidden');
+        change_admin_status(true);
+      } else {
+        $('.active-convs-link').addClass('hidden');
+        change_admin_status(false);
+      }
    });
   if ( $('#chatster-chat-switch').prop("checked") ) {
-
-      long_poll();
+        long_poll( true );
   }
 
  /**
