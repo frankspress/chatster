@@ -7,12 +7,15 @@ function display_admin_chat( $admin_status ) {
 
     <div class="wrap" style="display: none;">
 
-      <div class="onoffswitch">
-          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="chatster-chat-switch" <?php echo $admin_status ? 'checked' : ''; ?>>
-          <label class="onoffswitch-label" for="chatster-chat-switch">
-              <span class="onoffswitch-inner"></span>
-              <span class="onoffswitch-switch"></span>
-          </label>
+      <div id="online-switch-container">
+        <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="chatster-chat-switch" <?php echo $admin_status ? 'checked' : ''; ?>>
+            <label class="onoffswitch-label" for="chatster-chat-switch">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+            </label>
+        </div>
+        <div id="switch-loader" class="ch-smaller-loader hidden"></div>
       </div>
 
       <div id="ch-conversation-container">
@@ -20,7 +23,7 @@ function display_admin_chat( $admin_status ) {
             <div id="conversations-block" data-last_conv_id="" class="ch-fancy-scroll">
               <div id="ch-load-conv-container">
                 <div id="ch-empty-conv-msg"> Your conversations will be shown here.. </div>
-                <div id="ch-roller-container" class="hidden">
+                <div id="ch-roller-container" class="<?php echo !$admin_status ? 'hidden' : ''; ?>">
                   <div class="ch-roller" ><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                 </div>
               </div>

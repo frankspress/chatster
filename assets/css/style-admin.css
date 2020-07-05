@@ -408,6 +408,15 @@ textarea.disabled {
       right: 0px;
   }
 
+  #online-switch-container {
+    display: flex;
+    align-items: center;
+  }
+
+  #switch-loader {
+    margin-left: 18px !important;
+  }
+
 /* Requests */
 
 .pinned-flag {

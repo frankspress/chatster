@@ -193,3 +193,23 @@
 #reset-bot-q-and-a {
   margin-left: 20px;
 }
+
+/* gloabl Reset Button */
+.reset-all-block {
+  max-width: 500px;
+  margin-top: 30px;
+}
+
+.reset-all-block p {
+  text-align: right !important;
+}
+
+#reset-all, #reset-all:hover, #reset-all:focus {
+   background: #0F7D11 !important;
+   background-color: #0F7D11 !important;
+   font-size: 1.2em;
+}
+
+#reset-all:hover {
+    opacity: .9;
+}

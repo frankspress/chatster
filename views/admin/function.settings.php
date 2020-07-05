@@ -119,7 +119,11 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           </div>
 
         </div>
-
+        <div class="ch-option-block reset-all-block">
+          <form id="chatster-reset-all-settings" method="post">
+            <?php submit_button($text = 'Reset All Configuration', $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'reset-all']); ?>
+          </form>
+        </div>
       </div>
 
 

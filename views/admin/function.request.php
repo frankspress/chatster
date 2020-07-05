@@ -13,7 +13,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
       ?>
         <table id="ch-no-results" class="wp-list-table widefat fixed striped posts <?php echo !$requests ? '' : 'hidden'; ?>" width="100%">
           <tbody id="the-list"><tr><td style="vertical-align: middle; text-align: center;">
-            <div class="alert-view-no-results"><?php echo esc_html__('No requests Received yet', CHATSTER_DOMAIN); ?></div></td></tr>
+            <div class="alert-view-no-results"><?php echo esc_html__('No requests Messages yet', CHATSTER_DOMAIN); ?></div></td></tr>
           </tbody>
         </table>
         <?php if ( !$requests ) return; ?>
@@ -24,7 +24,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
         <input type="checkbox" <?php echo $unreplied_only ? '' : 'checked'; ?>>
         <span class="slider round slider-groupby"></span>
       </label>
-      <span> &nbsp; <?php echo esc_html__('Show Replied Requests', CHATSTER_DOMAIN); ?></span>
+      <span> &nbsp; <?php echo esc_html__('Show Replied Messages', CHATSTER_DOMAIN); ?></span>
       </div>
 
       <!-- Table Header -->

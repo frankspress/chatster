@@ -553,6 +553,7 @@
         data: { is_active: admin_status },
         success: function(data) {
           chat_switch_debounce = false;
+          $('#switch-loader').addClass('hidden');
           if ( data.payload.is_active == true ) {
               long_poll( true );
           } else {
@@ -561,6 +562,7 @@
         },
         error: function(error) {
               $('#ch-roller-container').addClass('hidden');
+              $('#switch-loader').addClass('hidden');
               $('#chatster-chat-switch').prop("checked", ! admin_status);
               chat_switch_debounce = false;
         },
@@ -577,7 +579,7 @@
       }
 
       chat_switch_debounce = true;
-
+      $('#switch-loader').removeClass('hidden');
       if( this.checked ) {
         $('#ch-roller-container').removeClass('hidden');
         $('.active-convs-link').removeClass('hidden');
