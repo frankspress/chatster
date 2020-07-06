@@ -8,6 +8,7 @@
 
 /** Opener Section*/
 #chatster-opener{
+  font-family: 'Open Sans', sans-serif !important;
   display: flex;
   bottom: 2%;
   right: -380px;
@@ -60,6 +61,7 @@
 }
 
 #chatster-container {
+    font-family: 'Open Sans', sans-serif !important;
     z-index: 1000;
 }
 
@@ -154,6 +156,7 @@
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
   border-radius: 21px;
+  font-weight: 600;
 }
 
 .ch-inline-selector input[type="submit"]:focus {
@@ -259,7 +262,7 @@
 }
 
 .ch-input input, .ch-input textarea {
-  outline: none;
+  outline: none !important;
   border-color: #e3e3e3 !important;
   resize: none;
   width: 100%;
@@ -267,6 +270,20 @@
 
 .ch-input textarea {
   padding: 15px;
+}
+
+.ch-input button,
+.ch-input input,
+.ch-input select,
+.ch-input optgroup,
+.ch-input textarea,
+.ch-button-global {
+  line-height: 1.15 !important;
+  font-family: Open Sans,Arial,sans-serif;
+}
+
+.ch-button-global, .ch-input button{
+    font-weight: 600 !important;
 }
 
 .ch-align-right {
@@ -285,11 +302,12 @@
 
 #ch-send-request-form .ch-input,
 #ch-start-chat-form  .ch-input {
-  margin: 21px 0;
+  margin: 21px 0 !important;
 }
 
 /* Live Chat */
 .ch-queue-info {
+  font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   text-align: center;
   font-style: italic;

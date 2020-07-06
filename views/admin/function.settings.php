@@ -8,6 +8,10 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
 
       <div id="ch-options-main-container" style="display: none;">
 
+        <div id="reset-all-settings-errors">
+          <?php settings_errors('chatster_reset_all'); ?>
+        </div>
+
         <div class="ch-option-block">
           <div class="ch-option-title"><?php esc_html_e('Bot Setup', CHATSTER_DOMAIN); ?></div>
           <div id="bot-options" class="ch-option-container" style="display:none;">
@@ -108,7 +112,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
             <form id="chatster-test-email-form" method="post">
               <?php do_ch_settings_section( 'chatster-menu', 'ch_request_test_section' ); ?>
               <div class="ch-reply-btn">
-                <?php submit_button($text = 'Send Test Email', $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'ch-test-email']); ?>
+                <?php submit_button($text = esc_html__( 'Send Test Email', CHATSTER_DOMAIN ), $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'ch-test-email']); ?>
                 <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
                 <div class="ch-success hidden" style="margin-left:20px;">Sent Successfully!</div>
                 <div class="ch-fail hidden" style="margin-left:20px;">Something went wrong.</div>
@@ -120,8 +124,10 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
 
         </div>
         <div class="ch-option-block reset-all-block">
-          <form id="chatster-reset-all-settings" method="post">
-            <?php submit_button($text = 'Reset All Configuration', $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'reset-all']); ?>
+          <form id="chatster-reset-all-settings" action="options.php" method="post">
+            <?php
+            settings_fields( 'chatster_reset_all' );
+            submit_button($text = esc_html__( 'Reset All Configuration', CHATSTER_DOMAIN ), $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'reset-all']); ?>
           </form>
         </div>
       </div>

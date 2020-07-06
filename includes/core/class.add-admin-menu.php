@@ -30,7 +30,8 @@ class AdminMenu
          'now' => esc_html__('just now', CHATSTER_DOMAIN),
          'edit' => esc_html__('Edit', CHATSTER_DOMAIN),
          'delete' => esc_html__('Delete', CHATSTER_DOMAIN),
-         'reset' => esc_html__('Reset All settings?', CHATSTER_DOMAIN),
+         'reset' => esc_html__('Reset settings?', CHATSTER_DOMAIN),
+         'reset_all' => esc_html__('Reset All settings?', CHATSTER_DOMAIN),
          'disconnect' => esc_html__('Disconnect', CHATSTER_DOMAIN),
          'admin' => esc_html__('Replied by admin', CHATSTER_DOMAIN)
         ];

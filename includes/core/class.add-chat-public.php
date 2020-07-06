@@ -66,6 +66,7 @@ class ChatPublic
     $opening_btn_size = $this->calc_font('1.2', $txt_size);
     $global_btn_size = $this->calc_font('1.12', $txt_size);
     $context_size = $this->calc_font('1', $txt_size);
+    $info_text = $this->calc_font('1', $txt_size);
 
     $custom_css .= "#chatster-container #ch-header { ";
     $custom_css .= " font-size: ".esc_attr( $header_size )."em; ";
@@ -75,8 +76,12 @@ class ChatPublic
     $custom_css .= " font-size: ".esc_attr( $opening_btn_size )."em; ";
     $custom_css .= "}";
 
-    $custom_css .= ".ch-single-message, .ch-queue-info, #ch-reply-bot, .ch-input input, .ch-input textarea { ";
+    $custom_css .= ".ch-single-message, #ch-reply-bot, .ch-input input, .ch-input textarea { ";
     $custom_css .= " font-size: ".esc_attr( $context_size )."em !important; ";
+    $custom_css .= "}";
+
+    $custom_css .= ".ch-queue-info{ ";
+    $custom_css .= " font-size: ".esc_attr( $info_text )."em !important; ";
     $custom_css .= "}";
 
     $custom_css .= ".ch-button-global { ";
@@ -113,6 +118,7 @@ class ChatPublic
     if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
         wp_enqueue_style( 'fontawesome', CHATSTER_FONTAWESOME_URL, false, '4.7.0' );
     }
+    wp_enqueue_style( 'chatster-google-fonts', 'http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&#038;subset=latin,latin-ext', false );
     wp_enqueue_style( 'chatster-loader-pbl', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
     wp_add_inline_style( 'chatster-public', $this->get_custom_css() );

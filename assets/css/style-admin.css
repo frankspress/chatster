@@ -419,6 +419,13 @@ textarea.disabled {
 
 /* Requests */
 
+.alert-view-no-results {
+  padding: 200px 0;
+  font-size: 3em;
+  color: #555;
+  line-height: 1.3em;
+}
+
 .pinned-flag {
   cursor: pointer;
   user-drag: none;

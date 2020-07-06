@@ -213,3 +213,8 @@
 #reset-all:hover {
     opacity: .9;
 }
+
+#reset-all-settings-errors .notice-success {
+  padding: 7px;
+  margin-bottom: 30px;
+}

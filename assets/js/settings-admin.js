@@ -424,6 +424,16 @@
   });
 
   /**
+   * Resets All Options
+   */
+   $('#reset-all').on('click', function(e) {
+     e.preventDefault();
+     if ( confirm( chatsterDataAdmin.translation.reset_all ) ) {
+       $('#chatster-reset-all-settings').submit();
+     }
+   });
+
+  /**
    * Display the backend chat after loading
    */
    $(document).ready(function(){

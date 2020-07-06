@@ -13,7 +13,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
       ?>
         <table id="ch-no-results" class="wp-list-table widefat fixed striped posts <?php echo !$requests ? '' : 'hidden'; ?>" width="100%">
           <tbody id="the-list"><tr><td style="vertical-align: middle; text-align: center;">
-            <div class="alert-view-no-results"><?php echo esc_html__('No requests Messages yet', CHATSTER_DOMAIN); ?></div></td></tr>
+            <div class="alert-view-no-results"><?php echo esc_html__('No Messages yet', CHATSTER_DOMAIN); ?></div></td></tr>
           </tbody>
         </table>
         <?php if ( !$requests ) return; ?>
