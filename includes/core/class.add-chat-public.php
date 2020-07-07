@@ -62,30 +62,30 @@ class ChatPublic
 
     // Chat Text Size ( proportinally calculated )
     $txt_size = $ChatsterOptions->get_chat_option('ch_chat_text_size');
-    $header_size = $this->calc_font('1.2', $txt_size);
-    $opening_btn_size = $this->calc_font('1.2', $txt_size);
-    $global_btn_size = $this->calc_font('1.12', $txt_size);
-    $context_size = $this->calc_font('1', $txt_size);
-    $info_text = $this->calc_font('1', $txt_size);
+    $header_size = $this->calc_font('16.8', $txt_size);
+    $opening_btn_size = $this->calc_font('15', $txt_size);
+    $global_btn_size = $this->calc_font('15.7', $txt_size);
+    $context_size = $this->calc_font('14.1', $txt_size);
+    $info_text = $this->calc_font('14', $txt_size);
 
     $custom_css .= "#chatster-container #ch-header { ";
-    $custom_css .= " font-size: ".esc_attr( $header_size )."em; ";
+    $custom_css .= " font-size: ".esc_attr( $header_size )."px !important; ";
     $custom_css .= "}";
 
     $custom_css .= "#ch-open-button-block { ";
-    $custom_css .= " font-size: ".esc_attr( $opening_btn_size )."em; ";
+    $custom_css .= " font-size: ".esc_attr( $opening_btn_size )."px !important; ";
     $custom_css .= "}";
 
     $custom_css .= ".ch-single-message, #ch-reply-bot, .ch-input input, .ch-input textarea { ";
-    $custom_css .= " font-size: ".esc_attr( $context_size )."em !important; ";
+    $custom_css .= " font-size: ".esc_attr( $context_size )."px !important; ";
     $custom_css .= "}";
 
     $custom_css .= ".ch-queue-info{ ";
-    $custom_css .= " font-size: ".esc_attr( $info_text )."em !important; ";
+    $custom_css .= " font-size: ".esc_attr( $info_text )."px !important; ";
     $custom_css .= "}";
 
     $custom_css .= ".ch-button-global { ";
-    $custom_css .= " font-size: ".esc_attr( $global_btn_size )."em !important; ";
+    $custom_css .= " font-size: ".esc_attr( $global_btn_size )."px !important; ";
     $custom_css .= "}";
 
     // Chat Window width based on txt_size

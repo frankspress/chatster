@@ -131,15 +131,15 @@ class AddOptionsBot extends OptionsGlobal {
               'label'=> 'Enable Deep Search',
               'description'=> 'BOT will search full text in both questions and answers. <br>When not enabled it will only search among the saved questions.'] );
 
-     add_settings_field(
-             'ch_bot_product_lookup',
-             '',
-              array( $this, 'switch_field_callback'),
-             'chatster-menu',
-             'ch_bot_section',
-             ['id'=>'ch_bot_product_lookup',
-              'label'=> 'Enable Product Lookup',
-              'description'=> 'Matching product links with thumbnail will be listed along with the found answer.'] );
+     // add_settings_field(
+     //         'ch_bot_product_lookup',
+     //         '',
+     //          array( $this, 'switch_field_callback'),
+     //         'chatster-menu',
+     //         'ch_bot_section',
+     //         ['id'=>'ch_bot_product_lookup',
+     //          'label'=> 'Enable Product Lookup',
+     //          'description'=> 'Matching product links with thumbnail will be listed along with the found answer.'] );
 
   }
 

@@ -151,6 +151,7 @@ console.log(chatsterDataPublic.chat_position );
               $('#ch-send-request-form .ch-confirm-sent').show(200).delay(4000).hide(100);
               $('#ch-customer-name').val('');
               $('#ch-customer-email').val('');
+              $('#ch-customer-subject').val('');
               $('#ch-customer-message').val('');
 
             });

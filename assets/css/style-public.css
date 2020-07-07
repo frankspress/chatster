@@ -44,7 +44,7 @@
 /** Chat Section*/
 
 #chatster-container section {
-  margin: 0; padding: 0;
+  margin: 0 !important; padding: 0;
   position: relative;
 }
 
@@ -220,12 +220,13 @@
 }
 
 #chatster-container #ch-header {
-  padding: 25px 0;
+  padding: 25px 0 !important;
   background-color: #0073aa;
   text-align: center;
   color: #fff;
   font-size: 1.2em;
   font-weight: 600;
+  line-height: 23px;
 }
 
 .ch-msg-wrapper {
@@ -263,13 +264,16 @@
 
 .ch-input input, .ch-input textarea {
   outline: none !important;
-  border-color: #e3e3e3 !important;
+  border: 1px solid #e3e3e3 !important;
   resize: none;
   width: 100%;
+  box-shadow: none;
 }
 
 .ch-input textarea {
   padding: 15px;
+  background-color: #fff;
+  vertical-align: unset;
 }
 
 .ch-input button,
@@ -280,10 +284,13 @@
 .ch-button-global {
   line-height: 1.15 !important;
   font-family: Open Sans,Arial,sans-serif;
+  text-transform: none !important;
+  outline: none !important;
+  text-decoration: none !important;
 }
 
 .ch-button-global, .ch-input button{
-    font-weight: 600 !important;
+    font-weight: 400 !important;
 }
 
 .ch-align-right {
@@ -294,10 +301,14 @@
   text-align: left;
 }
 
+.ch-confirm-sent {
+  font-size: 16px !important;
+}
 
 #ch-send-request-form,
 #ch-start-chat-form {
   padding: 18px 15px;
+  margin: 0;
 }
 
 #ch-send-request-form .ch-input,
@@ -316,6 +327,8 @@
 
 .loading-dots {
   margin-bottom: -1px;
+  line-height: 23px;
+  font-size: 38px;
 }
 
 
