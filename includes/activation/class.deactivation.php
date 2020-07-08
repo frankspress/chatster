@@ -4,9 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
 use Chatster\Core\ChatsterTableBuilder;
 
-register_deactivation_hook( CHATSTER_FILE_PATH, array( 'DeactivationLoader', 'init_deactivation' ) );
+register_deactivation_hook( CHATSTER_FILE_PATH, array( 'ChatsterDeactivationLoader', 'init_deactivation' ) );
 
-class DeactivationLoader {
+class ChatsterDeactivationLoader {
 
     use ChatsterTableBuilder;
 

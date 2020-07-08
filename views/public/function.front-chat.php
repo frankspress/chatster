@@ -57,9 +57,9 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
           <div class="ch-inline-selector">
             <div class="ch-cancel-btn ch-button-global"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp; <?php echo esc_html__( 'Back', CHATSTER_DOMAIN ); ?></div>
-                      <div class="ch-confirm-sent hidden" style="color: green;">Sent <i class="fa fa-check" aria-hidden="true" style="color: green;"></i></div>
+                      <div class="ch-confirm-sent hidden" style="color: green;"><?php esc_html_e( 'Sent', CHATSTER_DOMAIN ); ?> <i class="fa fa-check" aria-hidden="true" style="color: green;"></i></div>
                       <div class="ch-smaller-loader hidden"></div>
-                      <div class="ch-error-sent hidden" style="color: red;">Try Again</div>
+                      <div class="ch-error-sent hidden" style="color: red;"><?php esc_html_e( 'Try Again', CHATSTER_DOMAIN ); ?></div>
             <button id="ch-send-request" class="ch-send-btn ch-button-global" type="submit"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?>&nbsp; <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
           </div>
 

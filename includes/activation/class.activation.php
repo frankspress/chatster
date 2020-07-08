@@ -4,9 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.table-builder.php' );
 use Chatster\Core\ChatsterTableBuilder;
 
-register_activation_hook( CHATSTER_FILE_PATH, array( 'ActivationLoader', 'init_activation' ) );
+register_activation_hook( CHATSTER_FILE_PATH, array( 'ChatsterActivationLoader', 'init_activation' ) );
 
-class ActivationLoader  {
+class ChatsterActivationLoader  {
 
   use ChatsterTableBuilder;
 

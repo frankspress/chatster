@@ -22,7 +22,7 @@ function display_admin_chat( $admin_status ) {
 
             <div id="conversations-block" data-last_conv_id="" class="ch-fancy-scroll">
               <div id="ch-load-conv-container">
-                <div id="ch-empty-conv-msg"> Your conversations will be shown here.. </div>
+                <div id="ch-empty-conv-msg"><?php esc_html_e( 'Your conversations will be shown here..' , CHATSTER_DOMAIN ); ?></div>
                 <div id="ch-roller-container" class="<?php echo !$admin_status ? 'hidden' : ''; ?>">
                   <div class="ch-roller" ><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                 </div>
