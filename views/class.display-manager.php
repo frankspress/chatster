@@ -72,7 +72,7 @@ class DisplayManager
 
       $current_user = wp_get_current_user();
       if ( $current_user && get_current_user_id() ) {
-        return $current_user->user_email;
+        return sanitize_email( $current_user->user_email );
       }
 
       if ( isset($_COOKIE['ch_ctmr_id'])) {

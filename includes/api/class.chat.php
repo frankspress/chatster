@@ -13,7 +13,7 @@ use Chatster\Core\ChatFormSerializer;
 class ChatApi extends GlobalApi  {
   use ChatCollection;
 
-    private $customer_id;
+    protected $customer_id;
     private $customer_name;
     private $customer_email;
     private $customer_subject;
@@ -91,45 +91,10 @@ class ChatApi extends GlobalApi  {
       });
     }
 
-    /**
-     * Methods
-     */
-
-    private function set_customer_id_cookie() {
-       if ( empty($this->customer_id) ) {
-         $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);
-       }
-       setrawcookie('ch_ctmr_id', base64_encode($this->customer_id) , (time() + 8419200), "/");
-       return $this->customer_id;
-    }
-
-    private function get_customer_id() {
-
-      $current_user = wp_get_current_user();
-      if ( $current_user && get_current_user_id() ) {
-        return $this->customer_id = $current_user->user_email;
-      }
-
-      if ( isset($_COOKIE['ch_ctmr_id'])) {
-        $this->customer_id = sanitize_text_field( base64_decode($_COOKIE['ch_ctmr_id']) );
-        if ( is_email( $this->customer_id ) ) {
-          $this->customer_id = '';
-        }
-      }
-
-      return $this->set_customer_id_cookie();
-    }
 
     /**
      * Validation Callbacks
      */
-
-    public function validate_customer( $request ) {
-
-      $request['chatster_customer_id'] = $this->get_customer_id();
-      return true;
-
-    }
 
     public function validate_message( $request ) {
 

@@ -316,6 +316,8 @@
             $message_cont.append($message_links);
             $("#ch-message-board").append($message_cont);
             if ( message.is_author != "1" ) ch_chat_sound();
+            // Scroll up
+            scrollTopAdminChat();
           }
         });
       }

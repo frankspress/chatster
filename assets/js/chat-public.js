@@ -27,7 +27,7 @@
   }
   setInterval(presence, 10000);
   presence();
-console.log(chatsterDataPublic.chat_position );
+
   /**
    * User Utility fn
    */
@@ -408,7 +408,8 @@ console.log(chatsterDataPublic.chat_position );
            long_poll_ticketing();
          },
          error: function(error) {
-
+           $('#ch-start-chatting').attr('disabled',false);
+           $('#ch-start-chat-form .ch-inline-selector').find('.ch-smaller-loader').hide();
          },
 
        } ).done( function ( response ) {

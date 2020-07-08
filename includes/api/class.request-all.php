@@ -97,7 +97,7 @@ class RequestApiAdmin extends GlobalApi  {
        if ( current_user_can( 'manage_options' ) ) {
          $current_user = wp_get_current_user();
          if ( $current_user && get_current_user_id() ) {
-           return $this->admin_email = $current_user->user_email;
+           return $this->admin_email = sanitize_email( $current_user->user_email );
          }
        }
        return false;

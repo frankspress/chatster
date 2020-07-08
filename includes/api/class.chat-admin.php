@@ -10,7 +10,7 @@ use Chatster\Core\ChatCollection;
 class ChatApiAdmin extends GlobalApi  {
   use ChatCollection;
 
-  private $admin_email;
+  protected $admin_email;
 
     public function __construct() {
 
@@ -110,7 +110,7 @@ class ChatApiAdmin extends GlobalApi  {
        if ( current_user_can( 'manage_options' ) ) {
          $current_user = wp_get_current_user();
          if ( $current_user && get_current_user_id() ) {
-           return $this->admin_email = $current_user->user_email;
+           return $this->admin_email = sanitize_email( $current_user->user_email );
          }
        }
        return false;

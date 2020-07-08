@@ -93,7 +93,7 @@ class BotApi extends GlobalApi  {
    * Validation Callbacks
    */
     public function validate_question( $request ) {
-      if ( $this->validate_simple_request( $request ) ) {
+      if ( $this->validate_customer( $request ) ) {
         if ( isset( $request['user_question'] ) &&
                  strlen($request['user_question']) <= 349 ) {
 
