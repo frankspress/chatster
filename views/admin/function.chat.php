@@ -65,9 +65,6 @@ function display_admin_chat( $admin_status ) {
        <div id="chat-sound"></div>
        <div id="conv-sound"></div>
 
-       <!-- Loads autocomplete.js -->
-       <script src="<?php echo esc_url( CHATSTER_AUTOCOMPLETE ); ?>"></script>
-
     </div>
 
     <?php

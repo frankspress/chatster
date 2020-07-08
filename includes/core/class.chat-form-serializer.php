@@ -15,7 +15,7 @@ class ChatFormSerializer  {
       $field_container = array();
       foreach ( self::$form_fields as $field ) {
         if ( !empty(self::$$field)) {
-          $field_container[$field] = self::$$field;
+          $field_container[$field] = sanitize_text_field( self::$$field );
         }
       }
       if ( $encoding ) {
@@ -35,7 +35,7 @@ class ChatFormSerializer  {
 
       foreach ( self::$form_fields as $field ) {
         if ( !empty($form_container[$field])) {
-           self::$$field = $form_container[$field];
+           self::$$field = esc_html($form_container[$field]);
         }
       }
 
@@ -46,7 +46,7 @@ class ChatFormSerializer  {
     $is_not_empty = false;
     foreach ( self::$form_fields as $field ) {
       if ( !empty($form[$field])) {
-         self::$$field = $form[$field];
+         self::$$field = sanitize_text_field( $form[$field] );
       } else {
         return false;
       }

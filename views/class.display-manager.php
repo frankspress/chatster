@@ -76,7 +76,7 @@ class DisplayManager
       }
 
       if ( isset($_COOKIE['ch_ctmr_id'])) {
-        $customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
+        $customer_id = sanitize_text_field( base64_decode($_COOKIE['ch_ctmr_id']) );
       }
 
       return !empty( $customer_id ) ? $customer_id : false;

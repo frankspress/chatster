@@ -11,7 +11,7 @@ Requires PHP: 5.6.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Allows real time chat and get in touch interaction with BOT helper.
+Allows customizable real time chat and get in touch interaction with BOT helper.
 
 == Changelog ==
 

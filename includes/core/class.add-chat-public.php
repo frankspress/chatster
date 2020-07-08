@@ -1,8 +1,8 @@
 <?php
 
+namespace Chatster\Core;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-
 
 /**
  * Adds the interactive chat form
@@ -118,7 +118,7 @@ class ChatPublic
     if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
         wp_enqueue_style( 'fontawesome', CHATSTER_FONTAWESOME_URL, false, '4.7.0' );
     }
-    wp_enqueue_style( 'chatster-google-fonts', 'http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&#038;subset=latin,latin-ext', false );
+    wp_enqueue_style( 'chatster-google-fonts', CHATSTER_GOOGLE_FONTS_URL, false );
     wp_enqueue_style( 'chatster-loader-pbl', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
     wp_add_inline_style( 'chatster-public', $this->get_custom_css() );

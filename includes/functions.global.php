@@ -36,7 +36,7 @@ if ( ! function_exists( 'base64url_encode' ) ) {
 
 if ( ! function_exists( 'base64url_decode' ) ) {
 		function base64url_decode( $data ){
-		  return base64_decode( strtr( $data, '-_', '+/') . str_repeat('=', 3 - ( 3 + strlen( $data )) % 4 ));
+		  return sanitize_text_field( base64_decode( strtr( $data, '-_', '+/') . str_repeat('=', 3 - ( 3 + strlen( $data )) % 4 )) );
 		}
 }
 

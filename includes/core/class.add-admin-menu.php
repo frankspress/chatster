@@ -1,5 +1,7 @@
 <?php
 
+namespace Chatster\Core;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( CHATSTER_PATH . '/includes/core/trait.chat.php' );
 require_once( CHATSTER_PATH . '/includes/core/class.emailer.php' );
@@ -17,7 +19,7 @@ class AdminMenu
   function __construct() {
       add_action( 'admin_menu', array( $this, 'add_menu_page' ), 20);
       add_action( 'admin_menu', array( $this, 'change_menu_order' ), 99);
-      add_action( 'admin_enqueue_scripts', array( $this, 'add_global_style_admin' ), 99);
+      add_action( 'admin_enqueue_scripts', array( $this, 'add_global_script_admin' ), 99);
   }
 
   protected function get_JS_translation() {
@@ -49,7 +51,7 @@ class AdminMenu
       add_action('admin_print_scripts-'.$menu_page, function() {
 
           Global $ChatsterOptions;
-          $current_tab = isset( $_GET['chtab'] ) ? $_GET['chtab'] : false;
+          $current_tab = isset( $_GET['chtab'] ) ? sanitize_text_field( $_GET['chtab'] ) : false;
 
           wp_enqueue_style( 'wp-color-picker' );
           wp_enqueue_style( 'chatster-css-autocomplete', CHATSTER_URL_PATH . 'assets/css/chat-autocomplete.css');
@@ -64,6 +66,7 @@ class AdminMenu
             wp_enqueue_script( 'chatster-settings-admin', CHATSTER_URL_PATH . 'assets/js/settings-admin.js',  array('jquery', 'wp-color-picker'), 1.0, true);
           } else {
             wp_enqueue_script( 'chatster-chat-admin', CHATSTER_URL_PATH . 'assets/js/chat-admin.js',  array('jquery'), 1.0, true);
+            wp_enqueue_script( 'chatster-autocomplete-core', CHATSTER_AUTOCOMPLETE_URL, array(), 1.0, true );
             wp_enqueue_script( 'chatster-autocomplete-admin', CHATSTER_URL_PATH . 'assets/js/chat-autocomplete.js',  array('jquery'), 1.0, true);
           }
           wp_localize_script( 'chatster-general', 'chatsterDataAdmin', array(
@@ -117,23 +120,25 @@ class AdminMenu
     }
   }
 
-  public function add_global_style_admin() {
+  public function add_global_script_admin() {
 
     wp_enqueue_style( 'chatster-css-admin-global', CHATSTER_URL_PATH . 'assets/css/style-admin-global.css');
 
-    $current_page = get_current_screen();
-    if ( ( isset($current_page->id) && stripos($current_page->id, 'chatster') == false ) ||
-          ( isset($_GET['page']) && $_GET['page'] != 'chatster-menu' ) ) {
+    // Not used as an input 
+    $current_tab = isset( $_GET['chtab'] ) ? sanitize_text_field( $_GET['chtab'] ) : false;
+    $current_page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : false;
 
-            wp_enqueue_script( 'chatster-global', CHATSTER_URL_PATH . 'assets/js/global-admin.js',  array('jquery'), 1.0, true);
-            wp_localize_script( 'chatster-global', 'chatsterDataAdmin', array(
-              'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
-              'wp_api_base_url' => esc_url_raw( get_rest_url() ),
-              'nonce' => wp_create_nonce( 'wp_rest' )
-              )
-            );
+    if ( $current_page == 'chatster-menu' && ( !$current_tab || $current_tab == 'chat' ) ) {
+      return;
+    }
 
-          }
+    wp_enqueue_script( 'chatster-global', CHATSTER_URL_PATH . 'assets/js/global-admin.js',  array('jquery'), 1.0, true);
+    wp_localize_script( 'chatster-global', 'chatsterDataAdmin', array(
+      'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
+      'wp_api_base_url' => esc_url_raw( get_rest_url() ),
+      'nonce' => wp_create_nonce( 'wp_rest' )
+      )
+    );
 
   }
 

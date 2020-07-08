@@ -42,13 +42,3 @@ class Crypto
         return $plaintext;
     }
 }
-// $customer_id = substr(md5(uniqid(rand(), true)), 0, 100);
-//
-//
-//   $old = Crypto::decrypt(  base64url_decode(  $_COOKIE['cocktest'] ) );
-//    var_dump( $old  ) ;
-// var_dump($customer_id);
-//  $cock = base64url_encode( Crypto::encrypt( $customer_id ) );
-//  $result = Crypto::decrypt(  base64url_decode(  $cock ) );
-// setrawcookie('cocktest',  $cock  , (time() + 8419200), "/");
-//  var_dump($cock, $result, $customer_id);die;

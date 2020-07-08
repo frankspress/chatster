@@ -111,7 +111,7 @@ class ChatApi extends GlobalApi  {
       }
 
       if ( isset($_COOKIE['ch_ctmr_id'])) {
-        $this->customer_id = base64_decode($_COOKIE['ch_ctmr_id']);
+        $this->customer_id = sanitize_text_field( base64_decode($_COOKIE['ch_ctmr_id']) );
         if ( is_email( $this->customer_id ) ) {
           $this->customer_id = '';
         }
