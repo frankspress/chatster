@@ -6,7 +6,7 @@ function display_admin_header($tab) {
     if ( ! current_user_can( 'manage_options' ) ) return; ?>
 
     <div id="isa-logo-header" >
-      <img src="<?php echo esc_url_raw( CHATSTER_URL_PATH . 'assets/img/header-img.png' ); ?>" style="max-width:340px;">
+      <img src="<?php echo esc_url_raw( CHATSTER_URL_PATH . 'assets/img/header-img.png' ); ?>" style="max-width:400px;">
     </div>
 
     <h2 class="nav-tab-wrapper">

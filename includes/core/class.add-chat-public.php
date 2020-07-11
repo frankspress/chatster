@@ -121,6 +121,7 @@ class ChatPublic
     wp_enqueue_style( 'chatster-google-fonts', CHATSTER_GOOGLE_FONTS_URL, false );
     wp_enqueue_style( 'chatster-loader-pbl', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
     wp_enqueue_style( 'chatster-public', CHATSTER_URL_PATH . 'assets/css/style-public.css');
+    wp_enqueue_style( 'chatster-public-mobile', CHATSTER_URL_PATH . 'assets/css/style-public-mobile.css');
     wp_add_inline_style( 'chatster-public', $this->get_custom_css() );
 
   }

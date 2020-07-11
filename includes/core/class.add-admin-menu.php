@@ -56,6 +56,7 @@ class AdminMenu
           wp_enqueue_style( 'wp-color-picker' );
           wp_enqueue_style( 'chatster-css-autocomplete', CHATSTER_URL_PATH . 'assets/css/chat-autocomplete.css');
           wp_enqueue_style( 'chatster-css-admin', CHATSTER_URL_PATH . 'assets/css/style-admin.css');
+          wp_enqueue_style( 'chatster-css-admin-mobile', CHATSTER_URL_PATH . 'assets/css/style-admin-mobile.css');
           wp_enqueue_style( 'chatster-css-admin-loaders', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
           wp_enqueue_script( 'chatster-general', CHATSTER_URL_PATH . 'assets/js/general-admin.js',  array('jquery'), 1.0, true);
           if ( $current_tab == 'request' ) {
@@ -124,7 +125,7 @@ class AdminMenu
 
     wp_enqueue_style( 'chatster-css-admin-global', CHATSTER_URL_PATH . 'assets/css/style-admin-global.css');
 
-    // Not used as an input 
+    // Not used as an input
     $current_tab = isset( $_GET['chtab'] ) ? sanitize_text_field( $_GET['chtab'] ) : false;
     $current_page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : false;
 

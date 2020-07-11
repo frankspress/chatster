@@ -1,0 +1,14 @@
+#ch-open-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 70%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: #04346D !important;
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -21.5px;
+  margin-bottom: -13px;
+}
