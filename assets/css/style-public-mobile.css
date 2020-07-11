@@ -1,14 +1,30 @@
-#ch-open-button::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 70%;
-  width: 0;
-  height: 0;
-  border: 20px solid transparent;
-  border-top-color: #04346D !important;
-  border-bottom: 0;
-  border-right: 0;
-  margin-left: -21.5px;
-  margin-bottom: -13px;
+
+/* Mobile Style */
+@media screen and (max-width: 400px) {
+
+  #chatster-container {
+    right: 1% !important;
+    left: 1% !important;
+    margin: 0 auto !important;
+    max-width: 95% !important;
+    z-index: 1000000 !important;
+  }
+
+  #ch-bot-msg-container {
+    height: 195px !important;
+  }
+}
+
+/* Mobile Style */
+@media screen and (max-height: 620px) {
+
+  #chatster-container {
+    max-height: 90%;
+    overflow: scroll;
+    z-index: 1000000 !important;
+  }
+  #ch-bot-msg-container, #ch-msg-container {
+    height: 195px !important;
+  }
+
 }

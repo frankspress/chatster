@@ -32,8 +32,27 @@
 
 }
 
+#ch-open-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 80%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -21.5px;
+  margin-bottom: -13px;
+}
+
 #chatster-opener #ch-open-button:hover {
   opacity: .85;
+}
+
+#ch-open-button-block {
+  min-width: 10px;
+  min-height: 12px;
 }
 
 #ch-open-button-block .fa {
@@ -57,12 +76,12 @@
   position: fixed;
   overflow-wrap: break-word;
   background-color: #fff;
-  z-index: 100;
+  z-index: 1000;
 }
 
 #chatster-container {
     font-family: 'Open Sans', sans-serif !important;
-    z-index: 1000;
+    z-index: 1000000 !important;
 }
 
  #chatster-opener {
@@ -227,6 +246,8 @@
   font-size: 1.2em;
   font-weight: 600;
   line-height: 23px;
+  word-spacing: 2px;
+  letter-spacing: 1.2px;
 }
 
 .ch-msg-wrapper {

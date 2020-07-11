@@ -166,16 +166,19 @@
    * Deletes the request and related messages
    */
   function no_request_action() {
+
     // IF no more results nor paginated -> Show No results Block
     if ( $('.request-row').length == 0 &&
            $('.ch-pagination').length == 0 ) {
-      $('#ch-no-results').show();
-      $('#ch-request-list').hide();
+        $('#ch-no-results').show();
+        $('#ch-request-list').hide();
+        $('#show-replied').hide();
+        window.location.reload();
     }
     // IF no more results BUT has pagination -> Reload
     else if ( $('.request-row').length == 0 &&
                $('.ch-pagination').length > 0 ) {
-       window.location.reload();
+        window.location.reload();
     }
   }
   function delete_request( request_id ) {

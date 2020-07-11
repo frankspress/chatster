@@ -55,10 +55,25 @@ class ChatPublic
     $custom_css .= "color: ".esc_attr( $text_color )."; ";
     $custom_css .= "}";
 
+    $custom_css .= "#ch-open-button::after { ";
+    $custom_css .= "border-top-color: ".esc_attr( $bg_color )." !important; ";
+    $custom_css .= "}";
+
     $custom_css .= "#chatster-opener #ch-open-button, .ch-button-global:not(.ch-unavailable) { ";
     $custom_css .= "background-color: ".esc_attr( $bg_color )." !important; ";
     $custom_css .= "color: ".esc_attr( $text_color )." !important; ";
     $custom_css .= "}";
+
+    // Pseudo-element Chat Arrow
+    if ( $ChatsterOptions->get_chat_option('ch_chat_screen_position') == 'left' ) {
+      $custom_css .= "#ch-open-button::after { ";
+      $custom_css .= " left: 33px !important;";
+      $custom_css .= "}";
+    } else {
+      $custom_css .= "#ch-open-button::after { ";
+      $custom_css .= " left: 70% !important;";
+      $custom_css .= "}";
+    }
 
     // Chat Text Size ( proportinally calculated )
     $txt_size = $ChatsterOptions->get_chat_option('ch_chat_text_size');

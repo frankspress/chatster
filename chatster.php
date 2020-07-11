@@ -1,11 +1,12 @@
 <?php
 /**
  * Plugin Name: Chatster
- * Plugin URI: https://frankspress.com/
+ * Plugin URI: https://wordpress.org/plugins/chatster/
  * Description: Allows real time chat and get in touch interaction with custom BOT helper.
  * Author: Frank Pagano
  * Author URI: https://frankspress.com
  * Text Domain: chatster
+ * Domain Path: /languages/
  * Version: 1.0.0
  * Copyright (c) 2020 Frankspress
  * License: GPLv2 or later
@@ -17,7 +18,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * If WooCommerce is active it sets a constant.
+ * If WooCommerce is not active do nothing.
  */
 if ( ! in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ) ) ) {
   return;
