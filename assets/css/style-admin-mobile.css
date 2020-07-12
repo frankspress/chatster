@@ -34,7 +34,7 @@
   }
 
   #conversations-block {
-    max-width: 600px !important;
+    max-width: 700px !important;
     width: 100%;
     margin: 0;
   }
@@ -71,5 +71,61 @@
     height: 250px;
   }
 
+
+}
+
+/* Settings mobile */
+@media screen and (max-width: 600px) {
+
+  #ch-options-main-container {
+    margin-right: 2% !important;
+  }
+
+  .ch-option-title {
+    min-width: 0px !important;
+    width: 100%;
+  }
+
+  .ch-option-block {
+    margin-left: 0 !important;
+  }
+
+  .ch-inline-radio {
+    margin-top: 20px;
+  }
+
+}
+
+/* Request message mobile*/
+@media screen and (max-width: 750px) {
+
+  #ch-full-screen {
+    display: none !important;
+  }
+
+  #the-list tr {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .ch-requester-name, .ch-requester-subject {
+    font-size: 15px;
+  }
+
+  .ch-requester-subject{
+    font-weight: 600;
+  }
+
+  .row-actions {
+    left: 0 !important;
+  }
+
+}
+
+@media screen and (min-width: 601px) {
+
+  #ch-mobile-screen {
+    display: none !important;
+  }
 
 }

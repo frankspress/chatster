@@ -19,25 +19,20 @@
  * Animates Option windows slide up and down
  */
   $('.ch-option-title').on('click', function(e) {
-    if ( $(this).css('width') == '500px' && $(this).parent().find('.ch-option-container').css('display') == 'none') {
+    let window_width = parseInt($('#ch-options-main-container').css('width') , 10);
+    let current_tab_width = parseInt($('.ch-option-title').css('width') , 10);
+
+    if ( $(this).parent().find('.ch-option-container').css('display') == 'none' ) {
        $(this).animate({width:"100%"},200);
-    } else {
+    }
+    else if ( window_width > current_tab_width &&
+                $(this).parent().find('.ch-option-container').css('display') != 'none' ) {
        $(this).animate({width:"500px"},200);
     }
     if ( e.target.className == 'ch-option-title' ) {
-      $(this).parent().find('.ch-option-container').slideToggle(300, "linear",function() {
-
-      });
+      $(this).parent().find('.ch-option-container').slideToggle(300, "linear",function() {});
     }
   });
-
-  // $('.ch-option-title').toggle(function() {
-  //   // $(this).css({"max-width":"100%"});
-  //    $(this).animate({width:"100%"},200);
-  //  }, function() {
-  //   $(this).animate({width:"500px"},200);
-  //  });
-
 
 /**
  * Asks for confirmation before resetting options.

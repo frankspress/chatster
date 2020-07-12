@@ -19,6 +19,10 @@
   display: flex;
 }
 
+#chatster_bot_options_ch_bot_image {
+  flex-wrap: wrap !important;
+}
+
 .ch-option-container h2 {
   font-style: italic;
   margin-top: 30px;

@@ -30,12 +30,15 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
       <!-- Table Header -->
       <table id="ch-request-list" class="wp-list-table widefat fixed striped posts">
         <thead>
-          <tr>
-            <th scope="col" class="ch-th-title" style="width:40%" ><div><?php echo esc_html__('User Name', CHATSTER_DOMAIN); ?></div></th>
+          <tr id="ch-full-screen">
+            <th scope="col" class="ch-th-title" style="width:30%" ><div><?php echo esc_html__('User Name', CHATSTER_DOMAIN); ?></div></th>
             <th scope="col" class="ch-th-title" style="width:20%" ><div><?php echo esc_html__('Subject', CHATSTER_DOMAIN); ?></div></th>
             <th scope="col" class="ch-th-title" style="width:15%" ><div><?php echo esc_html__('Date Received', CHATSTER_DOMAIN); ?></div></th>
             <th scope="col" class="ch-th-title" style="width:20%" ><div><?php echo esc_html__('Last Replied', CHATSTER_DOMAIN); ?></div></th>
-            <th scope="col" class="ch-th-title" style="width:5%;text-align:center;" ><div><?php echo esc_html__('Pinned', CHATSTER_DOMAIN); ?></div></th>
+            <th scope="col" class="ch-th-title" style="width:10%;text-align:center;" ><div><?php echo esc_html__('Pinned', CHATSTER_DOMAIN); ?></div></th>
+          </tr>
+          <tr id="ch-mobile-screen">
+            <th scope="col" class="ch-th-title" style="width:100%" ><div><?php echo esc_html__('Message Data', CHATSTER_DOMAIN); ?></div></th>
           </tr>
         </thead>
 
@@ -49,9 +52,9 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
 
             echo '<tr id="request-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit author-self type-product hentry request-row">';
             // Requester and reply section
-            echo '<td style="width:40%;"><div>' . esc_html( $request->name ) .'</div><div>' . esc_html( $request->email ) .'</div></td>';
+            echo '<td style="width:40%;"><div class="ch-requester-name">' . esc_html( $request->name ) .'</div><div>' . esc_html( $request->email ) .'</div></td>';
             // Request Subject
-            echo '<td style="width:20%;"><div>' . esc_html( $request->subject ) .'</div></td>';
+            echo '<td style="width:20%;"><div class="ch-requester-subject">' . esc_html( $request->subject ) .'</div></td>';
             // Request Received DateTime
             $dt = new DateTime("now", chatter_get_timezone() );
             $dt->setTimestamp(strtotime($request->created_at));
@@ -71,7 +74,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             // Request is flagged
             $unflagged = !$request->is_flagged ? 'unflagged' : 'flagged';
             $flag_url = CHATSTER_URL_PATH . 'assets/img/red-pin.png';
-            echo '<td style="width:5%;"  class="pinned-flag '. $unflagged .'" data-flag_status="'.esc_attr( $request->is_flagged ).'"><div style="text-align:center">';
+            echo '<td style="width:10%;"  class="pinned-flag '. $unflagged .'" data-flag_status="'.esc_attr( $request->is_flagged ).'"><div style="text-align:center">';
             echo '<img  draggable="false" title="Pin it" src="'.$flag_url.'" alt="Pinned" style="max-width:16px;">';
             echo '</div></td>';
             echo '</tr>';
