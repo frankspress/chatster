@@ -10,7 +10,7 @@ class Emailer
   const NOTIFICATION_TEMPLATE = CHATSTER_PATH . 'views/email/template.notify-request.phtml';
   const DEFAULT_HEADER_IMG = CHATSTER_URL_PATH . 'assets/img/basic-email-header.jpg';
 
-  private function link_builder($string) {
+  public static function link_builder($string) {
     $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
     $string = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $string);
     return $string;
@@ -21,7 +21,7 @@ class Emailer
     $header_img_option = $ChatsterOptions->get_request_option('ch_response_header_url');
     $site_url_safe =  esc_url( get_site_url() );
     $customer_name_safe = ucfirst(esc_html( $customer_name  ));
-    $body = $this->link_builder($body);
+    $body = self::link_builder($body);
     $email_body_safe = wpautop( wp_kses( $body, wp_kses_allowed_html( 'post' ) ) );
     $header_img_safe =  !empty($header_img_option) ? esc_url( $header_img_option ) : esc_url( self::DEFAULT_HEADER_IMG );
     $request_safe  = esc_html__('Your original message: ', CHATSTER_DOMAIN).'<br>';

@@ -17,8 +17,10 @@
 .wrap {
   background-color: #fff;
   padding: 18px;
+  padding-top: 25px;
   margin-top: 0;
   box-shadow: 2px 3px 8px -4px rgba(0, 5, 4, .89);
+  padding-bottom: 40px;
 }
 .nav-tab-wrapper {
   border-bottom: none;
@@ -55,6 +57,9 @@
    margin-right: 10px;
    padding-top: 8px;
    box-shadow: inset 0 8px 8px -11px #696868, inset 0 -8px 8px -13px #696868;
+   border-left: 2px solid #fafafa;
+   border-radius: 2px;
+   border-right: 2px solid #fafafa;
  }
 
  #ch-reply-block {
@@ -131,8 +136,7 @@
    cursor: pointer;
    border-radius: 15px;
    box-shadow: 1px 1px 7px -4px rgba(0, 0, 0, 0.43);
-   margin-bottom: 6px;
-   margin-right: 10px;
+   margin: 10px 10px;
  }
  .single-conversation:hover {
    background-color: rgba(0, 132, 255, .2);

@@ -55,6 +55,12 @@ trait ChatCollection {
     return ! empty( $result ) ? true : false;
   }
 
+  public static function link_builder($string) {
+    $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+    $string = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $string);
+    return $string;
+  }
+
 /**
  * Api Methods
  */
@@ -100,6 +106,11 @@ trait ChatCollection {
         }
         $payload[$key]['product_ids'] = $constructed_links;
       }
+
+      if( isset($field['message'])) {
+        $payload[$key]['message'] = self::link_builder( esc_html( $field['message'] ));
+      }
+
     }
     return $payload;
   }
