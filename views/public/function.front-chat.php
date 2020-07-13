@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-
+use Chatster\Api\GlobalApi;
 
 function display_front_chat( $current_conv = false, $chat_available = false )  {
     Global $ChatsterOptions;
@@ -52,7 +52,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
             <input type="text" id="ch-customer-subject" value="" placeholder="Subject" info="subject" required >
           </div>
           <div class="ch-input">
-            <textarea id="ch-customer-message" rows="4" placeholder="Type here your message.." type="text" autocomplete="off" required></textarea>
+            <textarea id="ch-customer-message" rows="4" placeholder="<?php esc_attr_e( 'Type here your message..', CHATSTER_DOMAIN ); ?>" type="text" autocomplete="off" required></textarea>
           </div>
 
           <div class="ch-inline-selector">
@@ -70,13 +70,13 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         <form id="ch-start-chat-form">
           <div class="ch-queue-info"><?php echo esc_html__( 'Start Chatting now!', CHATSTER_DOMAIN ); ?></div>
           <div class="ch-input">
-            <input type="text" id="ch-chat-name" value="" placeholder="Your name" info="name" required >
+            <input type="text" id="ch-chat-name" value="" placeholder="Your name" info="name" maxlength="<?php echo esc_attr( GlobalApi::get_attribute('chat_name_length') ); ?>" required >
           </div>
           <div class="ch-input">
             <input type="email" id="ch-chat-email" value="" placeholder="Your email" info="email" required >
           </div>
           <div class="ch-input">
-            <textarea id="ch-chat-subject" placeholder="Type here your question.." type="text" rows="3" autocomplete="off" required ></textarea>
+            <textarea id="ch-chat-subject" placeholder="Type here your question.." type="text" rows="3" maxlength="<?php echo esc_attr( GlobalApi::get_attribute('chat_subject_length') ); ?>" autocomplete="off" required ></textarea>
           </div>
 
           <div class="ch-inline-selector">
@@ -118,4 +118,5 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
 
 
 <?php
+
 }

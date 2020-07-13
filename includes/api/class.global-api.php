@@ -6,6 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class GlobalApi  {
 
+  private static $attributes = [
+                                  'chat_subject_length' => 100,
+                                  'chat_name_length' => 100
+                                ];
+
+  public static function get_attribute( $key = '' ) {
+    if ( array_key_exists($key, self::$attributes) ) {
+      return self::$attributes[$key];
+    }
+    return false;
+  }
+
   protected function set_customer_id_cookie() {
      if ( empty($this->customer_id) ) {
        $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);

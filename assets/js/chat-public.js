@@ -62,6 +62,7 @@
 
   }
   function ch_open_chat() {
+    setCookie('ch_window_open', true, 1);
     if ( chatsterDataPublic.chat_position == 'left' ) {
       $('#chatster-opener').animate({
         left: '-350px'
@@ -77,7 +78,7 @@
 
   }
   function ch_close_chat() {
-
+    deleteCookie('ch_window_open');
     if ( chatsterDataPublic.chat_position == 'left' ) {
       $('#chatster-opener').animate({
         left: '2%'
@@ -467,11 +468,15 @@
   function check_ticketing() {
      let conv_id = $("#ch-msg-container").attr('data-conv_id');
      let has_ticket = getCookie('ch_ticketing_started');
+     let is_window_open = getCookie('ch_window_open');
      if ( !conv_id && has_ticket ) {
        $('#ch-chat-form').hide();
        $('#ch-chat-section').show();
        $("#ch-chat-select").hide();
        long_poll_ticketing();
+     }
+     if ( conv_id && is_window_open ) {
+       setTimeout(function() {$('#chatster-opener').trigger("click");}, 2000);
      }
   }
   check_ticketing();
