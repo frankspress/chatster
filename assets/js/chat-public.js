@@ -31,6 +31,7 @@
   /**
    * User Utility fn
    */
+  var open_chat = false;
   function ch_chat_sound(){
     var mp3Source = '<source src="' + chatsterDataPublic.sound_file_path + '.mp3" type="audio/mpeg">';
     var oggSource = '<source src="' + chatsterDataPublic.sound_file_path + '.ogg" type="audio/ogg">';
@@ -62,7 +63,9 @@
 
   }
   function ch_open_chat() {
-    setCookie('ch_window_open', true, 1);
+    setCookie('ch_window_open', true, 15);
+    open_chat = true;
+    $('#ch-red-dot-alert').hide();
     if ( chatsterDataPublic.chat_position == 'left' ) {
       $('#chatster-opener').animate({
         left: '-350px'
@@ -79,6 +82,7 @@
   }
   function ch_close_chat() {
     deleteCookie('ch_window_open');
+    open_chat = false;
     if ( chatsterDataPublic.chat_position == 'left' ) {
       $('#chatster-opener').animate({
         left: '2%'
@@ -96,6 +100,7 @@
   $('#chatster-opener').on('click', ch_open_chat );
   $('.ch-arrow').on('click', ch_close_chat);
   instantiate_chat_pos();
+
   /**
    * Simplified Cookie fn
    */
@@ -323,8 +328,12 @@
             prev_author_admin = message.is_author == "1" ? false : true;
 
             $("#ch-msg-container").append($message_cont);
+
             if ( current_msg_id ) {
               ch_chat_sound();
+            }
+            if ( ! open_chat ) {
+              $('#ch-red-dot-alert').show();
             }
           }
         });
@@ -419,7 +428,7 @@
  }
   function long_poll_ticketing() {
 
-    setCookie('ch_ticketing_started', true, 1);
+    setCookie('ch_ticketing_started', true, 5);
 
     $.ajax( {
 
@@ -526,6 +535,7 @@
    * Bot Activation
    */
   var answer_ids = [];
+  var prev_author_bot = false;
   function scrollTopBotChat() {
     $("#ch-bot-msg-container").animate({ scrollTop: $('#ch-bot-msg-container').prop("scrollHeight")}, 400);
   }
@@ -540,13 +550,13 @@
                 answer_ids.push(message.id);
             }
             $message.html(message.answer);
-            if ( !prev_author_admin ) {
+            if ( !prev_author_bot ) {
                 $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
             }
             $message.hide();
             $("#ch-bot-msg-container").append($message);
             $message.show(100);
-            prev_author_admin = true;
+            prev_author_bot = true;
         });
      }
   }
@@ -557,7 +567,7 @@
         $.each( response, function( key, message ) {
             let $message = $("<div>", {"class": "ch-single-message ch-left static-response" });
             $message.html(message);
-            if ( !prev_author_admin ) {
+            if ( !prev_author_bot ) {
                 $message.prepend($("<img>", {"class": "ch-admin-thumb", "src": chatsterDataPublic.bot_img_path }));
             }
             $message.hide();
@@ -566,7 +576,7 @@
             if ( $('#ch-chat-select').is(':visible')) {
               ch_chat_sound();
             }
-            prev_author_admin = true;
+            prev_author_bot = true;
         });
 
 
@@ -616,7 +626,7 @@
         let $message = $("<div>", { "class": "ch-single-message ch-right", "data-author_id": "self" });
         $message.text(message);
         $("#ch-bot-msg-container").append($message);
-        prev_author_admin = false;
+        prev_author_bot = false;
         submit_question(message);
       }
     }

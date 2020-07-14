@@ -398,6 +398,17 @@
   /* background: #333; */
 }
 
+#ch-red-dot-alert {
+  position: absolute;
+  right: 1%;
+  top: .5%;
+  height: 10px;
+  width: 10px;
+  background-color: rgb(240, 40, 73);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px 1px rgba(0,0,0,.4);
+}
+
 
 /***** TESTTTTT *****/
 #ch-message-section, #chatster-opener {
