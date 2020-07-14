@@ -82,7 +82,9 @@ class AddOptionsRequest extends OptionsGlobal {
              'required'=> true,
              'placeholder' => 'Replies will be sent to: your@email.com',
              'description'=> 'If your WordPress website sends email from an email address you don\'t check daily, <br>
-                              with this option you can redirect customer replies to an account of your choice.']
+                              with this option you can redirect customer replies to an account of your choice.<br><br>
+                              Customers replying your initial response email sent from the <i>"Received Messages"</i> section <br>
+                              and all future back and forth emails will be routed to this email address instead.']
                             );
     add_settings_field(
             'ch_request_alert',

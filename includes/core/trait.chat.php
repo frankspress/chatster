@@ -108,7 +108,7 @@ trait ChatCollection {
       }
 
       if( isset($field['message'])) {
-        $payload[$key]['message'] = self::link_builder( esc_html( $field['message'] ));
+        $payload[$key]['message'] = self::link_builder( wp_kses( $field['message'], wp_kses_allowed_html( 'post' ) ) );
       }
 
     }

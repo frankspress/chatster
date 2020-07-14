@@ -14,7 +14,7 @@ add_action( 'plugins_loaded', function() {
  */
 function chatster_add_settings_link( $links ) {
 	$links[] = '<a href="' .
-		admin_url( 'options-general.php?page='.'chatster-menu&chtab=settings' ) . '">' . esc_html__( 'Settings', CHATSTER_DOMAIN ) . '</a>';
+		admin_url( 'admin.php?page='.'chatster-menu&chtab=settings' ) . '">' . esc_html__( 'Settings', CHATSTER_DOMAIN ) . '</a>';
 	return $links;
 }
 add_filter('plugin_action_links_'.plugin_basename( CHATSTER_FILE_PATH ), 'chatster_add_settings_link');

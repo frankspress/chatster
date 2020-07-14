@@ -21,8 +21,8 @@ class AddOptionsChat extends OptionsGlobal {
   public static function default_values() {
 
       return array(
-          'ch_chat_header' => 'Chat or get in touch!',
-          'ch_chat_intro' => 'Contact Us',
+          'ch_chat_header' => esc_html__('Chat or get in touch!', CHATSTER_DOMAIN),
+          'ch_chat_intro' => esc_html__('Contact Us', CHATSTER_DOMAIN),
           'ch_chat_header_back_color' => '#04346D',
           'ch_chat_header_text_color' => '#FAFAFA',
           'ch_chat_screen_position' => 'right',
@@ -31,7 +31,7 @@ class AddOptionsChat extends OptionsGlobal {
           'ch_chat_fontawesome' => true,
           'ch_chat_volume_admin' => 25,
           'ch_chat_max_conv' => 20,
-          'ch_chat_auto_offline' => 3,
+          'ch_chat_auto_offline' => 10,
           'ch_chat_remove_offline_conv_int' => 5,
           'ch_chat_remove_offline_conv' => true
       );
@@ -54,10 +54,10 @@ class AddOptionsChat extends OptionsGlobal {
 
           case 'ch_chat_auto_offline':
               return array(
-                  '1 '.__('Minute', CHATSTER_DOMAIN)   => 1,
                   '3 '.__('Minutes', CHATSTER_DOMAIN)  => 3,
                   '5 '.__('Minutes', CHATSTER_DOMAIN)  => 5,
-                  '10 '.__('Minutes', CHATSTER_DOMAIN) => 10
+                  '10 '.__('Minutes', CHATSTER_DOMAIN) => 10,
+                  '15 '.__('Minutes', CHATSTER_DOMAIN) => 15
               );
               break;
 
@@ -215,7 +215,7 @@ class AddOptionsChat extends OptionsGlobal {
                 'ch_chat_admin_section',
                 ['id'=>'ch_chat_auto_offline',
                  'label'=> 'Auto Offline Admin',
-                 'description'=> 'Will automatically switch the current admin to offline mode when not in use.<br/>You can choose how long before that happens.'] );
+                 'description'=> 'Will automatically switch the current admin to offline mode when "conversation" screen is not open.<br/>You can choose how long before that happens.'] );
 
        add_settings_field(
                'ch_chat_remove_offline_conv_int',

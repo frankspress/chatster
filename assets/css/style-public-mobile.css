@@ -20,7 +20,7 @@
 
   #chatster-container {
     max-height: 90%;
-    overflow: scroll;
+    overflow: auto;
     z-index: 1000000 !important;
   }
   #ch-bot-msg-container, #ch-msg-container {

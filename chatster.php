@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Chatster
  * Plugin URI: https://wordpress.org/plugins/chatster/
- * Description: Allows real time chat and get in touch interaction with custom BOT helper.
+ * Description: Customizable real time chat with messaging system and BOT helper.
  * Author: Frank Pagano
  * Author URI: https://frankspress.com
  * Text Domain: chatster

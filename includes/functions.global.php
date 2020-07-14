@@ -68,14 +68,3 @@ function do_ch_settings_section( $page, $selected_section ) {
 		}
 	}
 }
-
-/***************************************************************
- * Testing
- */
- function dump($var) {
-   var_dump($var);
- }
- function dd($var) {
-   var_dump($var);
-   die;
- }
