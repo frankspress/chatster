@@ -193,12 +193,6 @@
   box-shadow: 0 1px 1px 1px rgba(0,0,0,.1),0 3px 3px 0 rgba(0,0,0,0.1) !important;
 }
 
-.ch-input {
-  width: 100%;
-  text-align: center;
-  padding: 0 14px;
-}
-
 #ch-chat-select-container,
 #ch-select-container,
 .ch-inline-selector {
@@ -264,6 +258,9 @@
 
 .ch-input {
   margin: 15px 0;
+  width: 100%;
+  text-align: center;
+  padding: 0 14px;
 }
 
 .ch-button-global .fa {
@@ -278,14 +275,28 @@
 .ch-input input {
   background-color: #fff;
   border-radius: 21px;
-  border: 1px solid ;
+  border: 1px solid;
+  padding: 11px;
+  margin: 0 auto;
+  border: 1px solid #e3e3e3 !important;
+}
+
+.ch-input .ch-input-text {
+  background-color: #fff;
+  border-radius: 21px;
+  border: none !important;
+  outline: none !important;
   padding: 11px;
   margin: 0 auto;
 }
 
+.ch-input button {
+  outline: none !important;
+  background-color: #fff !important;
+}
+
 .ch-input input, .ch-input textarea {
   outline: none !important;
-  border: 1px solid #e3e3e3 !important;
   resize: none;
   width: 100%;
   box-shadow: none;
@@ -293,6 +304,7 @@
 
 .ch-input textarea {
   padding: 15px;
+  border: 1px solid #e3e3e3 !important;
   background-color: #fff;
   vertical-align: unset;
 }
@@ -312,6 +324,27 @@
 
 .ch-button-global, .ch-input button{
     font-weight: 400 !important;
+}
+
+.ch-input button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+.ch-input-reply {
+  width: 100%;
+  text-align: center;
+  padding: 0 14px;
+  display: flex;
+  border: 1px solid #e3e3e3 !important;
+  border-radius: 21px;
+  padding-left: 3%;
+  padding-right: 3%;
+  width: 94%;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ch-align-right {

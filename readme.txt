@@ -1,7 +1,7 @@
 === Chatster ===
 Contributors: frankspress
 Donate link: https://paypal.me/frankspress
-Tags: stock, woocommerce, chat, touch, question, bot, contact
+Tags: woocommerce, chat, message, bot, contact, question
 Requires at least: 4.9
 Tested up to: 5.4
 Stable tag: 1.0.0

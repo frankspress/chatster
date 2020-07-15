@@ -147,7 +147,8 @@ class AddOptionsRequest extends OptionsGlobal {
     $input['ch_request_test_email'] = '';
   	$options = get_option( static::$option_group , static::default_values() ) + static::default_values();
 
-    if ( isset($input['ch_response_header_url']) && is_string($input['ch_response_header_url']) ) {
+    if ( isset($input['ch_response_header_url']) &&
+            is_string($input['ch_response_header_url']) ) {
 
       $input['ch_response_header_url'] = esc_url_raw($input['ch_response_header_url']);
 

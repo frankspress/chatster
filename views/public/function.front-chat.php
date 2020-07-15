@@ -28,8 +28,9 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
               <span><?php echo !empty($current_conv) ? esc_html(ucfirst($current_conv->admin_name)) : ''; ?></span>
             </div>
         </div>
-        <div class="ch-input">
-          <input type="text" id="ch-reply-public" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" autocomplete="off" maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
+        <div class="ch-input ch-input-reply">
+          <input type="text" id="ch-reply-public" class="ch-input-text" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" autocomplete="off" maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
+          <button class="ch-send-now"><i class="fa fa-send-o"></i></button>
         </div>
         <div id="ch-chat-select-container">
           <div id="ch-end-chat" class="ch-end-btn ch-button-global"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
@@ -95,8 +96,9 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         </div>
         <div class="ch-queue-info"><?php echo esc_html__( 'Our Bot ', CHATSTER_DOMAIN ).$ChatsterOptions->get_bot_option('ch_bot_name').' '.esc_html__( 'is here to help you.', CHATSTER_DOMAIN ); ?></div>
         <div class="loading-dots invisible"></div>
-        <div class="ch-input">
-          <input type="text" id="ch-reply-bot" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" maxlength="799" autocomplete="off" >
+        <div class="ch-input ch-input-reply">
+          <input type="text" class="ch-input-text" id="ch-reply-bot" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" maxlength="799" autocomplete="off" >
+          <button class="ch-send-now"><i class="fa fa-send-o"></i></button>
         </div>
         <div id="ch-select-container">
             <div id="ch-btn-chat" <?php echo ! $chat_available ? 'title="'.esc_html__( 'Chat unavailable at the moment.', CHATSTER_DOMAIN ).'"' : ''; ?> class="ch-button-global<?php echo ! $chat_available ? ' ch-unavailable' : ''; ?>"><?php echo esc_html__( 'Live Chat', CHATSTER_DOMAIN ); ?></div>

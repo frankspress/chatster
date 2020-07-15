@@ -19,25 +19,22 @@ class GlobalApi  {
   }
 
   protected function set_customer_id_cookie() {
-     if ( empty($this->customer_id) ) {
+     if ( ! $this->customer_id ) {
        $this->customer_id = substr(md5(uniqid(rand(), true)), 0, 19);
      }
      setrawcookie('ch_ctmr_id', base64_encode($this->customer_id) , (time() + 8419200), "/");
      return $this->customer_id;
   }
 
-  protected function get_customer_id() {
-
+  public function get_customer_id() {
+    $this->customer_id = false;
     $current_user = wp_get_current_user();
     if ( $current_user && get_current_user_id() ) {
       return $this->customer_id = sanitize_email( $current_user->user_email );
     }
 
     if ( isset($_COOKIE['ch_ctmr_id'])) {
-      $this->customer_id = sanitize_text_field( base64_decode($_COOKIE['ch_ctmr_id']) );
-      if ( is_email( $this->customer_id ) ) {
-        $this->customer_id = '';
-      }
+      $this->customer_id = $this->validate_customer_id( base64_decode($_COOKIE['ch_ctmr_id']) );
     }
 
     return $this->set_customer_id_cookie();
@@ -69,6 +66,19 @@ class GlobalApi  {
     }
     return $dateTime;
   }
+
+  public function validate_customer_id( $customer_id = '' ) {
+    $customer_id = sanitize_text_field( $customer_id );
+    if ( !empty($customer_id) &&
+            strlen( $customer_id ) == 19 &&
+              ! is_email( $customer_id ) ) {
+
+      return $customer_id;
+    }
+
+    return false;
+  }
+
 
   public function validate_name( $customer_name = '' ) {
     if ( !empty($customer_name) && strlen( $customer_name ) <= 100 ) {
