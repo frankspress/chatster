@@ -30,7 +30,7 @@ class Notices {
     $screen = get_current_screen();
     if ( isset($screen->id) && $screen->id == 'toplevel_page_chatster-menu') {
 
-      delete_option( 'ch_welcome_notice_viewed' );
+      //delete_option( 'ch_welcome_notice_viewed' );
       if ( ! get_option('ch_welcome_notice_viewed') ) {
         update_option( 'ch_welcome_notice_viewed', true );
         $welcome_notice = self::get_welcome_container();
@@ -46,7 +46,6 @@ class Notices {
     }
 
   }
-
 
 }
 

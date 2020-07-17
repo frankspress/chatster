@@ -319,7 +319,7 @@
 
           }
         });
-        
+
         // Scroll up
         scrollTopAdminChat();
       }
@@ -475,9 +475,9 @@
    */
   var LongPollRun = false;
   var lp_ajax = false;
-  function long_poll( first_load = false ) {
+  function long_poll( first_load ) {
     if ( LongPollRun === false ) {
-
+      first_load = typeof(first_load) !== 'undefined' ? first_load : false;
       LongPollRun = true;
       let ch_last_conv = $('#conversations-block').attr('data-last_conv_id');
       ch_last_conv = ch_last_conv ? ch_last_conv : 0;

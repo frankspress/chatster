@@ -47,7 +47,7 @@ trait ChatCollection {
     global $wpdb;
     $wp_table_presence_admin = self::get_table_name('presence_admin');
 
-    $sql = " SELECT COUNT(*) FROM $wp_table_presence_admin WHERE is_active = 1 AND last_presence >= NOW() - INTERVAL 4 MINUTE ";
+    $sql = " SELECT COUNT(*) FROM $wp_table_presence_admin WHERE is_active = 1 AND last_presence >= NOW() - INTERVAL 20 MINUTE ";
 
     $result = $wpdb->get_var( $sql );
     wp_reset_postdata();
@@ -184,11 +184,11 @@ trait ChatCollection {
              LEFT JOIN $Table_Users as u ON c.customer_id = u.user_email
              WHERE admin_email = %s
              AND c.id > %d
-             AND p.last_presence >= NOW() - INTERVAL 100000 MINUTE
+             AND p.last_presence >= NOW() - INTERVAL 60 MINUTE
              AND c.is_connected = TRUE
              GROUP BY c.id
              ORDER BY c.created_at ASC
-             LIMIT 20 ";
+             LIMIT 25 ";
 
     $sql = $wpdb->prepare( $sql, $admin_email, $last_conv_poll );
     $result = $wpdb->get_results( $sql, ARRAY_A );
@@ -485,9 +485,9 @@ trait ChatCollection {
              INNER JOIN $Table_Users as u ON p.admin_email = u.user_email
              LEFT JOIN $wp_table_conversation as c ON p.admin_email = c.admin_email  AND c.is_connected = TRUE
              WHERE p.is_active = true
-             AND p.last_presence >= NOW() - INTERVAL 4 MINUTE
+             AND p.last_presence >= NOW() - INTERVAL 20 MINUTE
              GROUP BY admin_email
-             HAVING count <= %d
+             HAVING count < %d
              ORDER BY count ASC
              LIMIT 1 ";
 

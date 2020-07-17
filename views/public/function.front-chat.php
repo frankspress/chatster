@@ -34,7 +34,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         </div>
         <div id="ch-chat-select-container">
           <div id="ch-end-chat" class="ch-end-btn ch-button-global"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
-          <!-- <div id="ch-chat-msg" class="ch-send-btn ch-button-global"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div> -->
+          <!-- <div id="ch-chat-msg" class="ch-send-btn ch-button-global"><?php //echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div> -->
           <div class="ch-cancel-btn ch-button-global hidden"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp; <?php echo esc_html__( 'Back', CHATSTER_DOMAIN ); ?></div>
         </div>
 
