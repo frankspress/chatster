@@ -146,6 +146,10 @@
    white-space: pre-wrap;
  }
 
+ .ch-msg-text {
+  word-break: break-word;
+ }
+
 #conversations-block .selected {
   background-color: #DCEBFA;
 }

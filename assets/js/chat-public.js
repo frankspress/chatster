@@ -222,7 +222,7 @@
       }
     }
   });
-  $('#ch-chat-msg').on('click', function() {
+  $('#ch-chat-msg, #ch-reply-chat-button').on('click', function() {
     var press = jQuery.Event("keypress");
     press.ctrlKey = false;
     press.which = 13;
@@ -243,6 +243,8 @@
     $('#chatster-container').css('background-color','#FAFAFA');
     $("#ch-msg-container").find('.ch-small-loader').hide();
     $('#ch-reply-public').attr('disabled',true);
+    $('#ch-reply-public').css('background-color','#FAFAFA');
+    $('#ch-reply-chat-button').css('background-color','#FAFAFA');
   }
   function disconnect_chat() {
 
@@ -520,6 +522,8 @@
     $("#ch-msg-container").attr('data-conv_id', false);
     $("#ch-msg-container").attr('data-last_msg_id', false);
     $('#chatster-container').css('background-color','#FFF');
+    $('#ch-reply-public').css('background-color','#FFF');
+    $('#ch-reply-chat-button').css('background-color','#FFF');
     $('#ch-msg-container').find('.ch-single-message').remove();
     $("#ch-msg-container").find('.ch-small-loader').show();
     $("#ch-chat-select").slideDown(200);
@@ -615,20 +619,29 @@
          $('.loading-dots').addClass('invisible');
      });
   }
+  function submit_action() {
+
+    let $input_bar = $("#ch-reply-bot");
+    var message = $input_bar.val().trim();
+
+    if (message && ( message.length <= 799 ) ) {
+      scrollTopBotChat();
+      $input_bar.val('');
+      let $message = $("<div>", { "class": "ch-single-message ch-right", "data-author_id": "self" });
+      $message.text(message);
+      $("#ch-bot-msg-container").append($message);
+      prev_author_bot = false;
+      submit_question(message);
+    }
+  }
+  $('#ch-reply-bot-button').on('click', function() {
+    submit_action();
+  });
   $("#ch-reply-bot").on('keypress', function(e) {
 
     if ( e.keyCode == 13 && ! e.shiftKey) {
       e.preventDefault();
-      var message = $(this).val().trim();
-      if (message && ( message.length <= 799 ) ) {
-        scrollTopBotChat();
-        $(this).val('');
-        let $message = $("<div>", { "class": "ch-single-message ch-right", "data-author_id": "self" });
-        $message.text(message);
-        $("#ch-bot-msg-container").append($message);
-        prev_author_bot = false;
-        submit_question(message);
-      }
+      submit_action();
     }
   });
   $('#chatster-opener').one('click', function(e) {

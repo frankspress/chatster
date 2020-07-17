@@ -263,6 +263,16 @@
   padding: 0 14px;
 }
 
+.ch-send-arrow {
+  color: #777 !important;
+  opacity: .8;
+}
+
+.ch-send-arrow:hover {
+  opacity: 1;
+}
+
+
 .ch-button-global .fa {
   font-size: .9em;
   margin-bottom: 2px;
@@ -292,7 +302,7 @@
 
 .ch-input button {
   outline: none !important;
-  background-color: #fff !important;
+  background-color: #fff;
 }
 
 .ch-input input, .ch-input textarea {

@@ -30,11 +30,11 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         </div>
         <div class="ch-input ch-input-reply">
           <input type="text" id="ch-reply-public" class="ch-input-text" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" autocomplete="off" maxlength="799" <?php echo ! $current_conv ? 'disabled' : '';  ?> >
-          <button class="ch-send-now"><i class="fa fa-send-o"></i></button>
+          <button id="ch-reply-chat-button" class="ch-send-now"><i class="fa fa-send-o ch-send-arrow"></i></button>
         </div>
         <div id="ch-chat-select-container">
           <div id="ch-end-chat" class="ch-end-btn ch-button-global"><?php echo esc_html__( 'End Chat', CHATSTER_DOMAIN ); ?></div>
-          <div id="ch-chat-msg" class="ch-send-btn ch-button-global"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div>
+          <!-- <div id="ch-chat-msg" class="ch-send-btn ch-button-global"><?php echo esc_html__( 'Send', CHATSTER_DOMAIN ); ?></div> -->
           <div class="ch-cancel-btn ch-button-global hidden"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp; <?php echo esc_html__( 'Back', CHATSTER_DOMAIN ); ?></div>
         </div>
 
@@ -77,7 +77,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
             <input type="email" id="ch-chat-email" value="" placeholder="<?php echo esc_attr__( 'Your email', CHATSTER_DOMAIN ); ?>" info="email" required >
           </div>
           <div class="ch-input">
-            <textarea id="ch-chat-subject" placeholder="<?php echo esc_attr__( 'Type here your question..', CHATSTER_DOMAIN ); ?>" type="text" rows="3" maxlength="<?php echo esc_attr( GlobalApi::get_attribute('chat_subject_length') ); ?>" autocomplete="off" required ></textarea>
+            <textarea id="ch-chat-subject" placeholder="<?php echo esc_attr__( 'Type here your question..', CHATSTER_DOMAIN ); ?>" type="text" rows="4" maxlength="<?php echo esc_attr( GlobalApi::get_attribute('chat_subject_length') ); ?>" autocomplete="off" required ></textarea>
           </div>
 
           <div class="ch-inline-selector">
@@ -98,7 +98,7 @@ function display_front_chat( $current_conv = false, $chat_available = false )  {
         <div class="loading-dots invisible"></div>
         <div class="ch-input ch-input-reply">
           <input type="text" class="ch-input-text" id="ch-reply-bot" value="" placeholder="<?php echo esc_attr__( 'Your message here..', CHATSTER_DOMAIN ); ?>" maxlength="799" autocomplete="off" >
-          <button class="ch-send-now"><i class="fa fa-send-o"></i></button>
+          <button id="ch-reply-bot-button" class="ch-send-now"><i class="fa fa-send-o ch-send-arrow"></i></button>
         </div>
         <div id="ch-select-container">
             <div id="ch-btn-chat" <?php echo ! $chat_available ? 'title="'.esc_html__( 'Chat unavailable at the moment.', CHATSTER_DOMAIN ).'"' : ''; ?> class="ch-button-global<?php echo ! $chat_available ? ' ch-unavailable' : ''; ?>"><?php echo esc_html__( 'Live Chat', CHATSTER_DOMAIN ); ?></div>
