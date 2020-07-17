@@ -61,6 +61,8 @@ function display_admin_chat( $admin_status ) {
          <input id="ch-reply-link" class="ch-chat-autocomplete" placeholder="Find a product or page.." type="text" maxlength="40">
        </div>
 
+       <?php ch_support_page_link(); ?>
+       
        <!-- Sounds -->
        <div id="chat-sound"></div>
        <div id="conv-sound"></div>

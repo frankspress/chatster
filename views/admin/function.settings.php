@@ -127,9 +127,14 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           <form id="chatster-reset-all-settings" action="options.php" method="post">
             <?php
             settings_fields( 'chatster_reset_all' );
-            submit_button($text = esc_html__( 'Reset All Configuration', CHATSTER_DOMAIN ), $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'reset-all']); ?>
+            submit_button($text = esc_html__( 'Reset All Configuration', CHATSTER_DOMAIN ), $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'reset-all']);
+            ch_support_page_link();
+            ?>
           </form>
+
         </div>
+
+
       </div>
 
 

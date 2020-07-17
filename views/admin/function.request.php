@@ -16,6 +16,7 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             <div class="alert-view-no-results"><?php echo esc_html__('No Messages yet', CHATSTER_DOMAIN); ?></div></td></tr>
           </tbody>
         </table>
+        <div style="margin-top: 20px;" class="<?php echo !$requests ? '' : 'hidden'; ?>" ><?php ch_support_page_link(); ?></div>
         <?php if ( !$requests ) return; ?>
 
       <!-- Show replied requests by default -->
@@ -126,6 +127,8 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
           echo '</div>';
         } ?>
 
+        <div style="margin-top: 20px;" ><?php ch_support_page_link(); ?></div>
+ 
       <!-- Closes Wrap - Main Div -->
       </div>
 

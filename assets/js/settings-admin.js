@@ -19,6 +19,7 @@
  * Animates Option windows slide up and down
  */
   $('.ch-option-title').on('click', function(e) {
+    e.preventDefault();
     let window_width = parseInt($('#ch-options-main-container').css('width') , 10);
     let current_tab_width = parseInt($('.ch-option-title').css('width') , 10);
 
@@ -29,9 +30,14 @@
                 $(this).parent().find('.ch-option-container').css('display') != 'none' ) {
        $(this).animate({width:"500px"},200);
     }
-    if ( e.target.className == 'ch-option-title' ) {
-      $(this).parent().find('.ch-option-container').slideToggle(300, "linear",function() {});
+    if ( e.target.className == 'ch-option-title' ||  e.target.className == 'mobile-removable' ) {
+
+      $(this).parent().find('.ch-option-container').slideToggle(300,"linear", function() {
+
+
+      });
     }
+
   });
 
 /**

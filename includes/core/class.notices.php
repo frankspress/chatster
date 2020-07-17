@@ -16,6 +16,7 @@ class Notices {
                 '<img style="max-width: 40px; vertical-align: middle; padding-bottom: 7px;" src="'. esc_url_raw( CHATSTER_URL_PATH . 'assets/img/bot-1.jpg') .'">'.'</h3>',
                 '<h4 style="font-size: 1.1em;"><b>'.esc_html__('Testing:', CHATSTER_DOMAIN ).'</b></h4>'.
                  wp_kses( __('- Please use only <b>incognito windows</b> or <b>second browser</b> to test chat functionalities.<br>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) ).
+                 wp_kses( __('- API functionality <b>must be enabled!</b><br>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) ).
                  wp_kses( __('- Email delivery only works if you have a <b>transactional email service</b>.<br>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) ).
                  wp_kses( __('- Go to <i>Settings->Request/Response->Test Functionality</i> and verify email delivery.', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) ).
                 '<h4 style="font-size: 1.1em;"><b>'.esc_html__('Suggestions:', CHATSTER_DOMAIN ).'</b></h4>'.
@@ -31,13 +32,16 @@ class Notices {
 
       delete_option( 'ch_welcome_notice_viewed' );
       if ( ! get_option('ch_welcome_notice_viewed') ) {
-        update_option( 'ch_welcome_notice_viewed', self::get_welcome_container() );
+        update_option( 'ch_welcome_notice_viewed', true );
+        $welcome_notice = self::get_welcome_container();
 
-        echo '<div class="notice notice-success settings-error is-dismissible" style="margin-top: 29px; margin-bottom: 29px;">';
-        foreach (self::get_welcome_container() as $key => $escaped_value) {
-            echo '<p>'.$escaped_value.'</p>';
+        if (!empty($welcome_notice)) {
+          echo '<div class="notice notice-success settings-error is-dismissible" style="margin-top: 29px; margin-bottom: 29px;">';
+          foreach ($welcome_notice as $key => $escaped_value) {
+              echo '<p>'.$escaped_value.'</p>';
+          }
+          echo '</div>';
         }
-        echo '</div>';
       }
     }
 
