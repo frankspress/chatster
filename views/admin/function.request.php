@@ -75,11 +75,11 @@ function display_admin_request( $requests, $total_pages, $current_page, $per_pag
             $unflagged = !$request->is_flagged ? 'unflagged' : 'flagged';
             $flag_url = CHATSTER_URL_PATH . 'assets/img/red-pin.png';
             echo '<td style="width:10%;"  class="pinned-flag '. $unflagged .'" data-flag_status="'.esc_attr( $request->is_flagged ).'"><div style="text-align:center">';
-            echo '<img  draggable="false" title="Pin it" src="'.$flag_url.'" alt="Pinned" style="max-width:16px;">';
+            echo '<img  draggable="false" title="Pin it" src="'.esc_url_raw( $flag_url ).'" alt="Pinned" style="max-width:16px;">';
             echo '</div></td>';
             echo '</tr>';
             // Zebra pattern matching row
-            echo '<tr class="hidden"></tr>';
+            echo '<tr id="striped-separator-'.esc_attr( $request->id ).'" class="hidden"></tr>';
             // Hidden reply section
             echo '<tr id="reply-section-'.esc_attr( $request->id ).'" data-request_id="'.esc_attr( $request->id ).'" class="edit type-product status-publish has-post-thumbnail hentry product_cat-posters">';
             echo '<td style="width:100%;" colspan="5">';

@@ -14,7 +14,8 @@ class ChatsterDeactivationLoader {
         if ( ! current_user_can( 'manage_options' ) ) return;
         return self::drop_db_table() &&
                 self::remove_cron_event() &&
-                  self::remove_key_options();
+                  self::remove_key_options() &&
+                    self::remove_options();
     }
 
     private static function drop_db_table() {
@@ -56,6 +57,13 @@ class ChatsterDeactivationLoader {
 
       $timestamp = wp_next_scheduled( 'chatster_check_new_requests' );
       wp_unschedule_event( $timestamp, 'chatster_check_new_requests' );
+
+      return true;
+    }
+
+    private static function remove_options() {
+      delete_option( 'ch_welcome_notice_viewed' );
+      return true;
     }
 
     private static function remove_key_options() {

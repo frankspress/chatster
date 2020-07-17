@@ -96,7 +96,7 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
 
         <div class="ch-option-block">
 
-          <div class="ch-option-title"><?php esc_html_e('Request&#47;Response Configuration', CHATSTER_DOMAIN); ?></div>
+          <div class="ch-option-title"><?php echo esc_html__('Request&#47;Response', CHATSTER_DOMAIN) .' '.'<span class="mobile-removable">'.esc_html__('Configuration', CHATSTER_DOMAIN).'</span>'; ?></div>
           <div id="request-options" class="ch-option-container" style="display:none;">
             <form id="chatster-request-options-form" action="options.php#request-options" method="post">
             <?php

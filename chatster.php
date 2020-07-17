@@ -34,6 +34,7 @@ define( 'CHATSTER_URL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'CHATSTER_FONTAWESOME_URL', CHATSTER_URL_PATH . 'lib/font-awesome-4.7.0/css/font-awesome.min.css' );
 define( 'CHATSTER_AUTOCOMPLETE_URL', CHATSTER_URL_PATH . 'lib/algolia-autocomplete-0.37.1/autocomplete.jquery.min.js' );
 define( 'CHATSTER_GOOGLE_FONTS_URL', 'http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&#038;subset=latin,latin-ext' );
+define( 'CHATSTER_SUPPORT_URL', 'https://wordpress.org/support/plugin/chatster/' );
 
 /**
  * Load Chatster

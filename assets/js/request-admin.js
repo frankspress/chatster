@@ -194,7 +194,7 @@
         data: payload,
         success: function(data) {
          if (data.payload) {
-           $('#reply-section-' + request_id).hide(200, function () {
+           $('#reply-section-' + request_id + ', #striped-separator-'+ request_id).hide(200, function () {
               $(this).remove();
              });
            $('#request-' + request_id).hide(200, function () {

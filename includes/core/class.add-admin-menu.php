@@ -53,23 +53,27 @@ class AdminMenu
           Global $ChatsterOptions;
           $current_tab = isset( $_GET['chtab'] ) ? sanitize_text_field( $_GET['chtab'] ) : false;
 
+          // Enqueue Styles
           wp_enqueue_style( 'wp-color-picker' );
           wp_enqueue_style( 'chatster-css-autocomplete', CHATSTER_URL_PATH . 'assets/css/chat-autocomplete.css');
           wp_enqueue_style( 'chatster-css-admin', CHATSTER_URL_PATH . 'assets/css/style-admin.css');
-          wp_enqueue_style( 'chatster-css-admin-mobile', CHATSTER_URL_PATH . 'assets/css/style-admin-mobile.css');
+          wp_enqueue_style( 'chatster-css-admin-settings', CHATSTER_URL_PATH . 'assets/css/style-settings.css');
           wp_enqueue_style( 'chatster-css-admin-loaders', CHATSTER_URL_PATH . 'assets/css/style-loaders.css');
+          // Enqueue Mobile Styles
+          wp_enqueue_style( 'chatster-css-admin-mobile', CHATSTER_URL_PATH . 'assets/css/style-admin-mobile.css');
+          // Enqueue Scripts
           wp_enqueue_script( 'chatster-general', CHATSTER_URL_PATH . 'assets/js/general-admin.js',  array('jquery'), 1.0, true);
           if ( $current_tab == 'request' ) {
             wp_enqueue_script( 'chatster-request-admin', CHATSTER_URL_PATH . 'assets/js/request-admin.js',  array('jquery'), 1.0, true);
           }
           elseif ( $current_tab == 'settings' ) {
-            wp_enqueue_style( 'chatster-css-admin-settings', CHATSTER_URL_PATH . 'assets/css/style-settings.css');
             wp_enqueue_script( 'chatster-settings-admin', CHATSTER_URL_PATH . 'assets/js/settings-admin.js',  array('jquery', 'wp-color-picker'), 1.0, true);
           } else {
             wp_enqueue_script( 'chatster-chat-admin', CHATSTER_URL_PATH . 'assets/js/chat-admin.js',  array('jquery'), 1.0, true);
             wp_enqueue_script( 'chatster-autocomplete-core', CHATSTER_AUTOCOMPLETE_URL, array(), 1.0, true );
             wp_enqueue_script( 'chatster-autocomplete-admin', CHATSTER_URL_PATH . 'assets/js/chat-autocomplete.js',  array('jquery'), 1.0, true);
           }
+          // Localize JS vars
           wp_localize_script( 'chatster-general', 'chatsterDataAdmin', array(
             'api_base_url' => esc_url_raw( rest_url('chatster/v1') ),
             'wp_api_base_url' => esc_url_raw( get_rest_url() ),

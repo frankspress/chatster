@@ -8,6 +8,8 @@ function display_admin_header($tab) {
     <div id="isa-logo-header" >
       <img src="<?php echo esc_url_raw( CHATSTER_URL_PATH . 'assets/img/header-img.png' ); ?>" style="max-width:400px;">
     </div>
+    <!-- WP Display Admin notices here! -->
+    <!-- <div class="wrap"><h2 class="hidden" style="background-color: transparent !important;"></h2></div> -->
 
     <h2 class="nav-tab-wrapper">
       <a href="?page=chatster-menu&amp;chtab=chat" class="nav-tab <?php echo ( $tab == 'chat' || empty( $tab ) ) ? 'nav-tab-active' : ''; ?>">Conversations</a>
