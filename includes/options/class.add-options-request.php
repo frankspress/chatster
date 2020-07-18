@@ -36,13 +36,13 @@ class AddOptionsRequest extends OptionsGlobal {
 
     add_settings_section(
             'ch_request_section',
-            'Chatster Request Settings',
+             esc_html__( 'Chatster Request Settings', CHATSTER_DOMAIN ),
              array( $this, 'description' ),
             'chatster-menu' );
 
     add_settings_section(
             'ch_request_test_section',
-            'Test Functionality',
+             esc_html__( 'Test Functionality', CHATSTER_DOMAIN ),
              array( $this, 'description' ),
             'chatster-menu' );
 
@@ -53,11 +53,11 @@ class AddOptionsRequest extends OptionsGlobal {
             'chatster-menu',
             'ch_request_section',
             ['id'=>'ch_response_header_url',
-             'label'=> 'Email Header Image',
+             'label'=> esc_html__('Email Header Image', CHATSTER_DOMAIN ),
              'placeholder' => 'https://..',
-             'description'=> 'Your response email can display an header image.<br>
+             'description'=> wp_kses( __('Your response email can display an header image.<br>
                               Go to Media -> Library -> Add New, then copy and paste the link in this field.<br>
-                              (Optimal aspect ratio: 600 X 230 px.)']
+                              (Optimal aspect ratio: 600 X 230 px.)', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) ) ]
                             );
 
     add_settings_field(
@@ -68,8 +68,9 @@ class AddOptionsRequest extends OptionsGlobal {
             'ch_request_section',
             ['id'=>'ch_response_forward',
              'class'=> 'ch-field-switcher',
-             'label'=> 'Enable Reply Forward']
-                            );
+             'label'=> esc_html__('Enable Reply Forward', CHATSTER_DOMAIN )]
+                      );
+                      
     add_settings_field(
             'ch_response_forward_email',
             '',
@@ -80,11 +81,11 @@ class AddOptionsRequest extends OptionsGlobal {
              'label'=> '',
              'class'=> 'ch-field-switchable',
              'required'=> true,
-             'placeholder' => 'Replies will be sent to: your@email.com',
-             'description'=> 'If your WordPress website sends email from an email address you don\'t check daily, <br>
+             'placeholder' => esc_html__('Replies will be sent to: your@email.com', CHATSTER_DOMAIN ),
+             'description'=> wp_kses( __('If your WordPress website sends email from an email address you don\'t check daily, <br>
                               with this option you can redirect customer replies to an account of your choice.<br><br>
                               Customers replying your initial response email sent from the <i>"Received Messages"</i> section <br>
-                              and all future back and forth emails will be routed to this email address instead.']
+                              and all future back and forth emails will be routed to this email address instead.', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )]
                             );
     add_settings_field(
             'ch_request_alert',
@@ -94,7 +95,7 @@ class AddOptionsRequest extends OptionsGlobal {
             'ch_request_section',
             ['id'=>'ch_request_alert',
              'class'=> 'ch-field-switcher',
-             'label'=> 'Enable Email Alert']
+             'label'=> esc_html__('Enable Email Alert', CHATSTER_DOMAIN )]
                             );
     add_settings_field(
             'ch_request_alert_email',
@@ -106,9 +107,9 @@ class AddOptionsRequest extends OptionsGlobal {
              'class'=> 'ch-field-switchable',
              'label'=> '',
              'required'=> true,
-             'placeholder' => 'Alerts sent to: your@email.com',
-             'description'=> 'Receive an email alert when a new request is submitted.<br>
-                              (Wordpress will check for new requests every hour.)']
+             'placeholder' => esc_html__('Alerts sent to: your@email.com', CHATSTER_DOMAIN ),
+             'description'=> wp_kses( __('Receive an email alert when a new request is submitted.<br>
+                              (Wordpress will check for new requests every hour.)', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )]
                             );
 
     add_settings_field(
@@ -118,12 +119,12 @@ class AddOptionsRequest extends OptionsGlobal {
             'chatster-menu',
             'ch_request_test_section',
             ['id'=>'ch_request_test_email',
-             'label'=> 'Enter an Email Address.',
+             'label'=> esc_html__('Enter an Email Address.', CHATSTER_DOMAIN ),
              'required'=> true,
-             'placeholder' => 'Ex: your@email.com',
-             'description'=> 'You will receive a mock email to check functionalities.<br>
+             'placeholder' => esc_html__('Ex: your@email.com', CHATSTER_DOMAIN ),
+             'description'=> wp_kses( __('You will receive a mock email to check functionalities.<br>
                               (Depending on your server and service status it may take <br>
-                               a few minutes to receive the email. Also check your "junk folder".)']
+                               a few minutes to receive the email. Also check your "junk folder".)', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )]
                             );
 
   }
@@ -137,7 +138,7 @@ class AddOptionsRequest extends OptionsGlobal {
       add_settings_error(
           self::$option_group, // Setting slug
           'success_message',
-          'Chatster Request settings have been reset!',
+           esc_html__('Chatster Request settings have been reset!', CHATSTER_DOMAIN ),
           'success'
       );
       return false;
@@ -154,7 +155,7 @@ class AddOptionsRequest extends OptionsGlobal {
 
     } else {
       $input['ch_response_header_url'] = $options['ch_response_header_url'];
-      $err_msg .= __('Wrong URL submitted <br>', CHATSTER_DOMAIN);
+      $err_msg .= esc_html__('Wrong URL submitted', CHATSTER_DOMAIN ) . '<br>';
     }
 
     foreach( array( 'ch_response_forward', 'ch_request_alert') as $value ) {

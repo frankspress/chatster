@@ -29,7 +29,7 @@ class AddOptionsBotQA extends OptionsGlobal {
 
     add_settings_section(
             'ch_bot_qa_section',
-            'Bot Q  &amp; A',
+             esc_html__( 'Bot Q  &amp; A', CHATSTER_DOMAIN ),
              array( $this, 'description' ),
             'chatster-menu' );
 
@@ -40,10 +40,10 @@ class AddOptionsBotQA extends OptionsGlobal {
             'chatster-menu',
             'ch_bot_qa_section',
             ['id'=>'ch_bot_question',
-             'label'=> 'Add a question or questions',
-             'placeholder'=> 'What are your opening hours? What time do you open?',
+             'label'=> esc_html__( 'Add a question or questions', CHATSTER_DOMAIN ),
+             'placeholder'=> esc_html__( 'What are your opening hours? What time do you open?', CHATSTER_DOMAIN ),
              'required'=> true,
-             'description'=> 'The Bot will look for similarities between saved questions and user question.'] );
+             'description'=> esc_html__( 'The Bot will look for similarities between saved questions and user question.', CHATSTER_DOMAIN )] );
 
      add_settings_field(
              'ch_bot_qa_answer',
@@ -52,10 +52,10 @@ class AddOptionsBotQA extends OptionsGlobal {
              'chatster-menu',
              'ch_bot_qa_section',
              ['id'=>'ch_bot_answer',
-              'label'=> 'Bot Response to the question or questions',
-              'placeholder'=> 'Our stores are open from 7 a.m. to 8:30 p.m.',
+              'label'=> esc_html__('Bot Response to the question or questions', CHATSTER_DOMAIN ),
+              'placeholder'=> esc_html__( 'Our stores are open from 7 a.m. to 8:30 p.m.', CHATSTER_DOMAIN ),
               'required'=> true,
-              'description'=> 'This answer will be given when a similar question is asked.'] );
+              'description'=> esc_html__( 'This answer will be given when a similar question is asked.', CHATSTER_DOMAIN )] );
 
   }
 

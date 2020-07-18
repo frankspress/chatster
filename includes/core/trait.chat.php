@@ -521,7 +521,7 @@ trait ChatCollection {
 
     $sql = " DELETE c.* FROM $wp_table_conversation as c
     INNER JOIN $wp_table_presence as p ON c.customer_id = p.customer_id
-    WHERE c.is_connected = FALSE ";
+    WHERE c.is_connected = FALSE AND ( c.updated_at < NOW() - INTERVAL %d MINUTE ) ";
 
     $sql = $wpdb->prepare( $sql, $interval );
     $result = $wpdb->query($sql);

@@ -13,7 +13,7 @@ class AddOptionsBot extends OptionsGlobal {
                                       'ch_bot_nomatch' => 350,
                                       'ch_bot_followup' => 350,
                                       'ch_bot_intro' => 350,
-                                      'ch_bot_name' => 10
+                                      'ch_bot_name' => 15
                                     ];
 
   public function __construct() {
@@ -24,10 +24,10 @@ class AddOptionsBot extends OptionsGlobal {
 
       return array(
           'ch_bot_name' => 'Chatster',
-          'ch_bot_intro' => 'Hi!! How can I help you today?',
-          'ch_bot_followup' => 'If you have any other questions please feel free to ask.',
-          'ch_bot_nomatch' => "Sorry, I couldn't find what you're looking for..
-                                Please try again",
+          'ch_bot_intro' => esc_html__( 'Hi!! How can I help you today?', CHATSTER_DOMAIN ),
+          'ch_bot_followup' => esc_html__( 'If you have any other questions please feel free to ask.', CHATSTER_DOMAIN ),
+          'ch_bot_nomatch' => esc_html__( "Sorry, I couldn't find what you're looking for..
+                                Please try again", CHATSTER_DOMAIN ),
           'ch_bot_deep_search' => true,
           'ch_bot_product_lookup' => false,
           'ch_bot_image' => 'bot-1'
@@ -64,7 +64,7 @@ class AddOptionsBot extends OptionsGlobal {
 
     add_settings_section(
             'ch_bot_section',
-            'Chatster Bot Settings',
+            esc_html('Chatster Bot Settings', CHATSTER_DOMAIN),
              array( $this, 'description' ),
             'chatster-menu' );
 
@@ -75,8 +75,8 @@ class AddOptionsBot extends OptionsGlobal {
             'chatster-menu',
             'ch_bot_section',
             ['id'=>'ch_bot_name',
-             'label'=> 'Bot Name',
-             'description'=> 'Give your bot your favorite name.'] );
+             'label'=> esc_html('Bot Name', CHATSTER_DOMAIN),
+             'description'=> esc_html__( 'Give your bot your favorite name.', CHATSTER_DOMAIN) ] );
 
     add_settings_field(
             'ch_bot_image',
@@ -85,8 +85,8 @@ class AddOptionsBot extends OptionsGlobal {
             'chatster-menu',
             'ch_bot_section',
             ['id'=>'ch_bot_image',
-             'label'=> 'Bot Image',
-             'description'=> 'Give your bot a friendly image'] );
+             'label'=> esc_html('Bot Image', CHATSTER_DOMAIN),
+             'description'=> esc_html__( 'Give your bot a friendly image', CHATSTER_DOMAIN) ] );
 
     add_settings_field(
             'ch_bot_intro',
@@ -95,9 +95,9 @@ class AddOptionsBot extends OptionsGlobal {
             'chatster-menu',
             'ch_bot_section',
             ['id'=>'ch_bot_intro',
-             'label'=> 'Bot introductory sentence.',
-             'description'=> 'Bot introductory sentece used when the chat is initially displayed.
-                              <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>'] );
+             'label'=> esc_html('Bot introductory sentence.', CHATSTER_DOMAIN),
+             'description'=> wp_kses( __('Bot introductory sentece used when the chat is initially displayed.
+                              <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )] );
 
      add_settings_field(
              'ch_bot_followup',
@@ -106,9 +106,9 @@ class AddOptionsBot extends OptionsGlobal {
              'chatster-menu',
              'ch_bot_section',
              ['id'=>'ch_bot_followup',
-              'label'=> 'Follow-up question',
-              'description'=> 'The bot sentece that follows a successfull reply.
-                               <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>'] );
+              'label'=> esc_html('Follow-up question', CHATSTER_DOMAIN),
+              'description'=> wp_kses( __('The bot sentece that follows a successfull reply.
+                               <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )] );
 
      add_settings_field(
              'ch_bot_nomatch',
@@ -117,9 +117,9 @@ class AddOptionsBot extends OptionsGlobal {
              'chatster-menu',
              'ch_bot_section',
              ['id'=>'ch_bot_nomatch',
-              'label'=> 'Nothing found response',
-              'description'=> 'When no answer is found the bot will use this sentence.
-                               <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>'] );
+              'label'=> esc_html('Nothing found response', CHATSTER_DOMAIN),
+              'description'=> wp_kses( __('When no answer is found the bot will use this sentence.
+                               <br><span class="ch-field-descr-extra">(Each line break is shown as separate message)</span>', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )] );
 
      add_settings_field(
              'ch_bot_deep_search',
@@ -128,8 +128,8 @@ class AddOptionsBot extends OptionsGlobal {
              'chatster-menu',
              'ch_bot_section',
              ['id'=>'ch_bot_deep_search',
-              'label'=> 'Enable Deep Search',
-              'description'=> 'BOT will search full text in both questions and answers. <br>When not enabled it will only search among the saved questions.'] );
+              'label'=> esc_html('Enable Deep Search', CHATSTER_DOMAIN),
+              'description'=> wp_kses( __('BOT will search full text in both questions and answers. <br>When not enabled it will only search among the saved questions.', CHATSTER_DOMAIN ), wp_kses_allowed_html( 'post' ) )] );
 
      // add_settings_field(
      //         'ch_bot_product_lookup',
@@ -152,7 +152,7 @@ class AddOptionsBot extends OptionsGlobal {
       add_settings_error(
           'chatster_bot_options', // Setting slug
           'success_message_reset',
-          'BOT settings have been reset!',
+           esc_html__( 'BOT settings have been reset!', CHATSTER_DOMAIN ),
           'success'
       );
       return false;
@@ -163,18 +163,26 @@ class AddOptionsBot extends OptionsGlobal {
 
     foreach (array( 'ch_bot_name' ) as $value) {
       if ( isset($input[$value]) ) {
+        $input[$value] = sanitize_text_field( $input[$value] );
         if ( !is_string($input[$value]) || strlen($input[$value]) > self::get_maxlength($value) ) {
+          $max_lenght = intval( strlen($input[$value]) -  self::get_maxlength($value) ) ;
           $input[$value] = isset($options[$value]) ? $options[$value] : '';
-          $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
+          if ( $max_lenght ) {
+            $err_msg .= sprintf( esc_html( _n( 'A field text exceeds %d character', 'A field text exceeds %d characters', $max_lenght, CHATSTER_DOMAIN ) ), number_format_i18n( $max_lenght ) ).'<br>';
+          }
         }
       }
     }
 
     foreach (array( 'ch_bot_intro', 'ch_bot_followup','ch_bot_nomatch' ) as $value) {
       if ( isset($input[$value]) ) {
+        $input[$value] = sanitize_textarea_field($input[$value]);
         if ( !is_string($input[$value]) || strlen($input[$value]) > self::get_maxlength($value) ) {
+          $max_lenght = intval( strlen($input[$value]) -  self::get_maxlength($value) ) ;
           $input[$value] = isset($options[$value]) ? $options[$value] : '';
-          $err_msg .= __('A field text exceeds '.self::get_maxlength($value).' characters <br>', CHATSTER_DOMAIN);
+          if ( $max_lenght ) {
+            $err_msg .= sprintf( esc_html( _n( 'A field text exceeds %d character', 'A field text exceeds %d characters', $max_lenght, CHATSTER_DOMAIN ) ), number_format_i18n( $max_lenght ) ).'<br>';
+          }
         }
       }
     }

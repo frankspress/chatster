@@ -56,13 +56,13 @@ class CronManager {
       $request = new \stdClass();
       $request->name = $request->message = '';
       $request->email = $ChatsterOptions->get_request_option('ch_request_alert_email');
-      $request->subject = __('New Request received on', CHATSTER_DOMAIN).' '.ucfirst(esc_html(get_bloginfo( 'name' )));
-      $request->reply  =  __('Hello', CHATSTER_DOMAIN).',<br>';
-      $request->reply .=  __('You have received ', CHATSTER_DOMAIN ).
-                          sprintf( _n( '%s new request', '%s new requests', $request_count, CHATSTER_DOMAIN ), number_format_i18n( $request_count ) ).' '.
-                          __('on', CHATSTER_DOMAIN) .' '.ucfirst(esc_html(get_bloginfo( 'name' ))).'<br><br>'.
-                          __('To login to your website go here:', CHATSTER_DOMAIN).'<br>'.esc_url(wp_login_url()).'<br><br><br>'.
-                          '<h5 style="font-size: 14px;">'.__('Thank you for using Chatster!', CHATSTER_DOMAIN).'</h5>';
+      $request->subject = esc_html__('New Request received on', CHATSTER_DOMAIN).' '.ucfirst(esc_html(get_bloginfo( 'name' )));
+      $request->reply  =  esc_html__('Hello', CHATSTER_DOMAIN).',<br>';
+      $request->reply .=  esc_html__('You have received ', CHATSTER_DOMAIN ).
+                          sprintf( esc_html( _n( '%s new request', '%s new requests', $request_count, CHATSTER_DOMAIN ) ), number_format_i18n( $request_count ) ).' '.
+                          esc_html__('on', CHATSTER_DOMAIN) .' '.ucfirst(esc_html(get_bloginfo( 'name' ))).'<br><br>'.
+                          esc_html__('To login to your website go here:', CHATSTER_DOMAIN).'<br>'.esc_url(wp_login_url()).'<br><br><br>'.
+                          '<h5 style="font-size: 14px;">'.esc_html__('Thank you for using Chatster!', CHATSTER_DOMAIN).'</h5>';
 
       $emailer = new Emailer();
       return $emailer->send_notification_email($request);
