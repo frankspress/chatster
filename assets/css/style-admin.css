@@ -474,6 +474,8 @@ textarea.disabled {
   color: #FEFEFE;
   cursor: pointer;
   outline: none;
+  background-color: #0F7D11 !important;
+  border-color: #0F7D5B !important;
 }
 
 

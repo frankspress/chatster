@@ -80,12 +80,14 @@ You can use the [support page](https://wordpress.org/support/plugin/chatster) an
 1. Front Live Chat.
 1. Chat Collapsed.
 1. Admin Chat Console.
+1. Product Lookup.
 1. Received Messages.
-1. All Settings.
 1. Bot Setup Settings.
 1. Q and A Insert Screen.
 1. Public Chat Settings.
 1. Admin Chat Settings.
+1. All Settings.
+1. Received Messages.
 1. Email Layout.
 1. Email Response Configuration.
 1. Chat Color Styling example.

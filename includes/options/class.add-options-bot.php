@@ -64,7 +64,7 @@ class AddOptionsBot extends OptionsGlobal {
 
     add_settings_section(
             'ch_bot_section',
-            esc_html('Chatster Bot Settings', CHATSTER_DOMAIN),
+             esc_html('Chatster Bot Settings', CHATSTER_DOMAIN),
              array( $this, 'description' ),
             'chatster-menu' );
 

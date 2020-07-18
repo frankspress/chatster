@@ -105,7 +105,7 @@ class OptionsGlobal {
       <td>
           <textarea id="<?php echo static::$option_group.'_'.esc_attr($id); ?>" name="<?php echo static::$option_group.'['.esc_attr($id).']'; ?>"
             placeholder="<?php echo esc_attr($placeholder); ?>" rows="5" cols="53" maxlength="<?php echo esc_attr(static::get_maxlength($id)) ?>"
-            <?php echo esc_attr($is_required); ?> ><?php echo $value; ?></textarea><br />
+            <?php echo esc_attr($is_required); ?> ><?php echo sanitize_textarea_field($value); ?></textarea><br />
           <p class="description"><?php echo $description; ?></p>
       </td>
     </tr>
@@ -272,7 +272,7 @@ class OptionsGlobal {
        add_settings_error(
           static::$option_group, // Setting slug
           'success_message',
-          'Settings Saved!',
+           esc_html('Settings Saved!', CHATSTER_DOMAIN ),
           'success'
       );
     }

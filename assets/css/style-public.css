@@ -141,6 +141,7 @@
   display: flex;
   flex-wrap: wrap;
   margin-top: 15px;
+  margin-bottom: 20px;
 }
 
 #ch-msg-container .ch-link-chat img {

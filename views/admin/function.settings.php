@@ -32,7 +32,8 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
           <div class="ch-option-title"><?php esc_html_e('Bot Q &amp; A', CHATSTER_DOMAIN); ?></div>
           <div id="bot-q-and-a" class="ch-option-container" style="display:none;">
             <div id="setting-error-bot_qa_message" class="notice notice-success settings-error is-dismissible hidden">
-                <p><strong><?php esc_html_e('Q&A Was Reset Successfully!', CHATSTER_DOMAIN) ?></strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+                <p><strong><?php esc_html_e('Q&A Was Reset Successfully!', CHATSTER_DOMAIN) ?></strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">
+                  <?php esc_html_e('Dismiss this notice.', CHATSTER_DOMAIN ); ?></span></button>
               </div>
             <div id="q-and-a-container">
                   <!-- Q and A Listing -->
@@ -114,8 +115,8 @@ function display_admin_settings( $count_qa, $per_page_qa, $total_pages_qa ) {
               <div class="ch-reply-btn">
                 <?php submit_button($text = esc_html__( 'Send Test Email', CHATSTER_DOMAIN ), $type = 'primary', $name = 'submit-settings',$wrap = true, $other_attributes = ['id'=>'ch-test-email']); ?>
                 <div class="ch-smaller-loader hidden" style="margin-left:20px;"></div>
-                <div class="ch-success hidden" style="margin-left:20px;">Sent Successfully!</div>
-                <div class="ch-fail hidden" style="margin-left:20px;">Something went wrong.</div>
+                <div class="ch-success hidden" style="margin-left:20px;"><?php esc_html_e('Sent Successfully!', CHATSTER_DOMAIN ); ?></div>
+                <div class="ch-fail hidden" style="margin-left:20px;"><?php esc_html_e('Something went wrong.', CHATSTER_DOMAIN ); ?></div>
 
               </div>
             </form>

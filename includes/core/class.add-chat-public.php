@@ -113,6 +113,12 @@ class ChatPublic
 
   }
 
+  protected function get_JS_translation() {
+    return [
+         'open' => ucfirst(esc_html__('open', CHATSTER_DOMAIN)),
+        ];
+  }
+
   public function enqueue_front_js() {
     global $ChatsterOptions;
     wp_enqueue_script( 'chatster-public', CHATSTER_URL_PATH . 'assets/js/chat-public.js',  array('jquery'), 1.0, true);
@@ -128,7 +134,8 @@ class ChatPublic
       'chat_static_string' => [ 'bot_intro'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_intro' ))),
                                 'bot_followup'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_followup' ))),
                                 'bot_nomatch'=> nl2br(esc_html( $ChatsterOptions->get_bot_option( 'ch_bot_nomatch' )))
-                              ]
+                              ],
+      'translation' => $this->get_JS_translation()
     ) );
     if ( !wp_style_is( 'fontawesome' ) && $ChatsterOptions->get_chat_option( 'ch_chat_fontawesome' ) ) {
         wp_enqueue_style( 'fontawesome', CHATSTER_FONTAWESOME_URL, false, '4.7.0' );
