@@ -109,8 +109,8 @@ class BotApi extends GlobalApi  {
 
       if ( $this->validate_admin($request) ) {
           if ( is_string($request['answer']) && is_array( $request['questions']) ) {
+               $request['answer'] = sanitize_textarea_field($request['answer']);
                if ( strlen(trim($request['answer'])) == 0 || strlen(trim($request['answer'])) > 600 ) return false;
-               $request['answer'] = htmlentities( $request['answer'], ENT_QUOTES, 'UTF-8');
                $sanitized_questions = array();
                foreach ( $request['questions'] as $question ) {
                    $question = trim($question);
@@ -128,6 +128,29 @@ class BotApi extends GlobalApi  {
       }
     }
 
+  /**
+   * Escaping Callbacks
+   */
+   public function escape_answers( $answers, $new_line = true ) {
+     if ( !empty($answers) ) {
+       foreach ($answers as $key => $value) {
+          $answers[$key]->answer = htmlentities( $answers[$key]->answer, ENT_QUOTES, 'UTF-8');
+          if ( $new_line ) {
+              $answers[$key]->answer = nl2br($answers[$key]->answer);
+          }
+       }
+     }
+     return $answers;
+   }
+
+   public function escape_questions( $questions ) {
+     if ( !empty($questions) ) {
+       foreach ($questions as $key => $value) {
+          $questions[$key]->question = htmlentities( $questions[$key]->question, ENT_QUOTES, 'UTF-8');
+       }
+     }
+     return $questions;
+   }
 
   /**
    * Routes Callbacks
@@ -137,7 +160,7 @@ class BotApi extends GlobalApi  {
        Global $ChatsterOptions;
        $deep_search = rest_sanitize_boolean($ChatsterOptions->get_bot_option( 'ch_bot_deep_search' ));
 
-       $answer = $this->search_full_text($data['user_question'], $deep_search );
+       $answer = $this->escape_answers( $this->search_full_text($data['user_question'], $deep_search ));
 
        return array( 'action'=>'bot_reply_question', 'payload'=> $answer );
 
@@ -182,8 +205,8 @@ class BotApi extends GlobalApi  {
        $result_container = [];
 
        if ( $data['page'] <= ceil( $count / self::$per_page_qa ) ) {
-         $answers = $this->get_all_answers( $data['page'], $count );
-         $questions = $this->get_all_questions($answers);
+         $answers = $this->escape_answers( $this->get_all_answers( $data['page'], $count ), false );
+         $questions = $this->escape_questions( $this->get_all_questions($answers) );
 
          if ( $questions && $answers ) {
            foreach ($answers as $answer) {

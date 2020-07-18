@@ -271,11 +271,13 @@ class AddOptionsChat extends OptionsGlobal {
 
     foreach (array( 'ch_chat_intro', 'ch_chat_header' ) as $value) {
       if ( isset($input[$value]) ) {
+        $input[$value] = sanitize_text_field( $input[$value] );
         if ( !is_string($input[$value]) || strlen($input[$value]) > self::get_maxlength($value) ) {
+          $max_lenght = intval( strlen($input[$value]) -  self::get_maxlength($value) ) ;
           $input[$value] = isset($options[$value]) ? $options[$value] : '';
-          $max_lenght = self::get_maxlength($value);
-          $err_msg .= sprintf( esc_html( _n( 'A field text exceeds %d character', 'A field text exceeds %d characters', $max_lenght, CHATSTER_DOMAIN ) ), number_format_i18n( $max_lenght ) ).'<br>';
-
+          if ( $max_lenght ) {
+            $err_msg .= sprintf( esc_html( _n( 'A field text exceeds %d character', 'A field text exceeds %d characters', $max_lenght, CHATSTER_DOMAIN ) ), number_format_i18n( $max_lenght ) ).'<br>';
+          }
         }
       }
     }
@@ -284,7 +286,7 @@ class AddOptionsChat extends OptionsGlobal {
      if ( isset($input[$value])) {
        $input[$value] = sanitize_hex_color( $input[$value] );
        if ( empty($input[$value]) ) {
-         $input[$value] = false;
+         $input[$value] = $options[$value];
          $err_msg .= esc_html__('Wrong Hex color', CHATSTER_DOMAIN ).'<br>';
        }
      }
@@ -296,9 +298,8 @@ class AddOptionsChat extends OptionsGlobal {
         if ( $intval >= 0 && $intval <= 50 ) {
           $input[$value] = $intval;
         } else {
-          $max_lenght = self::get_maxlength($value);
-          $err_msg .= sprintf( esc_html( _n( 'A field text exceeds %d character', 'A field text exceeds %d characters', $max_lenght, CHATSTER_DOMAIN ) ), number_format_i18n( $max_lenght ) ).'<br>';
-
+          $input[$value] = $options[$value];
+          $err_msg .= esc_html__('Wrong Volume Setting', CHATSTER_DOMAIN ).'<br>';
         }
       }
     }
