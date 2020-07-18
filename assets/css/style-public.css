@@ -148,6 +148,13 @@
   margin-right: 10px;
   margin-top: 5px;
 }
+.ch-link-title a,
+.ch-link-title a:hover,
+.ch-link-exlink a,
+.ch-link-exlink a:hover {
+  color: #2ea3f2 !important;
+}
+
 #ch-msg-container .ch-link-title{
   font-weight: 600;
 }

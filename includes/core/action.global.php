@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Adds Translation Support
  */
 add_action( 'plugins_loaded', function() {
-    load_plugin_textdomain( CHATSTER_DOMAIN, FALSE, basename( CHATSTER_PATH ) . '/languages/' );
+    load_plugin_textdomain( CHATSTER_DOMAIN, FALSE, basename( CHATSTER_PATH ) . '/languages' );
 });
 
 /**

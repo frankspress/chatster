@@ -6,7 +6,7 @@
  * Author: Frank Pagano
  * Author URI: https://frankspress.com
  * Text Domain: chatster
- * Domain Path: /languages/
+ * Domain Path: /languages
  * Version: 1.0.0
  * Copyright (c) 2020 Frankspress
  * License: GPLv2 or later
