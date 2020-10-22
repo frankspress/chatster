@@ -332,8 +332,7 @@
   });
   load_q_and_a_list(current_page_qa);
 
-  $('.ch-delete-answer').live('click',function() {
-
+  $( document ).on( "click", '.ch-delete-answer', function() {
     let answer_id = $(this).attr('data-answer_id');
     $("#ch-qa-single-"+answer_id).find('.ch-smaller-loader').show(200);
     $.ajax( {
@@ -360,7 +359,7 @@
 
      });
   });
-  $('.ch-edit-answer').live('click',function() {
+  $( document ).on( "click", '.ch-edit-answer', function() {
     $('#cancel-bot-q-and-a').show(100);
     $('.single-qa').removeClass('ch-qa-edited');
     let answer_id = $(this).parent().attr('data-answer_id');

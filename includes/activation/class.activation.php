@@ -303,6 +303,7 @@ class ChatsterActivationLoader  {
   }
 
   private static function generate_key_options() {
+    update_option( 'chatster_version', CHATSTER_VERSION );
     return add_option( 'chatster_enc_key', bin2hex(random_bytes(16)) );
   }
 

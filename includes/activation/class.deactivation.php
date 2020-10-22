@@ -68,6 +68,7 @@ class ChatsterDeactivationLoader {
 
     private static function remove_key_options() {
       delete_option( 'chatster_api_key' );
+      delete_option( 'chatster_version' );
       return true;
     }
 

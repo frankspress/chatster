@@ -3,11 +3,11 @@ Contributors: frankspress
 Donate link: https://paypal.me/frankspress
 Tags: woocommerce, chat, bot, message, contact, question
 Requires at least: 4.9
-Tested up to: 5.4
-Stable tag: 1.0.0
+Tested up to: 5.5.1
+Stable tag: 1.0.1
 WC requires at least: 3.5
-WC tested up to: 4.3.0
-Requires PHP: 5.6.4
+WC tested up to: 4.6.1
+Requires PHP: 7.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,9 @@ You can use the [support page](https://wordpress.org/support/plugin/chatster) an
 1. Chat Color Styling example.
 
 == Changelog ==
+
+= 1.0.1 =
+* Removes jQuery deprecations.
 
 = 1.0.0 =
 * Initial release.

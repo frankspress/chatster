@@ -308,6 +308,13 @@
   margin: 0 auto;
 }
 
+.ch-input .ch-input-text:focus {
+  background-color: #fff !important;
+}
+/* .ch-input .ch-input-text:hover {
+  background-color: #fff !important;
+} */
+
 .ch-input button {
   outline: none !important;
   background-color: #fff;

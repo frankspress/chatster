@@ -88,7 +88,7 @@
     $conversation.addClass('disconnected');
     $($disconnect_link).text(chatsterDataAdmin.translation.delete);
   }
-  $('.ch-disconnect').live('click', function(e) {
+  $( document ).on( "click", '.ch-disconnect', function(e) {
     e.stopPropagation();
     e.preventDefault();
 
@@ -347,7 +347,7 @@
     }
     return '';
   }
-  $('.single-conversation').live('click',function() {
+  $( document ).on( "click", '.single-conversation', function() {
     $('#ch-reply-block, #ch-message-board, #ch-conversation-container').css('background-color','#FFF');
     $('#ch-reply').attr('disabled', false).removeClass('disabled');
     $('#ch-no-message-overlay').hide();

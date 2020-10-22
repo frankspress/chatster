@@ -129,7 +129,7 @@
     return template;
   }
   // Removes attachment from pending message
-  $('.ch-auto-delete').live('click',function(e) {
+  $( document ).on( "click", '.ch-auto-delete', function(e) {
       e.preventDefault();
       $(this).parent().remove();
   });
